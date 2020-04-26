@@ -16,15 +16,29 @@ namespace fuel
 
 		// Member functions
 		const std::string& ToString() const;
+		float MagnitudeSqr() const;
+		float Magnitude() const;
 
 		// Operator overloading
 		friend std::ostream& operator<<(std::ostream& os, const Vector2& vec2);
-		
+		Vector2& operator+=(const Vector2& rhs);
+		friend Vector2 operator+(Vector2 lhs, const Vector2& rhs);
+		Vector2& operator-=(const Vector2& rhs);
+		friend Vector2 operator-(Vector2 lhs, const Vector2& rhs);
 	};
 	// Member functions
 	inline const std::string& Vector2::ToString() const
 	{
 		return "[" + std::to_string(x) + ", " + std::to_string(y) + "]";
+	}
+
+	inline float Vector2::MagnitudeSqr() const
+	{
+		return (x * x + y * y);
+	}
+	inline float Vector2::Magnitude() const
+	{
+		return sqrtf(x * x + y * y);
 	}
 
 	
@@ -33,6 +47,28 @@ namespace fuel
 	{
 		os << "[" << vec2.x << ", " << vec2.y << "]";
 		return  os;
+	}
+	inline Vector2& Vector2::operator+=(const Vector2& rhs)
+	{
+		Vector2 addition{ Vector2(this->x + rhs.x, this->y + rhs.y) };
+		return addition;
+	}
+	inline Vector2& Vector2::operator-=(const Vector2& rhs)
+	{
+		Vector2 substraction{ Vector2(this->x - rhs.x, this->y - rhs.y) };
+		return substraction;
+	}
+	inline Vector2 operator+(Vector2 lhs, const Vector2& rhs)
+	{
+		lhs.x += rhs.x;
+		lhs.y += rhs.y;
+		return lhs;
+	}
+	inline Vector2 operator-(Vector2 lhs, const Vector2& rhs)
+	{
+		lhs.x -= rhs.x;
+		lhs.y -= rhs.y;
+		return lhs;
 	}
 #pragma endregion 
 
@@ -52,9 +88,15 @@ namespace fuel
 
 		// Member functions
 		const std::string& ToString() const;
-
+		float MagnitudeSqr() const;
+		float Magnitude() const;
+		
 		// Operator overloading
 		friend std::ostream& operator<<(std::ostream os, const Vector3& vec3);
+		Vector3& operator+=(const Vector3& rhs);
+		friend Vector3 operator+(Vector3 lhs, const Vector3& rhs);
+		Vector3& operator-=(const Vector3& rhs);
+		friend Vector3 operator-(Vector3 lhs, const Vector3& rhs);
 	};
 	// Member functions
 	inline const std::string& Vector3::ToString() const
@@ -62,11 +104,44 @@ namespace fuel
 		return "[" + std::to_string(x) + ", " + std::to_string(y) + ", " + std::to_string(z) + "]";
 	}
 
+	inline float Vector3::MagnitudeSqr() const
+	{
+		return (x * x + y * y + z * z);
+	}
+	inline float Vector3::Magnitude() const
+	{
+		return sqrtf(x * x + y * y + z * z);
+	}
+
 	// Operator overloading
 	inline std::ostream& operator<<(std::ostream os, const Vector3& vec3)
 	{
 		os << "[" << vec3.x << ", " << vec3.y << ", " << vec3.z << "]";
 		return  os;
+	}
+	inline Vector3& Vector3::operator+=(const Vector3& rhs)
+	{
+		Vector3 addition{ Vector3(this->x + rhs.x, this->y + rhs.y, this->z + rhs.z) };
+		return addition;
+	}
+	inline Vector3& Vector3::operator-=(const Vector3& rhs)
+	{
+		Vector3 substraction{ Vector3(this->x - rhs.x, this->y - rhs.y, this->z - rhs.z) };
+		return substraction;
+	}
+	inline Vector3 operator+(Vector3 lhs, const Vector3& rhs)
+	{
+		lhs.x += rhs.x;
+		lhs.y += rhs.y;
+		lhs.z += rhs.z;
+		return lhs;
+	}
+	inline Vector3 operator-(Vector3 lhs, const Vector3& rhs)
+	{
+		lhs.x -= rhs.x;
+		lhs.y -= rhs.y;
+		lhs.z -= rhs.z;
+		return lhs;
 	}
 #pragma endregion
 
@@ -95,6 +170,47 @@ namespace fuel
 		
 		Color4 color;
 		std::string text;
+	};
+#pragma endregion
+
+#pragma region Shapes
+	struct Rectf
+	{
+		Rectf(const float posX = 0, const float posY = 0, const float widthRect = 0, const float heightRect = 0)
+			: x{ posX }
+			, y{ posY }
+			, width{ widthRect }
+			, height{ heightRect }
+		{}
+		Rectf(const Vector2 position, const Vector2 dimensions)
+			: x{ position.x }
+			, y{ position.y }
+			, width{ dimensions.x }
+			, height{ dimensions.y }
+		{}
+		
+		float x{ 0.f };
+		float y{ 0.f };
+		float width{ 0.f };
+		float height{ 0.f };
+	};
+
+	struct Spheref
+	{
+		Spheref(const Vector2& pos = Vector2(), const float r = 10.f)
+			: x{ pos.x }
+			, y{ pos.y }
+			, radius{ r }
+		{}
+		Spheref(const float xPos = 0.f, const float yPos = 0.f, const float r = 10.f)
+			: x{ xPos }
+			, y{ yPos }
+			, radius{ r }
+		{}
+		
+		float x{ 0.f };
+		float y{ 0.f };
+		float radius{ 10.f };
 	};
 #pragma endregion 
 }

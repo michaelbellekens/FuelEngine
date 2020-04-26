@@ -7,6 +7,8 @@
 #include "Renderer.h"
 #include "ResourceManager.h"
 #include <SDL.h>
+
+#include "BoxCollider.h"
 #include "TextComponent.h"
 #include "GameObject.h"
 #include "Scene.h"
@@ -14,6 +16,7 @@
 #include "FPSComponent.h"
 #include "RenderComponent.h"
 #include "PlayerController.h"
+#include "SphereCollider.h"
 #include "VibrationComponent.h"
 
 using namespace std;
@@ -59,17 +62,18 @@ void fuel::FuelEngine::LoadGame() const
 	go = std::make_shared<GameObject>();
 	go->SetName("Logo Holder 1");
 	scene.AddToScene(go);
+	go->AddComponent<Transform>();
 	RenderComponent* renderCompLogo = go->AddComponent<RenderComponent>();
 	renderCompLogo->SetTexture("logo.png");
-	go->AddComponent<Transform>();
 	go->GetTransform()->SetPosition(216, 180);
 	
 	go = std::make_shared<GameObject>();
 	go->SetName("Logo Holder 2");
 	scene.AddToScene(go);
+	go->AddComponent<Transform>();
 	RenderComponent* renderCompLogo2 = go->AddComponent<RenderComponent>();
 	renderCompLogo2->SetTexture("logo.png");
-	go->AddComponent<Transform>();
+	go->AddComponent<BoxCollider>();
 	go->GetTransform()->SetPosition(0, 0);
 
 	go = std::make_shared<GameObject>();

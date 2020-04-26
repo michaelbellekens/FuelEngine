@@ -142,17 +142,17 @@ void fuel::TextComponent::DrawGUI()
 	// Text0.
 	ImGui::Text("Text:");
 	ImGui::SameLine(100);
-	m_Text.resize(100);
-	std::string newText{ m_Text };
-	newText.resize(m_Text.size());
+	const unsigned int numChars = 255;
+	char nameBuffer[numChars];
+	strcpy_s(nameBuffer, m_Text.c_str());
 	const std::string rightVibLabel{ "##TextInputLabel" + m_ID };
 	ImGui::PushItemWidth(200);
-	ImGui::InputText(rightVibLabel.c_str(), &newText[0], 100);
+	ImGui::InputText(rightVibLabel.c_str(), nameBuffer, 100);
 	ImGui::PopItemWidth();
 
-	if (newText != m_Text)
+	if (nameBuffer != m_Text)
 	{
-		SetText(newText);
+		SetText(nameBuffer);
 	}
 
 	// Text Color
@@ -177,16 +177,15 @@ void fuel::TextComponent::DrawGUI()
 	// Font type
 	ImGui::Text("Font name:");
 	ImGui::SameLine(100);
-	m_FontName.resize(50);
-	std::string newFont{ m_FontName };
-	newFont.resize(50);
+	char fontBuffer[numChars];
+	strcpy_s(fontBuffer, m_FontName.c_str());
 	const std::string fontNameLabel{ "##FontNameInputLabel" + m_ID };
 	ImGui::PushItemWidth(200);
-	ImGui::InputText(fontNameLabel.c_str(), &newFont[0], 50);
+	ImGui::InputText(fontNameLabel.c_str(), fontBuffer, 50);
 	ImGui::PopItemWidth();
-	if (ResourceManager::DoesFileExist(newFont) && newFont != m_FontName)
+	if (ResourceManager::DoesFileExist(fontBuffer) && fontBuffer != m_FontName)
 	{
-		SetFont(ResourceManager::LoadFont(newFont, 36));
+		SetFont(ResourceManager::LoadFont(fontBuffer, 36));
 		m_FontName = m_Font->GetName();
 	}
 }

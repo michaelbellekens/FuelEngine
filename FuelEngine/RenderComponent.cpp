@@ -66,18 +66,20 @@ void fuel::RenderComponent::DrawGUI()
 	ImGui::Spacing();
 
 	const std::string textureLabel{"##TextureName" + m_ID };
-	std::string newtextureFile{ m_TextureName };
+	const unsigned int numChars = 255;
+	char nameBuffer[numChars];
+	strcpy_s(nameBuffer, m_TextureName.c_str());
 	
 	ImGui::Text("Texture file");
 	ImGui::SameLine(100);
 	ImGui::PushItemWidth(200);
-	ImGui::InputText(textureLabel.c_str(), &newtextureFile.front(), 100);
+	ImGui::InputText(textureLabel.c_str(), nameBuffer, numChars);
 	ImGui::PopItemWidth();
-	
-	if (ResourceManager::DoesFileExist(newtextureFile) && newtextureFile != m_TextureName)
+
+	if (ResourceManager::DoesFileExist(nameBuffer) && nameBuffer != m_TextureName)
 	{
-		SetTexture(newtextureFile);
-		m_TextureName = newtextureFile;
+		SetTexture(nameBuffer);
+		m_TextureName = nameBuffer;
 	}
 }
 

@@ -86,9 +86,10 @@ std::string& fuel::GameObject::GetName()
 
 void fuel::GameObject::DrawComponents()
 {
-	for (BaseComponent* comp : m_pComponents)
+	//for (BaseComponent* comp : m_pComponents)
+	for (size_t idx{ 0 }; idx < m_pComponents.size(); ++idx)
 	{
-		comp->DrawGUI();
+		m_pComponents[idx]->DrawGUI();
 		ImGui::Separator();
 	}
 }
