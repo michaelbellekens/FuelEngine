@@ -8,6 +8,10 @@
 #include "Texture2D.h"
 #include "Font.h"
 
+#define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING
+#include <experimental/filesystem>
+
+
 void fuel::ResourceManager::IInit(const std::string& dataPath)
 {
 	m_DataPath = dataPath;
@@ -48,10 +52,9 @@ std::shared_ptr<fuel::Font> fuel::ResourceManager::ILoadFont(const std::string& 
 
 bool fuel::ResourceManager::IDoesFileExist(const std::string& filePath)
 {
-	std::ifstream fileStream;
-	fileStream.open(m_DataPath + filePath);
-	if (fileStream.fail())
-		return false;
-
-	return true;
+	if (filePath != "")
+	{
+		return std::experimental::filesystem::exists(m_DataPath + filePath);
+	}
+	return false;
 }

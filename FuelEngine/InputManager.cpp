@@ -340,7 +340,7 @@ fuel::Vector2 fuel::InputManager::IGetMousePosition()
 	SDL_GetMouseState(&xPos, &yPos);
 
 	m_MousePosition.x = static_cast<float>(xPos);
-	m_MousePosition.y = static_cast<float>(EngineSettings::GetWindowHeight() - yPos);
+	m_MousePosition.y = static_cast<float>(yPos);
 	
 	return m_MousePosition;
 }

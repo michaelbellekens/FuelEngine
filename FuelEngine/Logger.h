@@ -17,21 +17,22 @@ namespace fuel
 
 		static void Draw() { GetInstance().IDraw(); }
 
-
 		static void LogInfo(const std::string& message) { GetInstance().ILogInfo(message); }
 		static void LogWarning(const std::string& message) { GetInstance().ILogWarning(message); }
 		static void LogError(const std::string& message) { GetInstance().ILogError(message); }
 		
 	private:
 		// Internal functions
+		void IDraw();
+
 		void ILogInfo(const std::string& message);
 		void ILogWarning(const std::string& message);
 		void ILogError(const std::string& message);
 
-		void IDraw();
-
+		void ClearLog();
+		
 		// Datamembers
-		std::vector<ColoredText> m_AllLogs;
+		std::vector<ColoredText> m_AllLogs{};
 		bool m_RefreshWindow{ false };
 	};
 
@@ -39,11 +40,19 @@ namespace fuel
 	{
 		ImGui::Begin("Console Log");
 
+		// Clear Log when button is pressed
+		const std::string labelClear{  };
+		if (ImGui::Button("Clear##ClearLog"))
+			ClearLog();
+		ImGui::Separator();
+		
+		// Draw all logs
 		for (ColoredText log : m_AllLogs)
 		{
 			ImGui::TextColored({ log.color.r, log.color.g, log.color.b, log.color.a }, log.text.c_str());
 		}
 
+		// When new Log is added jump to end of window
 		if (m_RefreshWindow)
 		{
 			ImGui::SetScrollHereY(1.0f);
@@ -84,6 +93,11 @@ namespace fuel
 
 		m_AllLogs.push_back(ColoredText(textColor, logText));
 		m_RefreshWindow = true;
+	}
+	
+	inline void Logger::ClearLog()
+	{
+		m_AllLogs.clear();
 	}
 }
 
