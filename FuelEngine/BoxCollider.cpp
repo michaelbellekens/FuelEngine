@@ -11,11 +11,20 @@
 
 void fuel::BoxCollider::Initialize()
 {
-	SetDimensions(Rectf(0.f, 0.f, 200.f, 200.f));
 	const void* address = static_cast<const void*>(this);
 	std::stringstream ss;
 	ss << address;
 	m_ID = ss.str();
+
+	RigidBody2D* rigidbody{ m_pGameObject->GetComponent<RigidBody2D>() };
+	if (rigidbody)
+	{
+		rigidbody->AddCollider(this);
+	}
+	else
+	{
+		Logger::LogError("No required 'Rigidbody2D' has been found on gameObject: " + m_pGameObject->GetName());
+	}
 }
 
 void fuel::BoxCollider::OnStart()
@@ -29,12 +38,12 @@ void fuel::BoxCollider::Update()
 
 void fuel::BoxCollider::FixedUpdate()
 {
-	const Spheref testSphere{ InputManager::GetMousePosition(), 25.f };
+	/*const Spheref testSphere{ InputManager::GetMousePosition(), 25.f };
 
 	if (IsColliding(testSphere))
 	{
 		Logger::LogInfo("Sphere is Colliding with BoxCollider 2D!");
-	}
+	}*/
 	
 }
 
@@ -143,12 +152,20 @@ bool fuel::BoxCollider::IsColliding(const Vector2& point) const
 
 fuel::Rectf fuel::BoxCollider::GetDimensions() const
 {
-	return m_Dimensions;
+	Rectf tempShape{ m_Dimensions };
+	tempShape.x += m_pTransform->GetPosition().x;
+	tempShape.y += m_pTransform->GetPosition().y;
+	return tempShape;
 }
 
 void fuel::BoxCollider::SetDimensions(const Rectf& dimensions)
 {
 	m_Dimensions = dimensions;
+}
+
+fuel::ShapeType fuel::BoxCollider::GetShapeType() const
+{
+	return ShapeType::Rect;
 }
 
 void fuel::BoxCollider::DrawGUI()

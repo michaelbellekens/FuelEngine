@@ -29,7 +29,6 @@ namespace fuel
 		static const int m_GameHeigth{ 480 };
 		static const bool m_UseFixedFrameRate{ true };
 		static const int m_FPS{ FUEL_UPDATE_RATE_EXTREME };
+		static float m_Gravity;
 	};
 }
-
-

@@ -154,6 +154,9 @@
     <ClInclude Include="RigidBody2D.h">
       <Filter>Components</Filter>
     </ClInclude>
+    <ClInclude Include="EngineComponents.h">
+      <Filter>Components</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="imgui.cpp">

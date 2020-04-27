@@ -1,4 +1,5 @@
 #pragma once
+#include "RigidBody2D.h"
 #include "Transform.h"
 #include "SceneObject.h"
 #include "Scene.h"
@@ -25,11 +26,14 @@ namespace fuel
 		void Render() const override;
 
 		void AttachScene(Scene* scene) override;
-
+		Scene* GetScene();
+		
 		template<typename T>
 		T* AddComponent();
 		template<typename T>
 		T* GetComponent();
+		template<typename T>
+		std::vector<T*> GetComponents();
 		
 		void SetTransform(Transform* transform);
 		Transform* GetTransform() const;
@@ -65,5 +69,17 @@ namespace fuel
 				return static_cast<T*>(m_pComponents[idx]);
 		}
 		return nullptr;
+	}
+	
+	template<typename T>
+	std::vector<T*> GameObject::GetComponents()
+	{
+		std::vector<T*> components{};
+		for (size_t idx{ 0 }; idx < m_pComponents.size(); ++idx)
+		{
+			if (typeid(*m_pComponents[idx]) == typeid(T))
+				components.push_back(static_cast<T*>(m_pComponents[idx]));
+		}
+		return components;
 	}
 }

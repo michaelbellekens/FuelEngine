@@ -8,16 +8,11 @@
 #include "ResourceManager.h"
 #include <SDL.h>
 
-#include "BoxCollider.h"
-#include "TextComponent.h"
 #include "GameObject.h"
 #include "Scene.h"
 #include "EngineSettings.h"
-#include "FPSComponent.h"
-#include "RenderComponent.h"
-#include "PlayerController.h"
-#include "SphereCollider.h"
-#include "VibrationComponent.h"
+#include "EngineComponents.h"
+
 
 using namespace std;
 using namespace std::chrono;
@@ -29,14 +24,26 @@ void fuel::FuelEngine::Initialize()
 		throw std::runtime_error(std::string("SDL_Init Error: ") + SDL_GetError());
 	}
 
+#ifdef RunEditor
 	m_Window = SDL_CreateWindow(
-		"FuelEngine: 'Bubble Bubble'",
+		"FuelEngine: 'Bubble Bubble Editor'",
 		SDL_WINDOWPOS_UNDEFINED,
 		SDL_WINDOWPOS_UNDEFINED,
 		EngineSettings::GetWindowWidth(),
 		EngineSettings::GetWindowHeight(),
 		SDL_WINDOW_OPENGL
 	);
+#else
+	m_Window = SDL_CreateWindow(
+		"FuelEngine: 'Bubble Bubble'",
+		SDL_WINDOWPOS_UNDEFINED,
+		SDL_WINDOWPOS_UNDEFINED,
+		EngineSettings::GetGameWidth(),
+		EngineSettings::GetGameHeight(),
+		SDL_WINDOW_OPENGL
+	);
+#endif
+	
 	if (m_Window == nullptr) 
 	{
 		throw std::runtime_error(std::string("SDL_CreateWindow Error: ") + SDL_GetError());
@@ -73,9 +80,27 @@ void fuel::FuelEngine::LoadGame() const
 	go->AddComponent<Transform>();
 	RenderComponent* renderCompLogo2 = go->AddComponent<RenderComponent>();
 	renderCompLogo2->SetTexture("logo.png");
+	RigidBody2D* rigidBody1 = go->AddComponent<RigidBody2D>();
+	rigidBody1->SetIsKinematic(false);
+	rigidBody1->UseGravity(false);
 	go->AddComponent<BoxCollider>();
+	//BoxCollider* colTest = go->AddComponent<BoxCollider>();
+	//rigidBody1->AddCollider(colTest);
+	//go->AddComponent<SphereCollider>();
+	//go->AddComponent<BoxCollider>();
 	go->GetTransform()->SetPosition(0, 0);
 
+	go = std::make_shared<GameObject>();
+	go->SetName("Collision Test");
+	scene.AddToScene(go);
+	go->AddComponent<Transform>();
+	RigidBody2D* rigidBody2{ go->AddComponent<RigidBody2D>() };
+	rigidBody2->SetIsKinematic(true);
+	BoxCollider* boxCol{ go->AddComponent<BoxCollider>() };
+	boxCol->SetDimensions(Rectf(0.f, 0.f, 200.f, 100.f));
+	go->GetTransform()->SetPosition(0.f, 380.f);
+	
+	
 	go = std::make_shared<GameObject>();
 	go->SetName("Assignment Name");
 	scene.AddToScene(go);

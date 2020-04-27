@@ -22,17 +22,22 @@ void fuel::Renderer::IInit(SDL_Window * window)
 
 void fuel::Renderer::IRender() const
 {
+#ifdef RunEditor
 	ImGuiIO& io = ImGui::GetIO();
 	io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
 	ImGui::NewFrame();
+#endif
+	
 	SDL_RenderClear(m_Renderer);
-
 	SceneManager::Render();
+
+#ifdef RunEditor
 	Editor::DrawEditor();
 	ImGui::ShowDemoWindow();
 
 	ImGui::Render();
 	ImGuiSDL::Render(ImGui::GetDrawData());
+#endif
 	
 	SDL_RenderPresent(m_Renderer);
 }

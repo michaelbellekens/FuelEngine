@@ -12,7 +12,6 @@
 
 void fuel::SphereCollider::Initialize()
 {
-	SetRadius(100.f);
 	const void* address = static_cast<const void*>(this);
 	std::stringstream ss;
 	ss << address;
@@ -22,6 +21,15 @@ void fuel::SphereCollider::Initialize()
 void fuel::SphereCollider::OnStart()
 {
 	m_pTransform = m_pGameObject->GetTransform();
+	RigidBody2D* rigidbody{ m_pGameObject->GetComponent<RigidBody2D>() };
+	if (rigidbody)
+	{
+		rigidbody->AddCollider(this);
+	}
+	else
+	{
+		Logger::LogError("No required 'Rigidbody2D' has been found on gameObject: " + m_pGameObject->GetName());
+	}
 }
 
 void fuel::SphereCollider::Update()
@@ -135,7 +143,10 @@ bool fuel::SphereCollider::IsColliding(const Vector2& point) const
 
 fuel::Spheref fuel::SphereCollider::GetDimensions() const
 {
-	return m_Dimensions;
+	Spheref tempSphere{ m_Dimensions };
+	tempSphere.x += m_pTransform->GetPosition().x;
+	tempSphere.y += m_pTransform->GetPosition().y;
+	return tempSphere;
 }
 
 void fuel::SphereCollider::SetDimensions(const Spheref& shape)
@@ -146,6 +157,11 @@ void fuel::SphereCollider::SetDimensions(const Spheref& shape)
 void fuel::SphereCollider::SetRadius(const float radius)
 {
 	m_Dimensions.radius = radius;
+}
+
+fuel::ShapeType fuel::SphereCollider::GetShapeType() const
+{
+	return ShapeType::Sphere;
 }
 
 void fuel::SphereCollider::DrawGUI()

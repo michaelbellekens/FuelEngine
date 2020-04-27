@@ -25,6 +25,10 @@ namespace fuel
 		friend Vector2 operator+(Vector2 lhs, const Vector2& rhs);
 		Vector2& operator-=(const Vector2& rhs);
 		friend Vector2 operator-(Vector2 lhs, const Vector2& rhs);
+		Vector2& operator*=(const float rhs);
+		friend Vector2 operator*(Vector2 lhs, const float rhs);
+		Vector2& operator/=(const float rhs);
+		friend Vector2 operator/(Vector2 lhs, const float rhs);
 	};
 	// Member functions
 	inline const std::string& Vector2::ToString() const
@@ -50,13 +54,15 @@ namespace fuel
 	}
 	inline Vector2& Vector2::operator+=(const Vector2& rhs)
 	{
-		Vector2 addition{ Vector2(this->x + rhs.x, this->y + rhs.y) };
-		return addition;
+		this->x += rhs.x;
+		this->y += rhs.y;
+		return *this;
 	}
 	inline Vector2& Vector2::operator-=(const Vector2& rhs)
 	{
-		Vector2 substraction{ Vector2(this->x - rhs.x, this->y - rhs.y) };
-		return substraction;
+		this->x -= rhs.x;
+		this->y -= rhs.y;
+		return *this;
 	}
 	inline Vector2 operator+(Vector2 lhs, const Vector2& rhs)
 	{
@@ -70,7 +76,33 @@ namespace fuel
 		lhs.y -= rhs.y;
 		return lhs;
 	}
-#pragma endregion 
+
+	inline Vector2& Vector2::operator*=(const float rhs)
+	{
+		this->x *= rhs;
+		this->y *= rhs;
+		return *this;
+	}
+	inline Vector2& Vector2::operator/=(const float rhs)
+	{
+		this->x /= rhs;
+		this->y /= rhs;
+		return *this;
+	}
+	inline Vector2 operator*(Vector2 lhs, const float rhs)
+	{
+		lhs.x *= rhs;
+		lhs.y *= rhs;
+		return lhs;
+	}
+	inline Vector2 operator/(Vector2 lhs, const float rhs)
+	{
+		lhs.x /= rhs;
+		lhs.y /= rhs;
+		return lhs;
+	}
+	
+	#pragma endregion 
 
 #pragma region Vector3
 	struct Vector3
@@ -97,6 +129,10 @@ namespace fuel
 		friend Vector3 operator+(Vector3 lhs, const Vector3& rhs);
 		Vector3& operator-=(const Vector3& rhs);
 		friend Vector3 operator-(Vector3 lhs, const Vector3& rhs);
+		Vector3& operator*=(const float rhs);
+		friend Vector3 operator*(Vector3 lhs, const float rhs);
+		Vector3& operator/=(const float rhs);
+		friend Vector3 operator/(Vector3 lhs, const float rhs);
 	};
 	// Member functions
 	inline const std::string& Vector3::ToString() const
@@ -121,13 +157,17 @@ namespace fuel
 	}
 	inline Vector3& Vector3::operator+=(const Vector3& rhs)
 	{
-		Vector3 addition{ Vector3(this->x + rhs.x, this->y + rhs.y, this->z + rhs.z) };
-		return addition;
+		this->x += rhs.x;
+		this->y += rhs.y;
+		this->z += rhs.z;
+		return *this;
 	}
 	inline Vector3& Vector3::operator-=(const Vector3& rhs)
 	{
-		Vector3 substraction{ Vector3(this->x - rhs.x, this->y - rhs.y, this->z - rhs.z) };
-		return substraction;
+		this->x -= rhs.x;
+		this->y -= rhs.y;
+		this->z -= rhs.z;
+		return *this;
 	}
 	inline Vector3 operator+(Vector3 lhs, const Vector3& rhs)
 	{
@@ -143,7 +183,36 @@ namespace fuel
 		lhs.z -= rhs.z;
 		return lhs;
 	}
-#pragma endregion
+
+	inline Vector3& Vector3::operator*=(const float rhs)
+	{
+		this->x *= rhs;
+		this->y *= rhs;
+		this->z *= rhs;
+		return *this;
+	}
+	inline Vector3& Vector3::operator/=(const float rhs)
+	{
+		this->x /= rhs;
+		this->y /= rhs;
+		this->z /= rhs;
+		return *this;
+	}
+	inline Vector3 operator*(Vector3 lhs, const float rhs)
+	{
+		lhs.x *= rhs;
+		lhs.y *= rhs;
+		lhs.z *= rhs;
+		return lhs;
+	}
+	inline Vector3 operator/(Vector3 lhs, const float rhs)
+	{
+		lhs.x /= rhs;
+		lhs.y /= rhs;
+		lhs.z /= rhs;
+		return lhs;
+	}
+	#pragma endregion
 
 #pragma region Structs
 	struct Color4
@@ -174,7 +243,10 @@ namespace fuel
 #pragma endregion
 
 #pragma region Shapes
-	struct Rectf
+	struct Shape
+	{};
+	
+	struct Rectf : Shape
 	{
 		Rectf(const float posX = 0, const float posY = 0, const float widthRect = 0, const float heightRect = 0)
 			: x{ posX }
@@ -195,7 +267,7 @@ namespace fuel
 		float height{ 0.f };
 	};
 
-	struct Spheref
+	struct Spheref : Shape
 	{
 		Spheref(const Vector2& pos = Vector2(), const float r = 10.f)
 			: x{ pos.x }

@@ -60,7 +60,7 @@ const fuel::Vector3& fuel::Transform::GetPosition() const
 	return m_Position;
 }
 
-void fuel::Transform::SetPosition(const float x,const float y)
+void fuel::Transform::SetPosition(const float x, const float y)
 {
 	m_Position.x = x;
 	m_Position.y = y;
@@ -71,6 +71,16 @@ void fuel::Transform::SetPosition(const float x, const float y, const float z)
 	m_Position.x = x;
 	m_Position.y = y;
 	m_Position.z = z;
+}
+
+void fuel::Transform::SetPosition(const Vector3& newPosition)
+{
+	m_Position = newPosition;
+}
+
+void fuel::Transform::SetPosition(const Vector2& newPosition)
+{
+	SetPosition(newPosition.x, newPosition.y);
 }
 
 void fuel::Transform::DrawGUI()

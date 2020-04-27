@@ -310,15 +310,15 @@ void fuel::InputManager::ProcessKeyboardInput(SDL_Event e)
 			}
 		}	
 	}
-	if (e.button.button == SDL_BUTTON_LEFT && e.button.state == SDL_RELEASED)
+	if (e.button.button == SDL_BUTTON_LEFT && e.button.type == SDL_MOUSEBUTTONUP)
 	{
 		m_IsLeftMousePressed = true;
 	}
-	if (e.button.button == SDL_BUTTON_MIDDLE && e.button.state == SDL_RELEASED)
+	if (e.button.button == SDL_BUTTON_MIDDLE && e.button.type == SDL_MOUSEBUTTONUP)
 	{
 		m_IsMiddleMousePressed = true;
 	}
-	if (e.button.button == SDL_BUTTON_RIGHT && e.button.state == SDL_RELEASED)
+	if (e.button.button == SDL_BUTTON_RIGHT && e.button.type == SDL_MOUSEBUTTONUP)
 	{
 		m_IsRightMousePressed = true;
 	}
