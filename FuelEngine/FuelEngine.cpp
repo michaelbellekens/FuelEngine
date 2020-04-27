@@ -82,7 +82,7 @@ void fuel::FuelEngine::LoadGame() const
 	renderCompLogo2->SetTexture("logo.png");
 	RigidBody2D* rigidBody1 = go->AddComponent<RigidBody2D>();
 	rigidBody1->SetIsKinematic(false);
-	rigidBody1->UseGravity(false);
+	rigidBody1->UseGravity(true);
 	go->AddComponent<BoxCollider>();
 	//BoxCollider* colTest = go->AddComponent<BoxCollider>();
 	//rigidBody1->AddCollider(colTest);

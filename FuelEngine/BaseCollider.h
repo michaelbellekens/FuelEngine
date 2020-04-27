@@ -9,7 +9,6 @@ namespace fuel
 		Sphere
 	};
 	
-	class GameObject;
 	class BaseCollider : public BaseComponent
 	{
 	public:
