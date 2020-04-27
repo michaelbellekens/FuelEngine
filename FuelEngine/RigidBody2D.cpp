@@ -1,10 +1,6 @@
 #include "FuelEnginePCH.h"
 #include "RigidBody2D.h"
 
-#include "BoxCollider.h"
-#include "SphereCollider.h"
-#include "GameObject.h"
-#include "Logger.h"
 #include "Time.h"
 
 void fuel::RigidBody2D::Initialize()
@@ -185,6 +181,8 @@ void fuel::RigidBody2D::CheckBoxCollision(BaseCollider* sceneCollider)
 		if (ownedCollider->IsColliding(other->GetDimensions()))
 		{
 			Logger::LogWarning(other->GetGameObject()->GetName() + " is overlapping with rigidbody: " + m_pGameObject->GetName());
+			m_Position -= m_Velocity;
+			m_Velocity = Vector2();
 		}
 	}
 }
@@ -197,6 +195,8 @@ void fuel::RigidBody2D::CheckSphereCollision(BaseCollider* sceneCollider)
 		if (ownedCollider->IsColliding(other->GetDimensions()))
 		{
 			Logger::LogWarning(other->GetGameObject()->GetName() + " is overlapping with rigidbody: " + m_pGameObject->GetName());
+			m_Position -= m_Velocity;
+			m_Velocity = Vector2();
 		}
 	}
 }

@@ -1,10 +1,16 @@
 #pragma once
 #include "BaseComponent.h"
+#include "BaseCollider.h"
+#include "BoxCollider.h"
+#include "SphereCollider.h"
+#include "GameObject.h"
+
+#include "Logger.h"
+#include <type_traits>
 
 namespace fuel
 {
 	class Transform;
-	class BaseCollider;
 	class RigidBody2D final : public BaseComponent
 	{
 	public:
@@ -73,5 +79,29 @@ namespace fuel
 		void CheckCollision();
 		void CheckBoxCollision(BaseCollider* sceneCollider);
 		void CheckSphereCollision(BaseCollider* sceneCollider);
+		//template<typename T>
+		//void CheckCollisionWithShape(BaseCollider* sceneCollider);
 	};
+	
+	/*template<typename T>
+	inline void RigidBody2D::CheckCollisionWithShape(BaseCollider* sceneCollider)
+	{
+		if (!std::is_base_of<BaseCollider, T>::value)
+		{
+			const std::string errorLog{ "Tried to check collision with unvalid class of type: " };
+			Logger::LogError(errorLog + typeid(T).name());
+			return;
+		}
+
+		T* other{ static_cast<T*>(sceneCollider) };
+		for (BaseCollider* ownedCollider : m_pColliders)
+		{
+			if (ownedCollider->IsColliding(other->GetDimensions()))
+			{
+				Logger::LogWarning(other->GetGameObject()->GetName() + " is overlapping with rigidbody: " + m_pGameObject->GetName());
+				m_Position -= m_Velocity;
+				m_Velocity = Vector2();
+			}
+		}
+	}*/
 }
