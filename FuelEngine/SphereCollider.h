@@ -37,6 +37,8 @@ namespace fuel
 		void SetDimensions(const Spheref& shape);
 		void SetRadius(const float radius);
 
+		ShapeType GetShapeType() const override;
+
 		// Editor GUI
 		void DrawGUI() override;
 		const std::string& GetID() const override;

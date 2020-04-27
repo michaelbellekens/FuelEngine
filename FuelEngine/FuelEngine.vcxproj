@@ -179,6 +179,7 @@ xcopy "$(SolutionDir)3rdParty\SDL2_ttf\lib\x64\*.dll" "$(OutputPath)" /R /Y</Com
     <ClInclude Include="BoxCollider.h" />
     <ClInclude Include="Commands.h" />
     <ClInclude Include="Editor.h" />
+    <ClInclude Include="EngineComponents.h" />
     <ClInclude Include="EngineSettings.h" />
     <ClInclude Include="FixedAllocator.h" />
     <ClInclude Include="Font.h" />

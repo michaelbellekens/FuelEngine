@@ -80,3 +80,16 @@ void Scene::Render() const
 		m_Objects[idx]->Render();
 	}
 }
+
+void fuel::Scene::AddCollider(BaseCollider* collider)
+{
+	const std::vector<BaseCollider*>::iterator it = std::find(m_AllColliders.begin(), m_AllColliders.end(), collider);
+
+	if (it == m_AllColliders.end())
+		m_AllColliders.push_back(collider);
+}
+
+const std::vector<BaseCollider*>& fuel::Scene::GetAllColliders() const
+{
+	return m_AllColliders;
+}

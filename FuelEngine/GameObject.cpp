@@ -64,6 +64,11 @@ void fuel::GameObject::AttachScene(Scene* scene)
 	m_pLinkedScene = scene;
 }
 
+fuel::Scene* fuel::GameObject::GetScene()
+{
+	return m_pLinkedScene;
+}
+
 void fuel::GameObject::SetTransform(Transform* transform)
 {
 	m_Transform = transform;

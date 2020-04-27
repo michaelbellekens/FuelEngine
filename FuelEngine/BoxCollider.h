@@ -35,6 +35,8 @@ namespace fuel
 		Rectf GetDimensions() const;
 		void SetDimensions(const Rectf& shape);
 
+		ShapeType GetShapeType() const override;
+
 		// Editor GUI
 		void DrawGUI() override;
 		const std::string& GetID() const override;
@@ -44,7 +46,7 @@ namespace fuel
 		Transform* m_pTransform{ nullptr };
 		std::string m_ID = "";
 
-		Rectf m_Dimensions{};
+		Rectf m_Dimensions{ 0.f, 0.f, 50.f, 50.f };
 		bool m_IsTrigger{ false };
 
 		bool IsPointInSphere(const Spheref& sphere, const Vector2& point) const;

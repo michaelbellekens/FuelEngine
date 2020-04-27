@@ -3,6 +3,12 @@
 
 namespace fuel
 {
+	enum class ShapeType
+	{
+		Rect,
+		Sphere
+	};
+	
 	class GameObject;
 	class BaseCollider : public BaseComponent
 	{
@@ -34,9 +40,13 @@ namespace fuel
 		
 		virtual bool IsTrigger() const = 0;
 		virtual void SetIsTrigger(const bool isTrigger) = 0;
+
 		virtual bool IsColliding(const Rectf& dimensions) const = 0;
 		virtual bool IsColliding(const Spheref& sphere) const = 0;
 		virtual bool IsColliding(const Vector2& point) const = 0;
+
+		//virtual Shape GetDimensions() const = 0;
+		virtual ShapeType GetShapeType() const = 0;
 
 		// Editor GUI
 		virtual void DrawGUI() = 0;

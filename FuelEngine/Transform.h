@@ -32,8 +32,10 @@ namespace fuel
 		size_t GetType() override;
 		
 		const Vector3& GetPosition() const;
-		void SetPosition(float x, float y);
-		void SetPosition(float x, float y, float z);
+		void SetPosition(const float x, const float y);
+		void SetPosition(const float x, const float y, const float z);
+		void SetPosition(const Vector3& newPosition);
+		void SetPosition(const Vector2& newPosition);
 
 		// Editor GUI
 		void DrawGUI() override;
