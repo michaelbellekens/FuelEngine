@@ -86,6 +86,11 @@ size_t fuel::SphereCollider::GetType()
 	return typeid(this).hash_code();
 }
 
+fuel::Vector2 fuel::SphereCollider::GetPosition()
+{
+	return { m_Dimensions.x, m_Dimensions.y };
+}
+
 bool fuel::SphereCollider::IsTrigger() const
 {
 	return m_IsTrigger;
@@ -164,6 +169,41 @@ fuel::ShapeType fuel::SphereCollider::GetShapeType() const
 	return ShapeType::Sphere;
 }
 
+void fuel::SphereCollider::OnCollisionEnter(BaseCollider* other)
+{
+	UNREFERENCED_PARAMETER(other);
+}
+
+void fuel::SphereCollider::OnCollisionStay(BaseCollider* other)
+{
+	UNREFERENCED_PARAMETER(other);
+}
+
+void fuel::SphereCollider::OnCollisionExit(BaseCollider* other)
+{
+	UNREFERENCED_PARAMETER(other);
+}
+
+void fuel::SphereCollider::OnTriggerEnter(BaseCollider* other)
+{
+	UNREFERENCED_PARAMETER(other);
+}
+
+void fuel::SphereCollider::OnTriggerStay(BaseCollider* other)
+{
+	UNREFERENCED_PARAMETER(other);
+}
+
+void fuel::SphereCollider::OnTriggerExit(BaseCollider* other)
+{
+	UNREFERENCED_PARAMETER(other);
+}
+
+bool fuel::SphereCollider::CanPassFromBellow() const
+{
+	return m_CanPassFromBellow;
+}
+
 void fuel::SphereCollider::DrawGUI()
 {
 	ImGui::Text("Sphere Collider2D Component");
@@ -210,6 +250,13 @@ void fuel::SphereCollider::DrawGUI()
 	ImGui::Text("Is Trigger");
 	ImGui::SameLine(80);
 	ImGui::Checkbox(labelTrigger.c_str(), &m_IsTrigger);
+	// --------------------------------------------------------------
+
+	// PassThrough ---------------------------------------------------
+	const std::string labelPassThrough{ "##SphereCollider_PassThrough" + m_ID };
+	ImGui::Text("Pass from bellow:");
+	ImGui::SameLine(130);
+	ImGui::Checkbox(labelPassThrough.c_str(), &m_CanPassFromBellow);
 	// --------------------------------------------------------------
 }
 

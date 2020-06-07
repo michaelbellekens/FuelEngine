@@ -26,6 +26,7 @@ namespace fuel
 		GameObject* GetGameObject() const override;
 
 		size_t GetType() override;
+		Vector2 GetPosition() override;
 
 		bool IsTrigger() const override;
 		void SetIsTrigger(const bool isTrigger) override;
@@ -39,6 +40,17 @@ namespace fuel
 
 		ShapeType GetShapeType() const override;
 
+		//Physics
+		void OnCollisionEnter(BaseCollider* other) override;
+		void OnCollisionStay(BaseCollider* other) override;
+		void OnCollisionExit(BaseCollider* other) override;
+
+		void OnTriggerEnter(BaseCollider* other) override;
+		void OnTriggerStay(BaseCollider* other) override;
+		void OnTriggerExit(BaseCollider* other) override;
+
+		bool CanPassFromBellow() const override;
+
 		// Editor GUI
 		void DrawGUI() override;
 		const std::string& GetID() const override;
@@ -50,5 +62,6 @@ namespace fuel
 
 		Spheref m_Dimensions{ 0.f, 0.f , 10 };
 		bool m_IsTrigger{ false };
+		bool m_CanPassFromBellow{ false };
 	};
 }

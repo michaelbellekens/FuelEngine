@@ -2,6 +2,7 @@
 
 namespace fuel
 {
+	class BaseCollider;
 	class GameObject;
 	class BaseComponent
 	{
@@ -30,6 +31,15 @@ namespace fuel
 
 		//virtual void BroadcastMessage() = 0;
 		//virtual void ReceiveMessage(int message) = 0;
+
+		// Physics
+		virtual void OnCollisionEnter(BaseCollider* other) = 0;
+		virtual void OnCollisionStay(BaseCollider* other) = 0;
+		virtual void OnCollisionExit(BaseCollider* other) = 0;
+
+		virtual void OnTriggerEnter(BaseCollider* other) = 0;
+		virtual void OnTriggerStay(BaseCollider* other) = 0;
+		virtual void OnTriggerExit(BaseCollider* other) = 0;
 		
 		// Editor GUI
 		virtual void DrawGUI() = 0;

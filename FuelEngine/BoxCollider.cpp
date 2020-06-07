@@ -38,12 +38,6 @@ void fuel::BoxCollider::Update()
 
 void fuel::BoxCollider::FixedUpdate()
 {
-	/*const Spheref testSphere{ InputManager::GetMousePosition(), 25.f };
-
-	if (IsColliding(testSphere))
-	{
-		Logger::LogInfo("Sphere is Colliding with BoxCollider 2D!");
-	}*/
 	
 }
 
@@ -86,6 +80,11 @@ fuel::GameObject* fuel::BoxCollider::GetGameObject() const
 size_t fuel::BoxCollider::GetType()
 {
 	return typeid(this).hash_code();
+}
+
+fuel::Vector2 fuel::BoxCollider::GetPosition()
+{
+	return {m_Dimensions.x, m_Dimensions.y};
 }
 
 bool fuel::BoxCollider::IsTrigger() const
@@ -168,6 +167,41 @@ fuel::ShapeType fuel::BoxCollider::GetShapeType() const
 	return ShapeType::Rect;
 }
 
+void fuel::BoxCollider::OnCollisionEnter(BaseCollider* other)
+{
+	UNREFERENCED_PARAMETER(other);
+}
+
+void fuel::BoxCollider::OnCollisionStay(BaseCollider* other)
+{
+	UNREFERENCED_PARAMETER(other);
+}
+
+void fuel::BoxCollider::OnCollisionExit(BaseCollider* other)
+{
+	UNREFERENCED_PARAMETER(other);
+}
+
+void fuel::BoxCollider::OnTriggerEnter(BaseCollider* other)
+{
+	UNREFERENCED_PARAMETER(other);
+}
+
+void fuel::BoxCollider::OnTriggerStay(BaseCollider* other)
+{
+	UNREFERENCED_PARAMETER(other);
+}
+
+void fuel::BoxCollider::OnTriggerExit(BaseCollider* other)
+{
+	UNREFERENCED_PARAMETER(other);
+}
+
+bool fuel::BoxCollider::CanPassFromBellow() const
+{
+	return m_CanPassFromBellow;
+}
+
 void fuel::BoxCollider::DrawGUI()
 {	
 	ImGui::Text("Box Collider2D Component");
@@ -222,6 +256,13 @@ void fuel::BoxCollider::DrawGUI()
 	ImGui::Text("Is Trigger");
 	ImGui::SameLine(80);
 	ImGui::Checkbox(labelTrigger.c_str(), &m_IsTrigger);
+	// --------------------------------------------------------------
+
+	// PassThrough ---------------------------------------------------
+	const std::string labelPassThrough{ "##SphereCollider_PassThrough" + m_ID };
+	ImGui::Text("Pass from bellow:");
+	ImGui::SameLine(130);
+	ImGui::Checkbox(labelPassThrough.c_str(), &m_CanPassFromBellow);
 	// --------------------------------------------------------------
 }
 

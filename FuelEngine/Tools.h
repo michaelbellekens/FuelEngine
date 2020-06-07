@@ -15,7 +15,7 @@ namespace fuel
 		float y;
 
 		// Member functions
-		const std::string& ToString() const;
+		const std::string ToString() const;
 		float MagnitudeSqr() const;
 		float Magnitude() const;
 
@@ -31,9 +31,9 @@ namespace fuel
 		friend Vector2 operator/(Vector2 lhs, const float rhs);
 	};
 	// Member functions
-	inline const std::string& Vector2::ToString() const
+	inline const std::string Vector2::ToString() const
 	{
-		return "[" + std::to_string(x) + ", " + std::to_string(y) + "]";
+		return "[" + std::to_string(this->x) + ", " + std::to_string(this->y) + "]";
 	}
 
 	inline float Vector2::MagnitudeSqr() const
@@ -119,7 +119,7 @@ namespace fuel
 		float z;
 
 		// Member functions
-		const std::string& ToString() const;
+		const std::string ToString() const;
 		float MagnitudeSqr() const;
 		float Magnitude() const;
 		
@@ -135,7 +135,7 @@ namespace fuel
 		friend Vector3 operator/(Vector3 lhs, const float rhs);
 	};
 	// Member functions
-	inline const std::string& Vector3::ToString() const
+	inline const std::string Vector3::ToString() const
 	{
 		return "[" + std::to_string(x) + ", " + std::to_string(y) + ", " + std::to_string(z) + "]";
 	}
@@ -232,13 +232,13 @@ namespace fuel
 	
 	struct ColoredText
 	{
-		ColoredText(Color4 textColor = {1.f, 1.f, 1.f, 1.f}, const std::string& message = "")
+		explicit ColoredText(Color4 textColor = {1.f, 1.f, 1.f, 1.f}, const std::string& message = "")
 			: color{ textColor }
 			, text{ message }
 		{}
 		
 		Color4 color;
-		std::string text;
+		std::string text{};
 	};
 #pragma endregion
 
@@ -269,7 +269,7 @@ namespace fuel
 
 	struct Spheref : Shape
 	{
-		Spheref(const Vector2& pos = Vector2(), const float r = 10.f)
+		Spheref(const Vector2& pos, const float r = 10.f)
 			: x{ pos.x }
 			, y{ pos.y }
 			, radius{ r }

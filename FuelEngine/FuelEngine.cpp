@@ -12,6 +12,7 @@
 #include "Scene.h"
 #include "EngineSettings.h"
 #include "EngineComponents.h"
+#include "SoundManager.h"
 
 
 using namespace std;
@@ -99,7 +100,7 @@ void fuel::FuelEngine::LoadGame() const
 	BoxCollider* boxCol{ go->AddComponent<BoxCollider>() };
 	boxCol->SetDimensions(Rectf(0.f, 0.f, 200.f, 100.f));
 	go->GetTransform()->SetPosition(0.f, 380.f);
-	
+	go->SetTag("CollisionBox");
 	
 	go = std::make_shared<GameObject>();
 	go->SetName("Assignment Name");
@@ -148,6 +149,7 @@ void fuel::FuelEngine::LoadGame() const
 	InputManager::AddKeyboardBinding(PlayerID::PlayerOne, playerController1, CommandID::Fire, ButtonState::hold, SDLK_k);
 	InputManager::AddKeyboardBinding(PlayerID::PlayerOne, playerController1, CommandID::Jump, ButtonState::released, SDLK_j);
 
+	SoundManager::GetInstance().AddSound("BubblePop", "../Data/SoundFX/Bubble_Pop.wav");
 }
 
 void fuel::FuelEngine::Cleanup()

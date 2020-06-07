@@ -71,6 +71,36 @@ void fuel::FPSComponent::Render() const
 	m_pFPSCounter->Render();
 }
 
+void fuel::FPSComponent::OnCollisionEnter(BaseCollider* other)
+{
+	UNREFERENCED_PARAMETER(other);
+}
+
+void fuel::FPSComponent::OnCollisionStay(BaseCollider* other)
+{
+	UNREFERENCED_PARAMETER(other);
+}
+
+void fuel::FPSComponent::OnCollisionExit(BaseCollider* other)
+{
+	UNREFERENCED_PARAMETER(other);
+}
+
+void fuel::FPSComponent::OnTriggerEnter(BaseCollider* other)
+{
+	UNREFERENCED_PARAMETER(other);
+}
+
+void fuel::FPSComponent::OnTriggerStay(BaseCollider* other)
+{
+	UNREFERENCED_PARAMETER(other);
+}
+
+void fuel::FPSComponent::OnTriggerExit(BaseCollider* other)
+{
+	UNREFERENCED_PARAMETER(other);
+}
+
 void fuel::FPSComponent::DrawGUI()
 {
 	ImGui::Text("FPS Component");

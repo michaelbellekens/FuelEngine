@@ -31,7 +31,7 @@ void fuel::VibrationComponent::Update()
 			Stop();
 			std::cout << "Vibration stopped!" << std::endl;
 		}
-	std::cout << "CurrentVibrationTime: " << m_CurrentDuration << std::endl;
+		std::cout << "CurrentVibrationTime: " << m_CurrentDuration << std::endl;
 	}
 }
 
@@ -89,6 +89,36 @@ void fuel::VibrationComponent::SetDuration(float durationSec)
 void fuel::VibrationComponent::SetPlayerID(PlayerID playerID)
 {
 	m_PlayerID = playerID;
+}
+
+void fuel::VibrationComponent::OnCollisionEnter(BaseCollider* other)
+{
+	UNREFERENCED_PARAMETER(other);
+}
+
+void fuel::VibrationComponent::OnCollisionStay(BaseCollider* other)
+{
+	UNREFERENCED_PARAMETER(other);
+}
+
+void fuel::VibrationComponent::OnCollisionExit(BaseCollider* other)
+{
+	UNREFERENCED_PARAMETER(other);
+}
+
+void fuel::VibrationComponent::OnTriggerEnter(BaseCollider* other)
+{
+	UNREFERENCED_PARAMETER(other);
+}
+
+void fuel::VibrationComponent::OnTriggerStay(BaseCollider* other)
+{
+	UNREFERENCED_PARAMETER(other);
+}
+
+void fuel::VibrationComponent::OnTriggerExit(BaseCollider* other)
+{
+	UNREFERENCED_PARAMETER(other);
 }
 
 void fuel::VibrationComponent::DrawGUI()

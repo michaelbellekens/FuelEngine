@@ -157,6 +157,9 @@
     <ClInclude Include="EngineComponents.h">
       <Filter>Components</Filter>
     </ClInclude>
+    <ClInclude Include="SoundManager.h">
+      <Filter>Managers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="imgui.cpp">
@@ -242,6 +245,9 @@
     </ClCompile>
     <ClCompile Include="RigidBody2D.cpp">
       <Filter>Components</Filter>
+    </ClCompile>
+    <ClCompile Include="SoundManager.cpp">
+      <Filter>Managers</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
