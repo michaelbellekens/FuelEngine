@@ -45,7 +45,7 @@ void fuel::TextComponent::Update()
 	if (m_NeedsUpdate)
 	{
 		// If string is empty render space
-		if (m_Text.front() == '\0')
+		if (m_Text.empty())
 			m_Text = " ";
 
 		const Uint8 r{ static_cast<Uint8>(m_Color.r * 255.f) };
@@ -193,4 +193,34 @@ void fuel::TextComponent::DrawGUI()
 const std::string& fuel::TextComponent::GetID() const
 {
 	return m_ID;
+}
+
+void fuel::TextComponent::OnCollisionEnter(BaseCollider* other)
+{
+	UNREFERENCED_PARAMETER(other);
+}
+
+void fuel::TextComponent::OnCollisionStay(BaseCollider* other)
+{
+	UNREFERENCED_PARAMETER(other);
+}
+
+void fuel::TextComponent::OnCollisionExit(BaseCollider* other)
+{
+	UNREFERENCED_PARAMETER(other);
+}
+
+void fuel::TextComponent::OnTriggerEnter(BaseCollider* other)
+{
+	UNREFERENCED_PARAMETER(other);
+}
+
+void fuel::TextComponent::OnTriggerStay(BaseCollider* other)
+{
+	UNREFERENCED_PARAMETER(other);
+}
+
+void fuel::TextComponent::OnTriggerExit(BaseCollider* other)
+{
+	UNREFERENCED_PARAMETER(other);
 }

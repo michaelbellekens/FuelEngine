@@ -37,6 +37,15 @@ namespace fuel
 		void SetPosition(const Vector3& newPosition);
 		void SetPosition(const Vector2& newPosition);
 
+		//Physics
+		void OnCollisionEnter(BaseCollider* other) override;
+		void OnCollisionStay(BaseCollider* other) override;
+		void OnCollisionExit(BaseCollider* other) override;
+
+		void OnTriggerEnter(BaseCollider* other) override;
+		void OnTriggerStay(BaseCollider* other) override;
+		void OnTriggerExit(BaseCollider* other) override;
+
 		// Editor GUI
 		void DrawGUI() override;
 		const std::string& GetID() const override;

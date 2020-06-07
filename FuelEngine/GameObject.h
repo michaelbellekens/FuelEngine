@@ -26,7 +26,7 @@ namespace fuel
 		void Render() const override;
 
 		void AttachScene(Scene* scene) override;
-		Scene* GetScene();
+		Scene* GetScene() const;
 		
 		template<typename T>
 		T* AddComponent();
@@ -41,13 +41,27 @@ namespace fuel
 		void SetName(const std::string& name) override;
 		std::string& GetName() override;
 
+		void SetTag(const std::string& tagName);
+		std::string GetTag() const;
+		bool CompareTag(const std::string& tagName) const;
+
+		// Physics
+		void OnCollisionEnter(BaseCollider* other);
+		void OnCollisionStay(BaseCollider* other);
+		void OnCollisionExit(BaseCollider* other);
+
+		void OnTriggerEnter(BaseCollider* other);
+		void OnTriggerStay(BaseCollider* other);
+		void OnTriggerExit(BaseCollider* other);
+
 		// Editor GUI
 		void DrawComponents() override;
 		
 	private:
-		std::string m_Name;
+		std::string m_Name{};
+		std::string m_Tag{};
+		std::vector<BaseComponent*> m_pComponents{};
 		Transform* m_Transform;
-		std::vector<BaseComponent*> m_pComponents;
 		Scene* m_pLinkedScene;
 	};
 

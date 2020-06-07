@@ -60,6 +60,36 @@ void fuel::RenderComponent::SetTexture(const std::string& filename)
 	m_Texture = fuel::ResourceManager::LoadTexture(filename);
 }
 
+void fuel::RenderComponent::OnCollisionEnter(BaseCollider* other)
+{
+	UNREFERENCED_PARAMETER(other);
+}
+
+void fuel::RenderComponent::OnCollisionStay(BaseCollider* other)
+{
+	UNREFERENCED_PARAMETER(other);
+}
+
+void fuel::RenderComponent::OnCollisionExit(BaseCollider* other)
+{
+	UNREFERENCED_PARAMETER(other);
+}
+
+void fuel::RenderComponent::OnTriggerEnter(BaseCollider* other)
+{
+	UNREFERENCED_PARAMETER(other);
+}
+
+void fuel::RenderComponent::OnTriggerStay(BaseCollider* other)
+{
+	UNREFERENCED_PARAMETER(other);
+}
+
+void fuel::RenderComponent::OnTriggerExit(BaseCollider* other)
+{
+	UNREFERENCED_PARAMETER(other);
+}
+
 void fuel::RenderComponent::DrawGUI()
 {
 	ImGui::Text("Renderer Component");

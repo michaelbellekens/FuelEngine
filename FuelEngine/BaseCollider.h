@@ -36,6 +36,8 @@ namespace fuel
 
 		//virtual void BroadcastMessage() = 0;
 		//virtual void ReceiveMessage(int message) = 0;
+
+		virtual Vector2 GetPosition() = 0;
 		
 		virtual bool IsTrigger() const = 0;
 		virtual void SetIsTrigger(const bool isTrigger) = 0;
@@ -43,6 +45,8 @@ namespace fuel
 		virtual bool IsColliding(const Rectf& dimensions) const = 0;
 		virtual bool IsColliding(const Spheref& sphere) const = 0;
 		virtual bool IsColliding(const Vector2& point) const = 0;
+
+		virtual bool CanPassFromBellow() const = 0;
 
 		//virtual Shape GetDimensions() const = 0;
 		virtual ShapeType GetShapeType() const = 0;

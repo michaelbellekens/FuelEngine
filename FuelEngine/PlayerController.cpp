@@ -111,6 +111,36 @@ void fuel::PlayerController::Fart()
 	Logger::LogInfo("Fart");
 }
 
+void fuel::PlayerController::OnCollisionEnter(BaseCollider* other)
+{
+	UNREFERENCED_PARAMETER(other);
+}
+
+void fuel::PlayerController::OnCollisionStay(BaseCollider* other)
+{
+	UNREFERENCED_PARAMETER(other);
+}
+
+void fuel::PlayerController::OnCollisionExit(BaseCollider* other)
+{
+	UNREFERENCED_PARAMETER(other);
+}
+
+void fuel::PlayerController::OnTriggerEnter(BaseCollider* other)
+{
+	UNREFERENCED_PARAMETER(other);
+}
+
+void fuel::PlayerController::OnTriggerStay(BaseCollider* other)
+{
+	UNREFERENCED_PARAMETER(other);
+}
+
+void fuel::PlayerController::OnTriggerExit(BaseCollider* other)
+{
+	UNREFERENCED_PARAMETER(other);
+}
+
 void fuel::PlayerController::DrawGUI()
 {
 	ImGui::Text("Player Controller Component");

@@ -24,7 +24,6 @@ void fuel::Scene::DrawGameObjects()
 {
 	for (size_t idx{ 0 }; idx < m_Objects.size(); ++idx)
 	{
-		
 		if (ImGui::Selectable(m_Objects[idx]->GetName().c_str(), m_SelectedGameObject == idx))
 			m_SelectedGameObject = idx;
 	}

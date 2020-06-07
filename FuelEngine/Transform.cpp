@@ -83,6 +83,36 @@ void fuel::Transform::SetPosition(const Vector2& newPosition)
 	SetPosition(newPosition.x, newPosition.y);
 }
 
+void fuel::Transform::OnCollisionEnter(BaseCollider* other)
+{
+	UNREFERENCED_PARAMETER(other);
+}
+
+void fuel::Transform::OnCollisionStay(BaseCollider* other)
+{
+	UNREFERENCED_PARAMETER(other);
+}
+
+void fuel::Transform::OnCollisionExit(BaseCollider* other)
+{
+	UNREFERENCED_PARAMETER(other);
+}
+
+void fuel::Transform::OnTriggerEnter(BaseCollider* other)
+{
+	UNREFERENCED_PARAMETER(other);
+}
+
+void fuel::Transform::OnTriggerStay(BaseCollider* other)
+{
+	UNREFERENCED_PARAMETER(other);
+}
+
+void fuel::Transform::OnTriggerExit(BaseCollider* other)
+{
+	UNREFERENCED_PARAMETER(other);
+}
+
 void fuel::Transform::DrawGUI()
 {
 	const std::string posLabelX{ "##TransformPosX_" + m_ID };

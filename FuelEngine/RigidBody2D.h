@@ -1,12 +1,9 @@
 #pragma once
 #include "BaseComponent.h"
 #include "BaseCollider.h"
-#include "BoxCollider.h"
-#include "SphereCollider.h"
 #include "GameObject.h"
 
 #include "Logger.h"
-#include <type_traits>
 
 namespace fuel
 {
@@ -53,9 +50,17 @@ namespace fuel
 		Vector2 GetGravity() const;
 
 		void AddCollider(BaseCollider* collider);
+
+		//Physics
+		void OnCollisionEnter(BaseCollider* other) override;
+		void OnCollisionStay(BaseCollider* other) override;
+		void OnCollisionExit(BaseCollider* other) override;
+
+		void OnTriggerEnter(BaseCollider* other) override;
+		void OnTriggerStay(BaseCollider* other) override;
+		void OnTriggerExit(BaseCollider* other) override;
 		
 		// Editor GUI
-		
 		void DrawGUI() override;
 		const std::string& GetID() const override;
 
@@ -70,38 +75,20 @@ namespace fuel
 		Vector2 m_Acceleration{};
 		Vector2 m_Force{};
 		float m_Mass{ 1.f };
-		float m_Drag{ 0.f };
-		Vector2 m_Gravity{ 0.f, 0.1f };
+		float m_Drag{ 2.f };
+		Vector2 m_Gravity{ 0.f, 9.81f };
+		float m_Bounciness{ 0.5f };
 		
 		bool m_IsKinematic{ false };
 		bool m_UseGravity{ true };
+		bool m_IsInTrigger{ false };
+		bool m_IsColliding{ false };
 
 		void CheckCollision();
 		void CheckBoxCollision(BaseCollider* sceneCollider);
 		void CheckSphereCollision(BaseCollider* sceneCollider);
-		//template<typename T>
-		//void CheckCollisionWithShape(BaseCollider* sceneCollider);
-	};
-	
-	/*template<typename T>
-	inline void RigidBody2D::CheckCollisionWithShape(BaseCollider* sceneCollider)
-	{
-		if (!std::is_base_of<BaseCollider, T>::value)
-		{
-			const std::string errorLog{ "Tried to check collision with unvalid class of type: " };
-			Logger::LogError(errorLog + typeid(T).name());
-			return;
-		}
+		void SetVelocityAfterCollision(BaseCollider* ownCollider, BaseCollider* sceneCollider);
 
-		T* other{ static_cast<T*>(sceneCollider) };
-		for (BaseCollider* ownedCollider : m_pColliders)
-		{
-			if (ownedCollider->IsColliding(other->GetDimensions()))
-			{
-				Logger::LogWarning(other->GetGameObject()->GetName() + " is overlapping with rigidbody: " + m_pGameObject->GetName());
-				m_Position -= m_Velocity;
-				m_Velocity = Vector2();
-			}
-		}
-	}*/
+		void HandlePhysicsEvents(const bool prevTriggerState, const bool triggerState, const bool prevCollisionState, const bool collisionState, BaseCollider* pCollider);
+	};
 }
