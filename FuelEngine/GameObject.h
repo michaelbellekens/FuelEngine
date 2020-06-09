@@ -1,13 +1,19 @@
 #pragma once
-#include "RigidBody2D.h"
-#include "Transform.h"
+#include "BaseComponent.h"
 #include "SceneObject.h"
-#include "Scene.h"
 
 namespace fuel
 {
+	struct GameObjectData
+	{
+		unsigned int numComponents{};
+		std::vector<ComponentType> componentTypes{};
+	};
+	
 	class Texture2D;
 	class BaseComponent;
+	class Transform;
+	class BaseCollider;
 	class GameObject : public SceneObject
 	{
 	public:
@@ -45,6 +51,11 @@ namespace fuel
 		std::string GetTag() const;
 		bool CompareTag(const std::string& tagName) const;
 
+		// Saving and Loading
+		ObjectType GetObjectType() const override;
+		GameObjectData GetGameObjectData() const;
+		std::vector<BaseComponent*> GetComponents() const;
+		
 		// Physics
 		void OnCollisionEnter(BaseCollider* other);
 		void OnCollisionStay(BaseCollider* other);

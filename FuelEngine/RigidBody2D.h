@@ -1,4 +1,6 @@
 #pragma once
+#include <map>
+
 #include "BaseComponent.h"
 #include "BaseCollider.h"
 #include "GameObject.h"
@@ -51,6 +53,11 @@ namespace fuel
 
 		void AddCollider(BaseCollider* collider);
 
+		// Loading and Saving
+		ComponentType GetCompType() const override;
+		void Safe(std::ofstream& binStream) const override;
+		void Load(std::ifstream& binStream) override;
+
 		//Physics
 		void OnCollisionEnter(BaseCollider* other) override;
 		void OnCollisionStay(BaseCollider* other) override;
@@ -81,8 +88,10 @@ namespace fuel
 		
 		bool m_IsKinematic{ false };
 		bool m_UseGravity{ true };
-		bool m_IsInTrigger{ false };
-		bool m_IsColliding{ false };
+		/**
+		 * \brief Holds Collider ID as key and pair as value in format [isColliding, isInTrigger]
+		 */
+		std::map<std::string, std::pair<bool, bool>> m_RegisteredCollisions{};
 
 		void CheckCollision();
 		void CheckBoxCollision(BaseCollider* sceneCollider);

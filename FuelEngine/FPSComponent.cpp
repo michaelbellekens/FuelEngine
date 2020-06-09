@@ -71,6 +71,21 @@ void fuel::FPSComponent::Render() const
 	m_pFPSCounter->Render();
 }
 
+void fuel::FPSComponent::Safe(std::ofstream& binStream) const
+{
+	UNREFERENCED_PARAMETER(binStream);
+}
+
+void fuel::FPSComponent::Load(std::ifstream& binStream)
+{
+	UNREFERENCED_PARAMETER(binStream);
+}
+
+fuel::ComponentType fuel::FPSComponent::GetCompType() const
+{
+	return ComponentType::FPS;
+}
+
 void fuel::FPSComponent::OnCollisionEnter(BaseCollider* other)
 {
 	UNREFERENCED_PARAMETER(other);

@@ -1,6 +1,12 @@
 #pragma once
 namespace fuel
 {
+	enum ObjectType
+	{
+		GAMEOBJECT,
+		BUTTON
+	};
+	
 	class Scene;
 	class SceneObject
 	{
@@ -15,6 +21,9 @@ namespace fuel
 
 		virtual void SetName(const std::string& name) = 0;
 		virtual std::string& GetName() = 0;
+
+		// Saving and Loading
+		virtual ObjectType GetObjectType() const = 0;
 
 		// Editor GUI
 		virtual void DrawComponents() = 0;

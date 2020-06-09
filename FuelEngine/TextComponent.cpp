@@ -3,6 +3,8 @@
 #include <SDL_ttf.h>
 
 #include "TextComponent.h"
+
+#include "FileManager.h"
 #include "Renderer.h"
 #include "Font.h"
 #include "ResourceManager.h"
@@ -20,6 +22,7 @@ fuel::TextComponent::TextComponent()
 	, m_pGameObject{ nullptr }
 	, m_pTransform{ nullptr }
 	, m_ID{"" }
+	, m_Position{ 0.f, 0.f }
 {
 	// Set default font
 	m_Font = ResourceManager::LoadFont("Lingua.otf", 36);;
@@ -73,7 +76,7 @@ void fuel::TextComponent::Render() const
 {
 	if (m_Texture != nullptr && m_pTransform != nullptr)
 	{
-		const auto pos = m_pTransform->GetPosition();
+		auto pos = m_pTransform->GetPosition() + m_Position;
 		Renderer::RenderTexture(*m_Texture, pos.x, pos.y);
 	}
 }
@@ -95,9 +98,9 @@ void fuel::TextComponent::SetFont(const std::shared_ptr<Font>& font)
 	m_NeedsUpdate = true;
 }
 
-void fuel::TextComponent::SetPosition(const float x, const float y) const
+void fuel::TextComponent::SetPosition(const float x, const float y)
 {
-	m_pGameObject->GetTransform()->SetPosition(x, y, 0.0f);
+	m_Position = Vector2(x, y);
 }
 
 void fuel::TextComponent::SetSize(unsigned int fontSize)
@@ -129,6 +132,11 @@ fuel::GameObject* fuel::TextComponent::GetGameObject() const
 	return m_pGameObject;
 }
 
+void fuel::TextComponent::SetTransform(Transform* transComp)
+{
+	m_pTransform = transComp;
+}
+
 size_t fuel::TextComponent::GetType()
 {
 	return typeid(this).hash_code();
@@ -154,6 +162,27 @@ void fuel::TextComponent::DrawGUI()
 	{
 		SetText(nameBuffer);
 	}
+
+	const std::string posLabelX{ "##TextComponentPosX_" + m_ID };
+	const std::string posLabelY{ "##TextComponentPosY_" + m_ID };
+
+	ImGui::Text("Position:");
+
+	ImGui::SameLine(80);
+	ImGui::Text("X:");
+
+	ImGui::SameLine(100);
+	ImGui::PushItemWidth(80);
+	ImGui::InputFloat(posLabelX.c_str(), &m_Position.x, 0, 0, "%.1f");
+	ImGui::PopItemWidth();
+
+	ImGui::SameLine(190);
+	ImGui::Text("Y:");
+
+	ImGui::SameLine(200);
+	ImGui::PushItemWidth(80);
+	ImGui::InputFloat(posLabelY.c_str(), &m_Position.y, 0, 0, "%.1f");
+	ImGui::PopItemWidth();
 
 	// Text Color
 	ImGui::Text("Text Color:");
@@ -193,6 +222,33 @@ void fuel::TextComponent::DrawGUI()
 const std::string& fuel::TextComponent::GetID() const
 {
 	return m_ID;
+}
+
+fuel::ComponentType fuel::TextComponent::GetCompType() const
+{
+	return ComponentType::TEXTRENDERER;
+}
+
+void fuel::TextComponent::Safe(std::ofstream& binStream) const
+{
+	FileManager::WriteString(binStream, m_Text);
+	binStream.write((const char*)&m_Color, sizeof(Color4));
+	FileManager::WriteString(binStream, m_FontName);
+	binStream.write((const char*)&m_FontSize, sizeof(int));
+	
+	binStream.write((const char*)&m_Position, sizeof(Vector2));
+}
+
+void fuel::TextComponent::Load(std::ifstream& binStream)
+{
+	FileManager::ReadString(binStream, m_Text);
+	binStream.read((char*)&m_Color, sizeof(Color4));
+	FileManager::ReadString(binStream, m_FontName);
+	binStream.read((char*)&m_FontSize, sizeof(int));
+	SetFont(ResourceManager::LoadFont(m_FontName, m_FontSize));
+
+	binStream.read((char*)&m_Position, sizeof(Vector2));
+	m_NeedsUpdate = true;
 }
 
 void fuel::TextComponent::OnCollisionEnter(BaseCollider* other)

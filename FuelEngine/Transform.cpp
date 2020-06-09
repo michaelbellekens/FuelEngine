@@ -83,6 +83,21 @@ void fuel::Transform::SetPosition(const Vector2& newPosition)
 	SetPosition(newPosition.x, newPosition.y);
 }
 
+fuel::ComponentType fuel::Transform::GetCompType() const
+{
+	return ComponentType::TRANSFORM;
+}
+
+void fuel::Transform::Safe(std::ofstream& binStream) const
+{
+	binStream.write((const char*)&m_Position, sizeof(Vector3));
+}
+
+void fuel::Transform::Load(std::ifstream& binStream)
+{
+	binStream.read((char*)&m_Position, sizeof(Vector3));
+}
+
 void fuel::Transform::OnCollisionEnter(BaseCollider* other)
 {
 	UNREFERENCED_PARAMETER(other);

@@ -2,7 +2,7 @@
 #include "RigidBody2D.h"
 #include "SphereCollider.h"
 #include "BoxCollider.h"
-
+#include "Scene.h"
 #include "Time.h"
 
 void fuel::RigidBody2D::Initialize()
@@ -169,6 +169,45 @@ void fuel::RigidBody2D::AddCollider(BaseCollider* collider)
 	}
 
 	Logger::LogWarning("Collider is already added to Rigidbody of: " + m_pGameObject->GetName());
+}
+
+void fuel::RigidBody2D::Safe(std::ofstream& binStream) const
+{
+	binStream.write((const char*)&m_Position, sizeof(Vector3));
+	binStream.write((const char*)&m_Velocity, sizeof(Vector2));
+	binStream.write((const char*)&m_Acceleration, sizeof(Vector2));
+	binStream.write((const char*)&m_Force, sizeof(Vector2));
+
+	binStream.write((const char*)&m_Mass, sizeof(float));
+	binStream.write((const char*)&m_Drag, sizeof(float));
+
+	binStream.write((const char*)&m_Gravity, sizeof(Vector2));
+	binStream.write((const char*)&m_Bounciness, sizeof(float));
+	
+	binStream.write((const char*)&m_IsKinematic, sizeof(bool));
+	binStream.write((const char*)&m_UseGravity, sizeof(bool));
+}
+
+void fuel::RigidBody2D::Load(std::ifstream& binStream)
+{
+	binStream.read((char*)&m_Position, sizeof(Vector3));
+	binStream.read((char*)&m_Velocity, sizeof(Vector2));
+	binStream.read((char*)&m_Acceleration, sizeof(Vector2));
+	binStream.read((char*)&m_Force, sizeof(Vector2));
+
+	binStream.read((char*)&m_Mass, sizeof(float));
+	binStream.read((char*)&m_Drag, sizeof(float));
+
+	binStream.read((char*)&m_Gravity, sizeof(Vector2));
+	binStream.read((char*)&m_Bounciness, sizeof(float));
+
+	binStream.read((char*)&m_IsKinematic, sizeof(bool));
+	binStream.read((char*)&m_UseGravity, sizeof(bool));
+}
+
+fuel::ComponentType fuel::RigidBody2D::GetCompType() const
+{
+	return ComponentType::RIGIDBODY;
 }
 
 void fuel::RigidBody2D::OnCollisionEnter(BaseCollider* other)
@@ -377,23 +416,31 @@ void fuel::RigidBody2D::CheckCollision()
 
 void fuel::RigidBody2D::CheckBoxCollision(BaseCollider* sceneCollider)
 {
-	bool isColliding{ m_IsColliding };
-	bool isTrigger{ m_IsInTrigger };
+	const auto it = m_RegisteredCollisions.find(sceneCollider->GetID());
+	if (it == m_RegisteredCollisions.end())
+	{
+		m_RegisteredCollisions.insert({ sceneCollider->GetID(), std::make_pair(false, false) });
+	}
+	
+	const bool isColliding{ m_RegisteredCollisions.at(sceneCollider->GetID()).first };
+	const bool isTrigger{ m_RegisteredCollisions.at(sceneCollider->GetID()).second };
+	bool removeCollider{ true };
 	
 	BoxCollider* other{ static_cast<BoxCollider*>(sceneCollider) };
 	for (BaseCollider* ownedCollider : m_pColliders)
 	{
 		if (ownedCollider->IsColliding(other->GetDimensions()))
 		{
+			removeCollider = false;
 			if (other->IsTrigger())
 			{
-				m_IsInTrigger = true;
-				m_IsColliding = false;
+				m_RegisteredCollisions.at(sceneCollider->GetID()).second = true; // inTrigger
+				m_RegisteredCollisions.at(sceneCollider->GetID()).first = false; // isColliding
 			}
 			else
 			{
-				m_IsColliding = true;
-				m_IsInTrigger = false;
+				m_RegisteredCollisions.at(sceneCollider->GetID()).first = true; // isColliding
+				m_RegisteredCollisions.at(sceneCollider->GetID()).second = false; // inTrigger
 
 				if (!other->CanPassFromBellow() || m_Velocity.y >= 0.f)
 				{
@@ -403,33 +450,44 @@ void fuel::RigidBody2D::CheckBoxCollision(BaseCollider* sceneCollider)
 		}
 		else
 		{
-			m_IsColliding = false;
-			m_IsInTrigger = false;
+			m_RegisteredCollisions.at(sceneCollider->GetID()).first = false; // isColliding
+			m_RegisteredCollisions.at(sceneCollider->GetID()).second = false; // inTrigger
 		}
-		HandlePhysicsEvents(isTrigger, m_IsInTrigger, isColliding, m_IsColliding, other);
+		HandlePhysicsEvents(isTrigger, m_RegisteredCollisions.at(sceneCollider->GetID()).second, isColliding, m_RegisteredCollisions.at(sceneCollider->GetID()).first, other);
 	}
+
+	if (removeCollider)
+		m_RegisteredCollisions.erase(sceneCollider->GetID());
 }
 
 void fuel::RigidBody2D::CheckSphereCollision(BaseCollider* sceneCollider)
 {
-	bool isColliding{ m_IsColliding };
-	bool isTrigger{ m_IsInTrigger };
+	const auto it = m_RegisteredCollisions.find(sceneCollider->GetID());
+	if (it == m_RegisteredCollisions.end())
+	{
+		m_RegisteredCollisions.insert({ sceneCollider->GetID(), std::make_pair(false, false) });
+	}
+
+	const bool isColliding{ m_RegisteredCollisions.at(sceneCollider->GetID()).first };
+	const bool isTrigger{ m_RegisteredCollisions.at(sceneCollider->GetID()).second };
+	bool removeCollider{ true };
 	
 	SphereCollider* other{ static_cast<SphereCollider*>(sceneCollider) };
 	for (BaseCollider* ownedCollider : m_pColliders)
 	{
 		if (ownedCollider->IsColliding(other->GetDimensions()))
 		{
+			removeCollider = false;
 			if (other->IsTrigger())
 			{
-				m_IsInTrigger = true;
-				m_IsColliding = false;
+				m_RegisteredCollisions.at(sceneCollider->GetID()).second = true; // inTrigger
+				m_RegisteredCollisions.at(sceneCollider->GetID()).first = false; // isColliding
 			}
 			else
 			{
-				m_IsColliding = true;
-				m_IsInTrigger = false;
-				
+				m_RegisteredCollisions.at(sceneCollider->GetID()).first = true; // isColliding
+				m_RegisteredCollisions.at(sceneCollider->GetID()).second = false; // inTrigger
+
 				if (!other->CanPassFromBellow() || m_Velocity.y >= 0.f)
 				{
 					SetVelocityAfterCollision(ownedCollider, sceneCollider);
@@ -438,11 +496,14 @@ void fuel::RigidBody2D::CheckSphereCollision(BaseCollider* sceneCollider)
 		}
 		else
 		{
-			m_IsColliding = false;
-			m_IsInTrigger = false;
+			m_RegisteredCollisions.at(sceneCollider->GetID()).first = false;
+			m_RegisteredCollisions.at(sceneCollider->GetID()).second = false;
 		}
-		HandlePhysicsEvents(isTrigger, m_IsInTrigger, isColliding, m_IsColliding, other);
+		HandlePhysicsEvents(isTrigger, m_RegisteredCollisions.at(sceneCollider->GetID()).second, isColliding, m_RegisteredCollisions.at(sceneCollider->GetID()).first, other);
 	}
+
+	if (removeCollider)
+		m_RegisteredCollisions.erase(sceneCollider->GetID());
 }
 
 void fuel::RigidBody2D::SetVelocityAfterCollision(BaseCollider* ownCollider, BaseCollider* sceneCollider)
@@ -501,7 +562,8 @@ void fuel::RigidBody2D::SetVelocityAfterCollision(BaseCollider* ownCollider, Bas
 		//Logger::LogInfo("Colliding from above!");
 		if (m_Velocity.y > 0.f)
 		{
-			m_Force.y *= -m_Bounciness;
+			if(m_Force.y != 0.f)
+				m_Force.y *= -m_Bounciness;
 			m_Velocity.y *= -m_Bounciness;
 			m_Position.y = posSceneCollider.y - dimOwnCollider.y;
 		}
@@ -513,7 +575,8 @@ void fuel::RigidBody2D::SetVelocityAfterCollision(BaseCollider* ownCollider, Bas
 		//Logger::LogInfo("Colliding from beneath!");
 		if (m_Velocity.y < 0.f)
 		{
-			m_Force.y *= -m_Bounciness;
+			if (m_Force.y != 0.f)
+				m_Force.y *= -m_Bounciness;
 			m_Velocity.y *= -m_Bounciness;
 			m_Position.y = posSceneCollider.y + dimSceneCollider.y;
 		}
@@ -523,7 +586,8 @@ void fuel::RigidBody2D::SetVelocityAfterCollision(BaseCollider* ownCollider, Bas
 		//Logger::LogInfo("Colliding from left!");
 		if (m_Velocity.x > 0.f)
 		{
-			m_Force.x *= -m_Bounciness;
+			if (m_Force.x != 0.f)
+				m_Force.x *= -m_Bounciness;
 			m_Velocity.x *= -m_Bounciness;
 			m_Position.x = posSceneCollider.x - dimOwnCollider.x;
 		}
@@ -533,7 +597,8 @@ void fuel::RigidBody2D::SetVelocityAfterCollision(BaseCollider* ownCollider, Bas
 		//Logger::LogInfo("Colliding from right!");
 		if (m_Velocity.x < 0.f)
 		{
-			m_Force.x *= -m_Bounciness;
+			if (m_Force.x != 0.f)
+				m_Force.x *= -m_Bounciness;
 			m_Velocity.x *= -m_Bounciness;
 			m_Position.x = posSceneCollider.x + dimSceneCollider.x;
 		}

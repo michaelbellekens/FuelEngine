@@ -8,6 +8,7 @@
 #include "InputManager.h"
 #include "Logger.h"
 #include "Renderer.h"
+#include "RigidBody2D.h"
 
 void fuel::BoxCollider::Initialize()
 {
@@ -165,6 +166,37 @@ void fuel::BoxCollider::SetDimensions(const Rectf& dimensions)
 fuel::ShapeType fuel::BoxCollider::GetShapeType() const
 {
 	return ShapeType::Rect;
+}
+
+void fuel::BoxCollider::Safe(std::ofstream& binStream) const
+{
+	// Safe Dimensions
+	binStream.write((const char*)&m_Dimensions.x, sizeof(float));
+	binStream.write((const char*)&m_Dimensions.y, sizeof(float));
+	binStream.write((const char*)&m_Dimensions.width, sizeof(float));
+	binStream.write((const char*)&m_Dimensions.height, sizeof(float));
+
+	// Safe Properties
+	binStream.write((const char*)&m_IsTrigger, sizeof(bool));
+	binStream.write((const char*)&m_CanPassFromBellow, sizeof(bool));
+}
+
+void fuel::BoxCollider::Load(std::ifstream& binStream)
+{
+	// Load Dimensions
+	binStream.read((char*)&m_Dimensions.x, sizeof(float));
+	binStream.read((char*)&m_Dimensions.y, sizeof(float));
+	binStream.read((char*)&m_Dimensions.width, sizeof(float));
+	binStream.read((char*)&m_Dimensions.height, sizeof(float));
+
+	// Load Properties
+	binStream.read((char*)&m_IsTrigger, sizeof(bool));
+	binStream.read((char*)&m_CanPassFromBellow, sizeof(bool));
+}
+
+fuel::ComponentType fuel::BoxCollider::GetCompType() const
+{
+	return ComponentType::BOXCOLLIDER;
 }
 
 void fuel::BoxCollider::OnCollisionEnter(BaseCollider* other)

@@ -37,6 +37,11 @@ namespace fuel
 		void SetPosition(const Vector3& newPosition);
 		void SetPosition(const Vector2& newPosition);
 
+		// Loading and Saving
+		ComponentType GetCompType() const override;
+		void Safe(std::ofstream& binStream) const override;
+		void Load(std::ifstream& binStream) override;
+
 		//Physics
 		void OnCollisionEnter(BaseCollider* other) override;
 		void OnCollisionStay(BaseCollider* other) override;

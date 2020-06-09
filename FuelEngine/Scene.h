@@ -1,11 +1,21 @@
 #pragma once
+#include "Button.h"
 #include "SceneManager.h"
-#include "FixedAllocator.h"
 #include "RenderComponent.h"
-#include "Transform.h"
 
 namespace fuel
 {
+	struct SceneData
+	{
+		SceneData()
+			: numGameObjects(0)
+			, numButtons(0)
+		{}
+
+		unsigned int numGameObjects;
+		unsigned int numButtons;
+	};
+	
 	class SceneObject;
 	class BaseCollider;
 	class Scene
@@ -31,7 +41,17 @@ namespace fuel
 		void AddCollider(BaseCollider* collider);
 		const std::vector<BaseCollider*>& GetAllColliders() const;
 
+		void AddButton(Button* pButton);
+		void NextButton();
+		void PreviousButton();
+		void ExecuteButtonAction();
+		void HandleButtonEvent(ButtonAction action);
+		
 		const std::string& GetName() const;
+
+		// Saving and Loading
+		unsigned int GetNumGameObjects() const;
+		std::vector<std::shared_ptr<SceneObject>>& GetSceneObjects();
 
 		// Editor GUI
 		void DrawGameObjects();
@@ -41,6 +61,7 @@ namespace fuel
 		std::string m_Name{};
 		std::vector < std::shared_ptr<SceneObject>> m_Objects{};
 		std::vector<BaseCollider*> m_AllColliders{};
+		std::vector<Button*> m_pButtons{};
 		
 		static unsigned int m_IdCounter;
 		static size_t m_SelectedGameObject;

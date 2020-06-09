@@ -1,24 +1,26 @@
 #pragma once
+#include <map>
+
 #include "BaseComponent.h"
 
 namespace fuel
 {
 	class Texture2D;
 	class Transform;
-	class RenderComponent final : public BaseComponent
+	class SpriteComponent final : public BaseComponent
 	{
 	public:
-		RenderComponent();
-		virtual ~RenderComponent() = default;
+		SpriteComponent();
+		virtual ~SpriteComponent() = default;
 
-		RenderComponent(const RenderComponent& other) = delete;
-		RenderComponent(RenderComponent&& other) = delete;
-		RenderComponent& operator=(const RenderComponent& other) = delete;
-		RenderComponent& operator=(RenderComponent&& other) = delete;
+		SpriteComponent(const SpriteComponent& other) = delete;
+		SpriteComponent(SpriteComponent&& other) = delete;
+		SpriteComponent& operator=(const SpriteComponent& other) = delete;
+		SpriteComponent& operator=(SpriteComponent&& other) = delete;
 
 		void Initialize() override;
 		void OnStart() override;
-		
+
 		void Update() override;
 		void FixedUpdate() override;
 		void Render() const override;
@@ -26,11 +28,15 @@ namespace fuel
 		void SetGameObject(GameObject* parent) override;
 		GameObject* GetGameObject() const override;
 
-		void SetTransform(Transform* transComp);
-
 		size_t GetType() override;
-		
+
+		void SetAnimation(const int animID);
+		void SetColumns(const int col);
+		void SetRows(const int row);
 		void SetTexture(const std::string& filename);
+		void AddAnimation(const int animID, const int numFrames);
+		void SetAnimTime(const float animTime);
+		void SetScale(const float x, const float y);
 
 		// Loading and Saving
 		ComponentType GetCompType() const override;
@@ -45,16 +51,24 @@ namespace fuel
 		void OnTriggerEnter(BaseCollider* other) override;
 		void OnTriggerStay(BaseCollider* other) override;
 		void OnTriggerExit(BaseCollider* other) override;
-		
+
 		// Editor GUI
 		void DrawGUI() override;
 		const std::string& GetID() const override;
-		
+
 	private:
 		std::shared_ptr<Texture2D> m_Texture;
 		Transform* m_pTransform;
 		GameObject* m_pGameObject;
 		std::string m_ID;
 		std::string m_TextureName;
+		std::map<int, int> m_AnimationLoops;
+		int m_Cols;
+		int m_Rows;
+		int m_CurrentAnimFrame;
+		int m_CurrentAnimation;
+		float m_AnimTime;
+		float m_CurrentAnimTime;
+		Vector2 m_Scale;
 	};
 }

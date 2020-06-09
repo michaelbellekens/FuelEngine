@@ -5,11 +5,13 @@
 #include "TextComponent.h"
 #include "VibrationComponent.h"
 #include "Logger.h"
+#include "Scene.h"
 
 fuel::PlayerController::PlayerController()
 	: m_pGameObject{ nullptr }
 	, m_PlayerID{ PlayerID::PlayerOne }
 	, m_ID{"" }
+	, m_IsInMenu{ true }
 {
 }
 
@@ -26,6 +28,10 @@ void fuel::PlayerController::OnStart()
 	InputManager::AddControllerBinding(m_PlayerID, this, CommandID::Jump, ButtonState::pressed, XINPUT_GAMEPAD_A);
 	InputManager::AddControllerBinding(m_PlayerID, this, CommandID::Fire, ButtonState::released, XINPUT_GAMEPAD_Y);
 	InputManager::AddControllerBinding(m_PlayerID, this, CommandID::Fart, ButtonState::released, XINPUT_GAMEPAD_X);
+
+	InputManager::AddControllerBinding(m_PlayerID, this, CommandID::MoveUpUI, ButtonState::released, XINPUT_GAMEPAD_DPAD_UP);
+	InputManager::AddControllerBinding(m_PlayerID, this, CommandID::MoveDownUI, ButtonState::released, XINPUT_GAMEPAD_DPAD_DOWN);
+	InputManager::AddControllerBinding(m_PlayerID, this, CommandID::ClickUI, ButtonState::released, XINPUT_GAMEPAD_A);
 }
 
 void fuel::PlayerController::Update()
@@ -36,10 +42,6 @@ void fuel::PlayerController::Update()
 	{
 		text->SetText(std::to_string(InputManager::GetTriggerAxis(false, m_PlayerID)));
 	}
-
-	//Logger::LogInfo(InputManager::GetMousePosition());
-	//Logger::LogWarning(InputManager::GetMousePosition());
-	//Logger::LogError(InputManager::GetMousePosition());
 	
 	if (InputManager::IsLeftMousePressed())
 	{
@@ -90,11 +92,17 @@ fuel::PlayerID fuel::PlayerController::GetPlayerID() const
 
 void fuel::PlayerController::Jump()
 {
+	if (m_IsInMenu)
+		return;
+	
 	Logger::LogInfo("Jump");
 }
 
 void fuel::PlayerController::Fire()
 {
+	if (m_IsInMenu)
+		return;
+	
 	Logger::LogInfo("Fire");
 	VibrationComponent* pVibrationComp = m_pGameObject->GetComponent<VibrationComponent>();
 	if (pVibrationComp)
@@ -103,12 +111,57 @@ void fuel::PlayerController::Fire()
 
 void fuel::PlayerController::Duck()
 {
+	if (m_IsInMenu)
+		return;
+	
 	Logger::LogInfo("Duck");
 }
 
 void fuel::PlayerController::Fart()
 {
+	if (m_IsInMenu)
+		return;
+	
 	Logger::LogInfo("Fart");
+}
+
+void fuel::PlayerController::MoveUpUI()
+{
+	if (!m_IsInMenu)
+		return;
+
+	m_pGameObject->GetScene()->PreviousButton();
+}
+
+void fuel::PlayerController::MoveDownUI()
+{
+	if (!m_IsInMenu)
+		return;
+
+	m_pGameObject->GetScene()->NextButton();
+}
+
+void fuel::PlayerController::ClickUI()
+{
+	if (!m_IsInMenu)
+		return;
+
+	m_pGameObject->GetScene()->ExecuteButtonAction();
+}
+
+void fuel::PlayerController::Safe(std::ofstream& binStream) const
+{
+	binStream.write((const char*)&m_PlayerID, sizeof(PlayerID));
+}
+
+void fuel::PlayerController::Load(std::ifstream& binStream)
+{
+	binStream.read((char*)&m_PlayerID, sizeof(PlayerID));
+}
+
+fuel::ComponentType fuel::PlayerController::GetCompType() const
+{
+	return ComponentType::CONTROLLER;
 }
 
 void fuel::PlayerController::OnCollisionEnter(BaseCollider* other)

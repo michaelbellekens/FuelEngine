@@ -1,6 +1,9 @@
 #include "FuelEnginePCH.h"
 #include "Scene.h"
 #include "GameObject.h"
+#include <SDL.h>
+
+#include "Logger.h"
 
 using namespace fuel;
 
@@ -18,6 +21,16 @@ Scene::~Scene()
 const std::string& fuel::Scene::GetName() const
 {
 	return m_Name;
+}
+
+unsigned int fuel::Scene::GetNumGameObjects() const
+{
+	return m_Objects.size();
+}
+
+std::vector<std::shared_ptr<SceneObject>>& fuel::Scene::GetSceneObjects()
+{
+	return m_Objects;
 }
 
 void fuel::Scene::DrawGameObjects()
@@ -91,4 +104,94 @@ void fuel::Scene::AddCollider(BaseCollider* collider)
 const std::vector<BaseCollider*>& fuel::Scene::GetAllColliders() const
 {
 	return m_AllColliders;
+}
+
+void fuel::Scene::AddButton(Button* pButton)
+{
+	m_pButtons.push_back(pButton);
+}
+
+void fuel::Scene::NextButton()
+{
+	const int numButtons{ static_cast<int>(m_pButtons.size()) };
+	int currentButton{ 0 };
+	
+	for (Button* pButton : m_pButtons)
+	{
+		if (pButton->IsSelected())
+		{
+			currentButton = pButton->GetButtonID();
+			pButton->SetSelected(false);
+		}
+	}
+
+	++currentButton;
+	currentButton %= numButtons;
+
+	for (Button* pButton : m_pButtons)
+	{
+		if (pButton->GetButtonID() == currentButton)
+			pButton->SetSelected(true);
+	}
+}
+
+void fuel::Scene::PreviousButton()
+{
+	const int numButtons{ static_cast<int>(m_pButtons.size()) };
+	int currentButton{ 0 };
+
+	for (Button* pButton : m_pButtons)
+	{
+		if (pButton->IsSelected())
+		{
+			currentButton = pButton->GetButtonID();
+			pButton->SetSelected(false);
+		}
+	}
+
+	--currentButton;
+	if (currentButton < 0)
+		currentButton = numButtons - 1;
+
+	for (Button* pButton : m_pButtons)
+	{
+		if (pButton->GetButtonID() == currentButton)
+			pButton->SetSelected(true);
+	}
+}
+
+void fuel::Scene::ExecuteButtonAction()
+{
+	for (Button* pButton : m_pButtons)
+	{
+		if (pButton->IsSelected())
+		{
+			pButton->ExecuteButtonAction();
+			return;
+		}
+	}
+}
+
+void fuel::Scene::HandleButtonEvent(ButtonAction action)
+{
+	switch (action)
+	{
+	case OnePlayer:
+		// ToDO: Load scene1 with Solo mode
+		Logger::LogInfo("ButtonAction 'Solo' is triggered!");
+		break;
+	case COOP:
+		// ToDO: Load scene1 with CO-OP mode
+		Logger::LogInfo("ButtonAction 'CO-OP' is triggered!");
+		break;
+	case VS:
+		// ToDo: Load scene1 with VS mode
+		Logger::LogInfo("ButtonAction 'VS' is triggered!");
+		break;
+	case QUIT:
+		SDL_Event event;
+		event.type = SDL_QUIT;
+		SDL_PushEvent(&event);
+		break;
+	}
 }
