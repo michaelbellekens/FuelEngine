@@ -10,3 +10,4 @@
 #include "TextComponent.h"
 #include "Transform.h"
 #include "VibrationComponent.h"
+#include "SpriteComponent.h"

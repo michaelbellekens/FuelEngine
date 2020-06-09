@@ -22,7 +22,10 @@ namespace fuel
 		Jump,
 		Fart,
 		Duck,
-		Fire
+		Fire,
+		MoveUpUI,
+		MoveDownUI,
+		ClickUI
 	};
 
 	class Command;

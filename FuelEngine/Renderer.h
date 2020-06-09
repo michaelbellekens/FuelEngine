@@ -1,4 +1,5 @@
 #pragma once
+#include <SDL.h>
 #include "Singleton.h"
 
 struct SDL_Window;
@@ -19,7 +20,8 @@ namespace fuel
 
 		static void RenderTexture(const Texture2D& texture, float x, float y) { GetInstance().IRenderTexture(texture, x, y); }
 		static void RenderTexture(const Texture2D& texture, float x, float y, float width, float height) { GetInstance().IRenderTexture(texture, x, y, width, height); }
-
+		static void RenderSprite(const Texture2D& texture, const SDL_Rect& destRect, const SDL_Rect& srcRect) { GetInstance().IRenderSprite(texture, destRect, srcRect); }
+		
 		static SDL_Renderer* GetSDLRenderer() { return GetInstance().IGetSDLRenderer(); }
 	private:
 		void IInit(SDL_Window* window);
@@ -28,7 +30,8 @@ namespace fuel
 
 		void IRenderTexture(const Texture2D& texture, float x, float y) const;
 		void IRenderTexture(const Texture2D& texture, float x, float y, float width, float height) const;
-
+		void IRenderSprite(const Texture2D& texture, const SDL_Rect& destRect, const SDL_Rect& srcRect) const;
+		
 		SDL_Renderer* IGetSDLRenderer() const { return m_Renderer; }
 		
 		SDL_Renderer* m_Renderer{};

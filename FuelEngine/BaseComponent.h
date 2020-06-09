@@ -2,6 +2,20 @@
 
 namespace fuel
 {
+	enum class ComponentType
+	{
+		FPS,
+		TRANSFORM,
+		RIGIDBODY,
+		BOXCOLLIDER,
+		SPHERECOLLIDER,
+		TEXTRENDERER,
+		RENDERER,
+		SPRITERENDERER,
+		CONTROLLER,
+		VIBRATION
+	};
+	
 	class BaseCollider;
 	class GameObject;
 	class BaseComponent
@@ -31,6 +45,11 @@ namespace fuel
 
 		//virtual void BroadcastMessage() = 0;
 		//virtual void ReceiveMessage(int message) = 0;
+
+		// Loading and Saving
+		virtual ComponentType GetCompType() const = 0;
+		virtual void Safe(std::ofstream& binStream) const = 0;
+		virtual void Load(std::ifstream& binStream) = 0;
 
 		// Physics
 		virtual void OnCollisionEnter(BaseCollider* other) = 0;

@@ -47,4 +47,31 @@ namespace fuel
 
 		void Execute(fuel::PlayerController* controller) override { controller->Fart(); }
 	};
+
+	class MoveUpUICommand final : public Command
+	{
+	public:
+		MoveUpUICommand() = default;
+		virtual ~MoveUpUICommand() = default;
+
+		void Execute(fuel::PlayerController* controller) override { controller->MoveUpUI(); }
+	};
+
+	class MoveDownUICommand final : public Command
+	{
+	public:
+		MoveDownUICommand() = default;
+		virtual ~MoveDownUICommand() = default;
+
+		void Execute(fuel::PlayerController* controller) override { controller->MoveDownUI(); }
+	};
+
+	class ClickUICommand final : public Command
+	{
+	public:
+		ClickUICommand() = default;
+		virtual ~ClickUICommand() = default;
+
+		void Execute(fuel::PlayerController* controller) override { controller->ClickUI(); }
+	};
 }

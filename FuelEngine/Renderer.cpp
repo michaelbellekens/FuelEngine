@@ -1,6 +1,5 @@
 #include "FuelEnginePCH.h"
 #include "Renderer.h"
-#include <SDL.h>
 #include "SceneManager.h"
 #include "Texture2D.h"
 #include "Editor.h"
@@ -72,4 +71,9 @@ void fuel::Renderer::IRenderTexture(const Texture2D& texture, const float x, con
 	dst.w = static_cast<int>(width);
 	dst.h = static_cast<int>(height);
 	SDL_RenderCopy(GetSDLRenderer(), texture.GetSDLTexture(), nullptr, &dst);
+}
+
+void fuel::Renderer::IRenderSprite(const Texture2D& texture, const SDL_Rect& destRect, const SDL_Rect& srcRect) const
+{
+	SDL_RenderCopy(GetSDLRenderer(), texture.GetSDLTexture(), &srcRect, &destRect);
 }

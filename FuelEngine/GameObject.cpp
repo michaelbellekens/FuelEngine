@@ -1,8 +1,12 @@
 #include "FuelEnginePCH.h"
 #include "GameObject.h"
-#include "ResourceManager.h"
-#include "Renderer.h"
+
+#include "Scene.h"
+#include "Transform.h"
 #include "SoundManager.h"
+#include "BaseComponent.h"
+#include "Logger.h"
+#include "BaseCollider.h"
 
 fuel::GameObject::GameObject()
 	: m_Name{ "New GameObject" }
@@ -106,6 +110,27 @@ bool fuel::GameObject::CompareTag(const std::string& tagName) const
 	return m_Tag == tagName;
 }
 
+fuel::ObjectType fuel::GameObject::GetObjectType() const
+{
+	return ObjectType::GAMEOBJECT;
+}
+
+fuel::GameObjectData fuel::GameObject::GetGameObjectData() const
+{
+	GameObjectData data{};
+	data.numComponents = m_pComponents.size();
+
+	for (unsigned int i{ 0 }; i < m_pComponents.size(); ++i)
+		data.componentTypes.push_back(m_pComponents[i]->GetCompType());
+
+	return data;
+}
+
+std::vector<fuel::BaseComponent*> fuel::GameObject::GetComponents() const
+{
+	return m_pComponents;
+}
+
 void fuel::GameObject::OnCollisionEnter(BaseCollider* other)
 {
 	//Logger::LogInfo("CollisionEnter with:" + other->GetGameObject()->GetName());
@@ -138,7 +163,7 @@ void fuel::GameObject::OnCollisionExit(BaseCollider* other)
 
 void fuel::GameObject::OnTriggerEnter(BaseCollider* other)
 {
-	//Logger::LogInfo("TriggerEnter with:" + other->GetGameObject()->GetName());
+	Logger::LogInfo("TriggerEnter with:" + other->GetGameObject()->GetName());
 	for (BaseComponent* pBaseComponent : m_pComponents)
 	{
 		pBaseComponent->OnTriggerEnter(other);
@@ -147,7 +172,7 @@ void fuel::GameObject::OnTriggerEnter(BaseCollider* other)
 
 void fuel::GameObject::OnTriggerStay(BaseCollider* other)
 {
-	//Logger::LogInfo("TriggerStay with:" + other->GetGameObject()->GetName());
+	Logger::LogInfo("TriggerStay with:" + other->GetGameObject()->GetName());
 	for (BaseComponent* pBaseComponent : m_pComponents)
 	{
 		pBaseComponent->OnTriggerStay(other);
@@ -156,7 +181,7 @@ void fuel::GameObject::OnTriggerStay(BaseCollider* other)
 
 void fuel::GameObject::OnTriggerExit(BaseCollider* other)
 {
-	//Logger::LogInfo("TriggerExit with:" + other->GetGameObject()->GetName());
+	Logger::LogInfo("TriggerExit with:" + other->GetGameObject()->GetName());
 	for (BaseComponent* pBaseComponent : m_pComponents)
 	{
 		pBaseComponent->OnTriggerExit(other);

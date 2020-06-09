@@ -91,6 +91,29 @@ void fuel::VibrationComponent::SetPlayerID(PlayerID playerID)
 	m_PlayerID = playerID;
 }
 
+void fuel::VibrationComponent::Safe(std::ofstream& binStream) const
+{
+	binStream.write((const char*)&m_LeftVibration, sizeof(float));
+	binStream.write((const char*)&m_RightVibration, sizeof(float));
+	binStream.write((const char*)&m_Duration, sizeof(float));
+
+	binStream.write((const char*)&m_PlayerID, sizeof(PlayerID));
+}
+
+void fuel::VibrationComponent::Load(std::ifstream& binStream)
+{
+	binStream.read((char*)&m_LeftVibration, sizeof(float));
+	binStream.read((char*)&m_RightVibration, sizeof(float));
+	binStream.read((char*)&m_Duration, sizeof(float));
+
+	binStream.read((char*)&m_PlayerID, sizeof(PlayerID));
+}
+
+fuel::ComponentType fuel::VibrationComponent::GetCompType() const
+{
+	return ComponentType::VIBRATION;
+}
+
 void fuel::VibrationComponent::OnCollisionEnter(BaseCollider* other)
 {
 	UNREFERENCED_PARAMETER(other);

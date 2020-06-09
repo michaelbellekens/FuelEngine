@@ -27,6 +27,11 @@ namespace fuel
 		void FixedUpdate() override;
 		void Render() const override;
 
+		// Loading and Saving
+		ComponentType GetCompType() const override;
+		void Safe(std::ofstream& binStream) const override;
+		void Load(std::ifstream& binStream) override;
+
 		//Physics
 		void OnCollisionEnter(BaseCollider* other) override;
 		void OnCollisionStay(BaseCollider* other) override;

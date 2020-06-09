@@ -1,8 +1,11 @@
 #include "FuelEnginePCH.h"
 #include "RenderComponent.h"
+
+#include "FileManager.h"
 #include "Renderer.h"
 #include "GameObject.h"
 #include "ResourceManager.h"
+#include "Transform.h"
 
 fuel::RenderComponent::RenderComponent()
 	: m_Texture(nullptr)
@@ -22,7 +25,8 @@ void fuel::RenderComponent::Initialize()
 
 void fuel::RenderComponent::OnStart()
 {
-	m_pTransform = m_pGameObject->GetTransform();
+	if (m_pGameObject)
+		m_pTransform = m_pGameObject->GetTransform();
 }
 
 void fuel::RenderComponent::Update()
@@ -49,6 +53,11 @@ fuel::GameObject* fuel::RenderComponent::GetGameObject() const
 	return m_pGameObject;
 }
 
+void fuel::RenderComponent::SetTransform(Transform* transComp)
+{
+	m_pTransform = transComp;
+}
+
 size_t fuel::RenderComponent::GetType()
 {
 	return typeid(this).hash_code();
@@ -58,6 +67,24 @@ void fuel::RenderComponent::SetTexture(const std::string& filename)
 {
 	m_TextureName = filename;
 	m_Texture = fuel::ResourceManager::LoadTexture(filename);
+}
+
+void fuel::RenderComponent::Safe(std::ofstream& binStream) const
+{
+	FileManager::WriteString(binStream, m_TextureName);
+}
+
+void fuel::RenderComponent::Load(std::ifstream& binStream)
+{
+	std::string textureName{};
+	FileManager::ReadString(binStream, textureName);
+
+	SetTexture(textureName);
+}
+
+fuel::ComponentType fuel::RenderComponent::GetCompType() const
+{
+	return ComponentType::RENDERER;
 }
 
 void fuel::RenderComponent::OnCollisionEnter(BaseCollider* other)

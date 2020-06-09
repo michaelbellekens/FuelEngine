@@ -36,6 +36,16 @@ namespace fuel
 		void Duck();
 		void Fart();
 
+		// UI Controls
+		void MoveUpUI();
+		void MoveDownUI();
+		void ClickUI();
+
+		// Loading and Saving
+		ComponentType GetCompType() const override;
+		void Safe(std::ofstream& binStream) const override;
+		void Load(std::ifstream& binStream) override;
+
 		//Physics
 		void OnCollisionEnter(BaseCollider* other) override;
 		void OnCollisionStay(BaseCollider* other) override;
@@ -54,5 +64,6 @@ namespace fuel
 		GameObject* m_pGameObject;
 		PlayerID m_PlayerID;
 		std::string m_ID;
+		bool m_IsInMenu;
 	};
 }

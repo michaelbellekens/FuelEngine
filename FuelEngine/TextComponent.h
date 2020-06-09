@@ -20,7 +20,7 @@ namespace fuel
 
 		void SetText(const std::string& text);
 		void SetFont(const std::shared_ptr<Font>& font);
-		void SetPosition(float x, float y) const;
+		void SetPosition(float x, float y);
 		void SetSize(unsigned int fontSize);
 		void SetColor(const Color4& color);
 		void SetColor(const float r, const float g, const float b, const float a);
@@ -28,12 +28,19 @@ namespace fuel
 		void SetGameObject(GameObject* parent) override;
 		GameObject* GetGameObject() const override;
 
+		void SetTransform(Transform* transComp);
+
 		size_t GetType() override;
 
 		TextComponent(const TextComponent& other) = delete;
 		TextComponent(TextComponent&& other) = delete;
 		TextComponent& operator=(const TextComponent& other) = delete;
 		TextComponent& operator=(TextComponent&& other) = delete;
+
+		// Loading and Saving
+		ComponentType GetCompType() const override;
+		void Safe(std::ofstream& binStream) const override;
+		void Load(std::ifstream& binStream) override;
 
 		//Physics
 		void OnCollisionEnter(BaseCollider* other) override;
@@ -59,5 +66,6 @@ namespace fuel
 		Transform* m_pTransform;
 		GameObject* m_pGameObject;
 		std::string m_ID;
+		Vector2 m_Position;
 	};
 }

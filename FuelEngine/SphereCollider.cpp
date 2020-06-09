@@ -8,6 +8,7 @@
 #include "InputManager.h"
 #include "Logger.h"
 #include "Renderer.h"
+#include "RigidBody2D.h"
 
 
 void fuel::SphereCollider::Initialize()
@@ -38,12 +39,6 @@ void fuel::SphereCollider::Update()
 
 void fuel::SphereCollider::FixedUpdate()
 {
-	//const Rectf testRect{ InputManager::GetMousePosition(), Vector2(50.f, 50.f) };
-	//
-	//if (IsColliding(testRect))
-	//{
-	//	Logger::LogInfo("Mouse is overlapping with collider");
-	//}
 }
 
 void fuel::SphereCollider::Render() const
@@ -167,6 +162,35 @@ void fuel::SphereCollider::SetRadius(const float radius)
 fuel::ShapeType fuel::SphereCollider::GetShapeType() const
 {
 	return ShapeType::Sphere;
+}
+
+void fuel::SphereCollider::Safe(std::ofstream& binStream) const
+{
+	// Safe Dimensions
+	binStream.write((const char*)&m_Dimensions.x, sizeof(float));
+	binStream.write((const char*)&m_Dimensions.y, sizeof(float));
+	binStream.write((const char*)&m_Dimensions.radius, sizeof(float));
+
+	// Safe Properties
+	binStream.write((const char*)&m_IsTrigger, sizeof(bool));
+	binStream.write((const char*)&m_CanPassFromBellow, sizeof(bool));
+}
+
+void fuel::SphereCollider::Load(std::ifstream& binStream)
+{
+	// Load Dimensions
+	binStream.read((char*)&m_Dimensions.x, sizeof(float));
+	binStream.read((char*)&m_Dimensions.y, sizeof(float));
+	binStream.read((char*)&m_Dimensions.radius, sizeof(float));
+
+	// Load Properties
+	binStream.read((char*)&m_IsTrigger, sizeof(bool));
+	binStream.read((char*)&m_CanPassFromBellow, sizeof(bool));
+}
+
+fuel::ComponentType fuel::SphereCollider::GetCompType() const
+{
+	return ComponentType::SPHERECOLLIDER;
 }
 
 void fuel::SphereCollider::OnCollisionEnter(BaseCollider* other)

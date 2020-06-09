@@ -12,7 +12,9 @@
 #include "Scene.h"
 #include "EngineSettings.h"
 #include "EngineComponents.h"
+#include "FileManager.h"
 #include "SoundManager.h"
+#include "SpriteComponent.h"
 
 
 using namespace std;
@@ -60,20 +62,12 @@ void fuel::FuelEngine::LoadGame() const
 {
 	auto& scene = SceneManager::CreateScene("StartScene");
 
-	auto go = std::make_shared<GameObject>();
+	/*auto go = std::make_shared<GameObject>();
 	go->SetName("Background Holder");
 	scene.AddToScene(go);
 	RenderComponent* renderComp = go->AddComponent<RenderComponent>();
 	renderComp->SetTexture("background.jpg");
 	go->AddComponent<Transform>();
-
-	go = std::make_shared<GameObject>();
-	go->SetName("Logo Holder 1");
-	scene.AddToScene(go);
-	go->AddComponent<Transform>();
-	RenderComponent* renderCompLogo = go->AddComponent<RenderComponent>();
-	renderCompLogo->SetTexture("logo.png");
-	go->GetTransform()->SetPosition(216, 180);
 	
 	go = std::make_shared<GameObject>();
 	go->SetName("Logo Holder 2");
@@ -82,14 +76,10 @@ void fuel::FuelEngine::LoadGame() const
 	RenderComponent* renderCompLogo2 = go->AddComponent<RenderComponent>();
 	renderCompLogo2->SetTexture("logo.png");
 	RigidBody2D* rigidBody1 = go->AddComponent<RigidBody2D>();
-	rigidBody1->SetIsKinematic(false);
+	rigidBody1->SetIsKinematic(true);
 	rigidBody1->UseGravity(true);
 	go->AddComponent<BoxCollider>();
-	//BoxCollider* colTest = go->AddComponent<BoxCollider>();
-	//rigidBody1->AddCollider(colTest);
-	//go->AddComponent<SphereCollider>();
-	//go->AddComponent<BoxCollider>();
-	go->GetTransform()->SetPosition(0, 0);
+	go->GetTransform()->SetPosition(100, 0);
 
 	go = std::make_shared<GameObject>();
 	go->SetName("Collision Test");
@@ -101,24 +91,6 @@ void fuel::FuelEngine::LoadGame() const
 	boxCol->SetDimensions(Rectf(0.f, 0.f, 200.f, 100.f));
 	go->GetTransform()->SetPosition(0.f, 380.f);
 	go->SetTag("CollisionBox");
-	
-	go = std::make_shared<GameObject>();
-	go->SetName("Assignment Name");
-	scene.AddToScene(go);
-	go->AddComponent<Transform>();
-	TextComponent* textComp = go->AddComponent<TextComponent>();
-	textComp->SetFont(ResourceManager::LoadFont("Lingua.otf", 36));
-	textComp->SetText("Programming 4 Assignment");
-	go->GetTransform()->SetPosition(80, 20);
-
-	go = std::make_shared<GameObject>();
-	go->SetName("Assignment Name 2");
-	scene.AddToScene(go);
-	go->AddComponent<Transform>();
-	TextComponent* textComp2 = go->AddComponent<TextComponent>();
-	textComp2->SetFont(ResourceManager::LoadFont("Lingua.otf", 36));
-	textComp2->SetText("Programming 4 Assignment");
-	go->GetTransform()->SetPosition(150, 100);
 
 	go = std::make_shared<GameObject>();
 	go->SetName("FPS Counter");
@@ -138,18 +110,88 @@ void fuel::FuelEngine::LoadGame() const
 	playerController1->SetPlayerID(PlayerID::PlayerOne);
 	go->AddComponent<TextComponent>();
 	go->AddComponent<VibrationComponent>();
-	
-	//go = std::make_shared<GameObject>();
-	//scene.AddToScene(go);
-	//go->AddComponent<Transform>();
-	//PlayerController* playerController2 = go->AddComponent<PlayerController>();
-	//playerController2->SetPlayerID(PlayerID::PlayerTwo);
+
+	go = std::make_shared<GameObject>();
+	go->SetName("SpriteTest");
+	scene.AddToScene(go);
+	Transform* spriteTransform = go->AddComponent<Transform>();
+	spriteTransform->SetPosition(20.f, 20.f);
+	RigidBody2D* spriteRigidBody = go->AddComponent<RigidBody2D>();
+	spriteRigidBody->SetIsKinematic(false);
+	spriteRigidBody->UseGravity(true);
+	BoxCollider* spriteCollider = go->AddComponent<BoxCollider>();
+	spriteCollider->SetDimensions(Rectf(0.f, 0.f, 64.f, 64.f));
+	SpriteComponent* pSpriteComp = go->AddComponent<SpriteComponent>();
+	pSpriteComp->SetTexture("CharacterSpriteSheet.png");
+	pSpriteComp->SetColumns(8);
+	pSpriteComp->SetRows(16);
+	pSpriteComp->SetAnimTime(0.1f);
+	pSpriteComp->AddAnimation(0, 8);
+	pSpriteComp->AddAnimation(1, 8);
+	pSpriteComp->AddAnimation(2, 8);
+	pSpriteComp->AddAnimation(3, 8);
+	pSpriteComp->AddAnimation(4, 8);
+	pSpriteComp->AddAnimation(5, 8);
+	pSpriteComp->AddAnimation(15, 8);
+	pSpriteComp->SetScale(4.f, 4.f);
+	pSpriteComp->SetAnimation(2);
+
+	auto pButton{ std::make_shared<Button>() };
+	scene.AddButton(pButton.get());
+	scene.AddToScene(pButton);
+	pButton->SetName("Button_1");
+	pButton->SetSelected(true);
+	pButton->SetTexture("logo.png");
+	pButton->SetText("Solo");
+	pButton->SetButtonAction(ButtonAction::OnePlayer);
+	pButton->SetButtonID(0);
+	pButton->GetTransform()->SetPosition(Vector3(300.f, 0.f, 0.f));
+
+	pButton = std::make_shared<Button>();
+	scene.AddButton(pButton.get());
+	scene.AddToScene(pButton);
+	pButton->SetName("Button_2");
+	pButton->SetSelected(false);
+	pButton->SetTexture("logo.png");
+	pButton->SetText("Co-Op");
+	pButton->SetButtonAction(ButtonAction::COOP);
+	pButton->SetButtonID(1);
+	pButton->GetTransform()->SetPosition(Vector3(300.f, 100.f, 0.f));
+
+	pButton = std::make_shared<Button>();
+	scene.AddButton(pButton.get());
+	scene.AddToScene(pButton);
+	pButton->SetName("Button_3");
+	pButton->SetSelected(false);
+	pButton->SetTexture("logo.png");
+	pButton->SetText("VS");
+	pButton->SetButtonAction(ButtonAction::VS);
+	pButton->SetButtonID(2);
+	pButton->GetTransform()->SetPosition(Vector3(300.f, 200.f, 0.f));
+
+	pButton = std::make_shared<Button>();
+	scene.AddButton(pButton.get());
+	scene.AddToScene(pButton);
+	pButton->SetName("Button_4");
+	pButton->SetSelected(false);
+	pButton->SetTexture("logo.png");
+	pButton->SetText("Quit");
+	pButton->SetButtonAction(ButtonAction::QUIT);
+	pButton->SetButtonID(3);
+	pButton->GetTransform()->SetPosition(Vector3(300.f, 300.f, 0.f));
 
 	InputManager::AddKeyboardBinding(PlayerID::PlayerOne, playerController1, CommandID::Fart, ButtonState::pressed, SDLK_f);
 	InputManager::AddKeyboardBinding(PlayerID::PlayerOne, playerController1, CommandID::Fire, ButtonState::hold, SDLK_k);
 	InputManager::AddKeyboardBinding(PlayerID::PlayerOne, playerController1, CommandID::Jump, ButtonState::released, SDLK_j);
 
+	InputManager::AddKeyboardBinding(PlayerID::PlayerOne, playerController1, CommandID::MoveUpUI, ButtonState::released, SDLK_UP);
+	InputManager::AddKeyboardBinding(PlayerID::PlayerOne, playerController1, CommandID::MoveDownUI, ButtonState::released, SDLK_DOWN);
+	InputManager::AddKeyboardBinding(PlayerID::PlayerOne, playerController1, CommandID::ClickUI, ButtonState::released, SDLK_RETURN);
+	*/
 	SoundManager::GetInstance().AddSound("BubblePop", "../Data/SoundFX/Bubble_Pop.wav");
+	
+	//FileManager::GetInstance().SaveScene(&scene, "TestScene");
+	FileManager::GetInstance().LoadScene(&scene, "TestScene");
 }
 
 void fuel::FuelEngine::Cleanup()
