@@ -106,7 +106,7 @@ void fuel::TextComponent::SetPosition(const float x, const float y)
 void fuel::TextComponent::SetSize(unsigned int fontSize)
 {
 	m_FontSize = static_cast<int>(fontSize);
-	m_Font = ResourceManager::LoadFont(m_FontName, fontSize);
+	m_Font = ResourceManager::LoadFont("Fonts/" + m_FontName, fontSize);
 	m_NeedsUpdate = true;
 }
 
@@ -212,7 +212,9 @@ void fuel::TextComponent::DrawGUI()
 	ImGui::PushItemWidth(200);
 	ImGui::InputText(fontNameLabel.c_str(), fontBuffer, 50);
 	ImGui::PopItemWidth();
-	if (ResourceManager::DoesFileExist(fontBuffer) && fontBuffer != m_FontName)
+
+	const std::string subFolder{ "Fonts/" };
+	if (ResourceManager::DoesFileExist(subFolder + fontBuffer) && fontBuffer != m_FontName)
 	{
 		SetFont(ResourceManager::LoadFont(fontBuffer, 36));
 		m_FontName = m_Font->GetName();

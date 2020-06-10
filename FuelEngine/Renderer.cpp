@@ -14,7 +14,6 @@ void fuel::Renderer::IInit(SDL_Window * window)
 	}
 
 	ImGui::CreateContext();
-	//ImGuiSDL::Initialize(m_Renderer, 640, 480);
 	ImGuiSDL::Initialize(m_Renderer, EngineSettings::GetWindowWidth(), EngineSettings::GetWindowHeight());
 	Editor::Initialize();
 }

@@ -132,8 +132,8 @@ void fuel::RenderComponent::DrawGUI()
 	ImGui::PushItemWidth(200);
 	ImGui::InputText(textureLabel.c_str(), nameBuffer, numChars);
 	ImGui::PopItemWidth();
-
-	if (ResourceManager::DoesFileExist(nameBuffer) && nameBuffer != m_TextureName)
+	const std::string subFolder{ "Sprites/" };
+	if (ResourceManager::DoesFileExist(subFolder + nameBuffer) && nameBuffer != m_TextureName)
 	{
 		SetTexture(nameBuffer);
 		m_TextureName = nameBuffer;

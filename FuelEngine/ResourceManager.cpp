@@ -36,7 +36,7 @@ void fuel::ResourceManager::IInit(const std::string& dataPath)
 
 std::shared_ptr<fuel::Texture2D> fuel::ResourceManager::ILoadTexture(const std::string& file) const
 {
-	const auto fullPath = m_DataPath + file;
+	const auto fullPath = m_DataPath + "Sprites/" + file;
 	auto texture = IMG_LoadTexture(Renderer::GetSDLRenderer(), fullPath.c_str());
 	if (texture == nullptr) 
 	{
@@ -47,7 +47,7 @@ std::shared_ptr<fuel::Texture2D> fuel::ResourceManager::ILoadTexture(const std::
 
 std::shared_ptr<fuel::Font> fuel::ResourceManager::ILoadFont(const std::string& file, unsigned int size) const
 {
-	return std::make_shared<Font>(m_DataPath, file, size);
+	return std::make_shared<Font>(m_DataPath + "Fonts/", file, size);
 }
 
 bool fuel::ResourceManager::IDoesFileExist(const std::string& filePath)
