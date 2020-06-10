@@ -1,12 +1,15 @@
 #include "FuelEnginePCH.h"
 #include "FuelEngine.h"
-#include <chrono>
-#include <thread>
+
+#include <functional>
+
+
 #include "InputManager.h"
 #include "SceneManager.h"
 #include "Renderer.h"
 #include "ResourceManager.h"
 #include <SDL.h>
+
 
 #include "GameObject.h"
 #include "Scene.h"
@@ -16,6 +19,8 @@
 #include "SoundManager.h"
 #include "SpriteComponent.h"
 
+#include <thread>
+#include <mutex>
 
 using namespace std;
 using namespace std::chrono;
@@ -183,15 +188,15 @@ void fuel::FuelEngine::LoadGame() const
 	InputManager::AddKeyboardBinding(PlayerID::PlayerOne, playerController1, CommandID::Fart, ButtonState::pressed, SDLK_f);
 	InputManager::AddKeyboardBinding(PlayerID::PlayerOne, playerController1, CommandID::Fire, ButtonState::hold, SDLK_k);
 	InputManager::AddKeyboardBinding(PlayerID::PlayerOne, playerController1, CommandID::Jump, ButtonState::released, SDLK_j);
-
+	
 	InputManager::AddKeyboardBinding(PlayerID::PlayerOne, playerController1, CommandID::MoveUpUI, ButtonState::released, SDLK_UP);
 	InputManager::AddKeyboardBinding(PlayerID::PlayerOne, playerController1, CommandID::MoveDownUI, ButtonState::released, SDLK_DOWN);
 	InputManager::AddKeyboardBinding(PlayerID::PlayerOne, playerController1, CommandID::ClickUI, ButtonState::released, SDLK_RETURN);
 	*/
 	SoundManager::GetInstance().AddSound("BubblePop", "../Data/SoundFX/Bubble_Pop.wav");
 	
-	//FileManager::GetInstance().SaveScene(&scene, "TestScene");
-	FileManager::GetInstance().LoadScene(&scene, "TestScene");
+	//FileManager::SaveScene(&scene, "TestScene");
+	FileManager::LoadScene(&scene, "TestScene");
 }
 
 void fuel::FuelEngine::Cleanup()
@@ -217,29 +222,44 @@ void fuel::FuelEngine::Run()
 	// Start scenes
 	SceneManager::Initialize();
 	SceneManager::Start();
-	float lag{ 0 };
-	Time::SetEndFrame(high_resolution_clock::now());
-	
+
+	std::mutex m_Mutex;
+	std::condition_variable m_CV;
+
+	// Threading test ------------------------------------------------------- //
+	auto updateFunct = [this, &m_Mutex]()
 	{
-		bool isGameRunning = true;
-		while (isGameRunning)
+		Time::SetEndFrame(high_resolution_clock::now());
+		float lag{ 0 };
+		while (m_IsGameRunning)
 		{
+			std::lock_guard<std::mutex> guard(m_Mutex);
+			
+			std::cout << "update" << std::endl;
 			Time::SetStartFrame(high_resolution_clock::now());
 			Time::Update();
 			lag += Time::GetDeltaTime();
-			
-			isGameRunning = InputManager::ProcessInput();
 
 			while (lag >= Time::GetFixedDeltaTime())
 			{
 				SceneManager::FixedUpdate();
 				lag -= Time::GetFixedDeltaTime();
 			}
-			
+
 			SceneManager::Update();
 			Renderer::Render();
 		}
-	}
+	};
 
+	std::thread updateThread(updateFunct);
+
+	while (m_IsGameRunning)
+	{
+		std::cout << "input" << std::endl;
+		m_IsGameRunning = InputManager::ProcessInput();
+	}
+	// ------------------------------------------------------------------- //
+
+	updateThread.join();
 	Cleanup();
 }

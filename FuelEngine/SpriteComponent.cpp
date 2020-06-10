@@ -116,7 +116,7 @@ void fuel::SpriteComponent::SetRows(const int row)
 void fuel::SpriteComponent::SetTexture(const std::string& filename)
 {
 	m_TextureName = filename;
-	m_Texture = fuel::ResourceManager::LoadTexture(filename);
+	m_Texture = fuel::ResourceManager::LoadTexture(/*"Sprites/" + */filename);
 }
 
 void fuel::SpriteComponent::AddAnimation(const int animID, const int numFrames)
@@ -236,7 +236,8 @@ void fuel::SpriteComponent::DrawGUI()
 	ImGui::InputText(textureLabel.c_str(), nameBuffer, numChars);
 	ImGui::PopItemWidth();
 
-	if (ResourceManager::DoesFileExist(nameBuffer) && nameBuffer != m_TextureName)
+	const std::string subFolder{ "Sprites/" };
+	if (ResourceManager::DoesFileExist(subFolder + nameBuffer) && nameBuffer != m_TextureName)
 	{
 		SetTexture(nameBuffer);
 		m_TextureName = nameBuffer;
