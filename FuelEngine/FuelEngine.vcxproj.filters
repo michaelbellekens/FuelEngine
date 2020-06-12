@@ -175,6 +175,9 @@
     <ClInclude Include="FileManager.h">
       <Filter>Managers</Filter>
     </ClInclude>
+    <ClInclude Include="Game.h">
+      <Filter>Core</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="imgui.cpp">

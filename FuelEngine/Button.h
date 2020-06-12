@@ -46,6 +46,10 @@ namespace fuel
 		std::string GetTag() const;
 		bool CompareTag(const std::string& tagName) const;
 
+		void SetActive(const bool isActive);
+		bool GetIsActive() const;
+		bool GetIsTriggered() const;
+
 		// Saving and Loading
 		ObjectType GetObjectType() const override;
 		void Safe(std::ofstream& binStream) const;
@@ -56,6 +60,7 @@ namespace fuel
 		
 		void SetText(const std::string& text);
 		void SetFont(const std::shared_ptr<Font>& font);
+		void SetFontSize(const int size);
 		void SetTextOffset(const Vector2& offset);
 		void SetTexture(const std::string fileName);
 
@@ -75,6 +80,8 @@ namespace fuel
 		RenderComponent* m_pRenderComponent;
 		TextComponent* m_pTextComponent;
 		Scene* m_pLinkedScene;
+		bool m_IsActive;
+		bool m_IsTriggered;
 
 		int m_ButtonID;
 		bool m_IsSelected;

@@ -54,6 +54,9 @@ namespace fuel
 		void OnTriggerExit(BaseCollider* other) override;
 
 		bool CanPassFromBellow() const override;
+		void SetCanPassFromBellow(const bool canPass) override;
+
+		Vector2 GetMidPoint() const override;
 
 		// Editor GUI
 		void DrawGUI() override;

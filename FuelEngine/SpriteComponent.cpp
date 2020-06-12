@@ -25,6 +25,8 @@ fuel::SpriteComponent::SpriteComponent()
 	, m_AnimTime(0.f)
 	, m_CurrentAnimTime(0.f)
 	, m_Scale(1.f, 1.f)
+	, m_LookLeftID(0)
+	, m_LookRightID(0)
 {
 }
 
@@ -116,7 +118,7 @@ void fuel::SpriteComponent::SetRows(const int row)
 void fuel::SpriteComponent::SetTexture(const std::string& filename)
 {
 	m_TextureName = filename;
-	m_Texture = fuel::ResourceManager::LoadTexture(/*"Sprites/" + */filename);
+	m_Texture = fuel::ResourceManager::LoadTexture(filename);
 }
 
 void fuel::SpriteComponent::AddAnimation(const int animID, const int numFrames)
@@ -135,6 +137,17 @@ void fuel::SpriteComponent::SetScale(const float x, const float y)
 	m_Scale.y = y;
 }
 
+void fuel::SpriteComponent::SetDirectionIDs(const int leftDirID, const int rightDirID)
+{
+	m_LookLeftID = leftDirID;
+	m_LookRightID = rightDirID;
+}
+
+void fuel::SpriteComponent::LookLeft(const bool lookLeft)
+{
+	m_CurrentAnimation = lookLeft ? m_LookLeftID : m_LookRightID;
+}
+
 void fuel::SpriteComponent::Safe(std::ofstream& binStream) const
 {
 	FileManager::WriteString(binStream, m_TextureName);
@@ -145,6 +158,8 @@ void fuel::SpriteComponent::Safe(std::ofstream& binStream) const
 	binStream.write((const char*)&m_AnimTime, sizeof(float));
 	binStream.write((const char*)&m_Scale.x, sizeof(float));
 	binStream.write((const char*)&m_Scale.y, sizeof(float));
+	binStream.write((const char*)&m_LookLeftID, sizeof(int));
+	binStream.write((const char*)&m_LookRightID, sizeof(int));
 
 	unsigned int numAnimations{ m_AnimationLoops.size() };
 	binStream.write((const char*)&numAnimations, sizeof(unsigned int));
@@ -170,7 +185,9 @@ void fuel::SpriteComponent::Load(std::ifstream& binStream)
 	binStream.read((char*)&m_AnimTime, sizeof(float));
 	binStream.read((char*)&m_Scale.x, sizeof(float));
 	binStream.read((char*)&m_Scale.y, sizeof(float));
-
+	binStream.read((char*)&m_LookLeftID, sizeof(int));
+	binStream.read((char*)&m_LookRightID, sizeof(int));
+	
 	unsigned int numAnimations{};
 	binStream.read((char*)&numAnimations, sizeof(unsigned int));
 

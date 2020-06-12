@@ -18,6 +18,7 @@ namespace fuel
 		static void LoadScene(Scene* scene, const std::string& fileName) { GetInstance().ILoadScene(scene, fileName); }
 		static void ReadString(std::ifstream& binStream, std::string& stringData) { GetInstance().IReadString(binStream, stringData); }
 		static void WriteString(std::ofstream& binStream, const std::string& stringData) { GetInstance().IWriteString(binStream, stringData); }
+		static void ReadLevelTiles(std::string& levelTiles, const std::string& levelFile) { GetInstance().IReadLevelTiles(levelTiles, levelFile); }
 		
 	private:
 		void Initialize();
@@ -26,5 +27,6 @@ namespace fuel
 		void ILoadScene(Scene* scene, const std::string& fileName);
 		void IReadString(std::ifstream& binStream, std::string& stringData);
 		void IWriteString(std::ofstream& binStream, const std::string& stringData);
+		void IReadLevelTiles(std::string& levelTiles, const std::string& levelFile);
 	};
 }

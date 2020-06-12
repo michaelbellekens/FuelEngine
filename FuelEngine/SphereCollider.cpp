@@ -228,6 +228,16 @@ bool fuel::SphereCollider::CanPassFromBellow() const
 	return m_CanPassFromBellow;
 }
 
+void fuel::SphereCollider::SetCanPassFromBellow(const bool canPass)
+{
+	m_CanPassFromBellow = canPass;
+}
+
+fuel::Vector2 fuel::SphereCollider::GetMidPoint() const
+{
+	return Vector2(m_Dimensions.x, m_Dimensions.y);
+}
+
 void fuel::SphereCollider::DrawGUI()
 {
 	ImGui::Text("Sphere Collider2D Component");

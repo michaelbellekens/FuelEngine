@@ -51,6 +51,9 @@ namespace fuel
 		std::string GetTag() const;
 		bool CompareTag(const std::string& tagName) const;
 
+		void SetActive(const bool isActive);
+		bool GetIsActive() const;
+
 		// Saving and Loading
 		ObjectType GetObjectType() const override;
 		GameObjectData GetGameObjectData() const;
@@ -74,6 +77,7 @@ namespace fuel
 		std::vector<BaseComponent*> m_pComponents{};
 		Transform* m_Transform;
 		Scene* m_pLinkedScene;
+		bool m_IsActive{ true };
 	};
 
 	template<typename T>

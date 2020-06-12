@@ -2,7 +2,7 @@
 #include "Scene.h"
 #include "GameObject.h"
 #include <SDL.h>
-
+#include "Button.h"
 #include "Logger.h"
 
 using namespace fuel;
@@ -21,6 +21,17 @@ Scene::~Scene()
 const std::string& fuel::Scene::GetName() const
 {
 	return m_Name;
+}
+
+std::shared_ptr<SceneObject> fuel::Scene::FindObject(const std::string& objectName) const
+{
+	const auto it = std::find_if(m_Objects.begin(), m_Objects.end(), [objectName](std::shared_ptr<SceneObject> object) {return object->GetName() == objectName; });
+	if (it == m_Objects.end())
+	{
+		Logger::LogError("Object with the name \"" + objectName + "\" has not been found!");
+		return nullptr;
+	}
+	return *it;
 }
 
 unsigned int fuel::Scene::GetNumGameObjects() const
@@ -91,6 +102,16 @@ void Scene::Render() const
 	{
 		m_Objects[idx]->Render();
 	}
+}
+
+void fuel::Scene::OnEnable()
+{
+	Logger::LogInfo("Enabled scene \"" + m_Name + "\"");
+}
+
+void fuel::Scene::OnDisable()
+{
+	Logger::LogInfo("Disable scene \"" + m_Name + "\"");
 }
 
 void fuel::Scene::AddCollider(BaseCollider* collider)

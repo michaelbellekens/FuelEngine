@@ -37,6 +37,8 @@ namespace fuel
 		void AddAnimation(const int animID, const int numFrames);
 		void SetAnimTime(const float animTime);
 		void SetScale(const float x, const float y);
+		void SetDirectionIDs(int leftDirID, int rightDirID);
+		void LookLeft(const bool lookLeft);
 
 		// Loading and Saving
 		ComponentType GetCompType() const override;
@@ -70,5 +72,7 @@ namespace fuel
 		float m_AnimTime;
 		float m_CurrentAnimTime;
 		Vector2 m_Scale;
+		int m_LookLeftID;
+		int m_LookRightID;
 	};
 }

@@ -3,6 +3,9 @@
 
 namespace fuel
 {
+	class RigidBody2D;
+	class SpriteComponent;
+	
 	enum class PlayerID;
 	class PlayerController : public BaseComponent
 	{
@@ -30,6 +33,8 @@ namespace fuel
 		void SetPlayerID(const PlayerID id);
 		PlayerID GetPlayerID() const;
 
+		void SetIsInMenu(const bool inMenu);
+		
 		// Controls
 		void Jump();
 		void Fire();
@@ -62,8 +67,11 @@ namespace fuel
 		
 	private:
 		GameObject* m_pGameObject;
+		RigidBody2D* m_pRigidBody;
+		SpriteComponent* m_pSpriteRenderer;
 		PlayerID m_PlayerID;
 		std::string m_ID;
 		bool m_IsInMenu;
+		bool m_IsGrounded;
 	};
 }
