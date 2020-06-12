@@ -14,8 +14,10 @@ fuel::Button::Button()
 	, m_pRenderComponent(nullptr)
 	, m_pTextComponent(nullptr)
 	, m_pLinkedScene(nullptr)
+	, m_IsActive(true)
+	, m_IsTriggered(false)
 	, m_ButtonID(0)
-	, m_IsSelected(false)
+	, m_IsSelected(true)
 	, m_ButtonAction(ButtonAction::QUIT)
 {
 	m_pTransform = new Transform();
@@ -44,10 +46,10 @@ void fuel::Button::Update()
 {
 	if (m_IsSelected)
 	{
-		m_pTextComponent->SetColor(0.7f, 0.7f, 0.7f, 1.f);
+		m_pTextComponent->SetColor(0.30588f, 0.02745f, 0.37647f, 1.f);
 	}
 	else
-		m_pTextComponent->SetColor(1.f, 1.f, 1.f, 1.f);
+		m_pTextComponent->SetColor(99.f / 255.f, 75.f / 255.f, 98.f / 255.f, 1.f);
 	
 	m_pTransform->Update();
 	m_pRenderComponent->Update();
@@ -60,6 +62,9 @@ void fuel::Button::FixedUpdate()
 
 void fuel::Button::Render() const
 {
+	if (!m_IsActive)
+		return;
+	
 	m_pRenderComponent->Render();
 	m_pTextComponent->Render();
 }
@@ -104,6 +109,21 @@ bool fuel::Button::CompareTag(const std::string& tagName) const
 	return m_Tag == tagName;
 }
 
+void fuel::Button::SetActive(const bool isActive)
+{
+	m_IsActive = isActive;
+}
+
+bool fuel::Button::GetIsActive() const
+{
+	return m_IsActive;
+}
+
+bool fuel::Button::GetIsTriggered() const
+{
+	return m_IsTriggered;
+}
+
 fuel::ObjectType fuel::Button::GetObjectType() const
 {
 	return ObjectType::BUTTON;
@@ -144,6 +164,11 @@ void fuel::Button::SetText(const std::string& text)
 void fuel::Button::SetFont(const std::shared_ptr<Font>& font)
 {
 	m_pTextComponent->SetFont(font);
+}
+
+void fuel::Button::SetFontSize(const int size)
+{
+	m_pTextComponent->SetSize(size);
 }
 
 void fuel::Button::SetTextOffset(const Vector2& offset)

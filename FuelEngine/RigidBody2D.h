@@ -36,7 +36,9 @@ namespace fuel
 		void MovePosition(const Vector3& pos);
 		Vector3 GetPosition() const;
 
-		void AddForce(const Vector2& force);
+		bool GetIsFacingLeft() const;
+		
+		void AddForce(const Vector2& force, bool impulse = false);
 		void SetForce(const Vector2& force);
 
 		void SetDrag(float drag);
@@ -51,7 +53,11 @@ namespace fuel
 		void SetGravity(const Vector2& gravity);
 		Vector2 GetGravity() const;
 
+		void SetBounciness(const float bounciness);
+		
 		void AddCollider(BaseCollider* collider);
+
+		bool IsGrounded();
 
 		// Loading and Saving
 		ComponentType GetCompType() const override;
@@ -79,6 +85,7 @@ namespace fuel
 		std::vector<BaseCollider*> m_pColliders{};
 		Vector3 m_Position{};
 		Vector2 m_Velocity{};
+		Vector2 m_InputVelocity{};
 		Vector2 m_Acceleration{};
 		Vector2 m_Force{};
 		float m_Mass{ 1.f };
@@ -88,11 +95,13 @@ namespace fuel
 		
 		bool m_IsKinematic{ false };
 		bool m_UseGravity{ true };
+		bool m_IsFacingLeft{ false };
 		/**
 		 * \brief Holds Collider ID as key and pair as value in format [isColliding, isInTrigger]
 		 */
 		std::map<std::string, std::pair<bool, bool>> m_RegisteredCollisions{};
 
+		bool IsCollidingAfterMove();
 		void CheckCollision();
 		void CheckBoxCollision(BaseCollider* sceneCollider);
 		void CheckSphereCollision(BaseCollider* sceneCollider);

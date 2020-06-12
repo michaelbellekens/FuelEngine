@@ -1,6 +1,6 @@
 #pragma once
 #include "Singleton.h"
-#include "Time.h"
+//#include "Time.h"
 
 namespace fuel
 {
@@ -28,7 +28,7 @@ namespace fuel
 		static const int m_GameWidth{ 640 };
 		static const int m_GameHeigth{ 480 };
 		static const bool m_UseFixedFrameRate{ true };
-		static const int m_FPS{ FUEL_UPDATE_RATE_EXTREME };
+		static const int m_FPS{ 144 };
 		static float m_Gravity;
 	};
 }

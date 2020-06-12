@@ -236,3 +236,20 @@ void fuel::FileManager::IWriteString(std::ofstream& binStream, const std::string
 		binStream.write((const char*)&stringData[i], sizeof(char));
 	}
 }
+
+void fuel::FileManager::IReadLevelTiles(std::string& levelTiles, const std::string& levelFile)
+{
+	std::ifstream binStream;
+	binStream.open(levelFile, std::ios::in | std::ios::binary);
+	if (binStream.is_open())
+	{
+		std::string tempData{};
+		for (int i{ 0 }; i < 25; ++i)
+		{
+			std::getline(binStream, tempData);
+			levelTiles += tempData;
+			if (levelTiles.back() == '\r')
+				levelTiles.erase(levelTiles.end() - 1);
+		}
+	}
+}

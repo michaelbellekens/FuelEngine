@@ -43,6 +43,9 @@ void fuel::GameObject::Start()
 
 void fuel::GameObject::Update()
 {
+	if (!m_IsActive)
+		return;
+	
 	for (size_t idx{ 0 }; idx < m_pComponents.size(); ++idx)
 	{
 		m_pComponents[idx]->Update();
@@ -51,6 +54,9 @@ void fuel::GameObject::Update()
 
 void fuel::GameObject::FixedUpdate()
 {
+	if (!m_IsActive)
+		return;
+	
 	for (size_t idx{ 0 }; idx < m_pComponents.size(); ++idx)
 	{
 		m_pComponents[idx]->FixedUpdate();
@@ -59,6 +65,9 @@ void fuel::GameObject::FixedUpdate()
 
 void fuel::GameObject::Render() const
 {
+	if (!m_IsActive)
+		return;
+	
 	for (size_t idx{ 0 }; idx < m_pComponents.size(); ++idx)
 	{
 		m_pComponents[idx]->Render();
@@ -110,6 +119,16 @@ bool fuel::GameObject::CompareTag(const std::string& tagName) const
 	return m_Tag == tagName;
 }
 
+void fuel::GameObject::SetActive(const bool isActive)
+{
+	m_IsActive = isActive;
+}
+
+bool fuel::GameObject::GetIsActive() const
+{
+	return m_IsActive;
+}
+
 fuel::ObjectType fuel::GameObject::GetObjectType() const
 {
 	return ObjectType::GAMEOBJECT;
@@ -135,7 +154,6 @@ void fuel::GameObject::OnCollisionEnter(BaseCollider* other)
 {
 	//Logger::LogInfo("CollisionEnter with:" + other->GetGameObject()->GetName());
 	//Logger::LogInfo("CollisionEnter with: " + other->GetGameObject()->GetTag());
-	SoundManager::GetInstance().StartSound("BubblePop");
 	for (BaseComponent* pBaseComponent : m_pComponents)
 	{
 		pBaseComponent->OnCollisionEnter(other);

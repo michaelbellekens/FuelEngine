@@ -47,9 +47,11 @@ namespace fuel
 		virtual bool IsColliding(const Vector2& point) const = 0;
 
 		virtual bool CanPassFromBellow() const = 0;
+		virtual void SetCanPassFromBellow(const bool canPass) = 0;
 
 		//virtual Shape GetDimensions() const = 0;
 		virtual ShapeType GetShapeType() const = 0;
+		virtual Vector2 GetMidPoint() const = 0;
 
 		// Editor GUI
 		virtual void DrawGUI() = 0;

@@ -25,7 +25,7 @@ fuel::TextComponent::TextComponent()
 	, m_Position{ 0.f, 0.f }
 {
 	// Set default font
-	m_Font = ResourceManager::LoadFont("Lingua.otf", 36);;
+	m_Font = ResourceManager::LoadFont("Lingua.otf", 36);
 	m_Text = "Change me";
 	m_FontName = m_Font->GetName();
 }
@@ -95,6 +95,7 @@ void fuel::TextComponent::SetText(const std::string& text)
 void fuel::TextComponent::SetFont(const std::shared_ptr<Font>& font)
 {
 	m_Font = font;
+	m_FontName = m_Font->GetName();
 	m_NeedsUpdate = true;
 }
 
@@ -106,7 +107,7 @@ void fuel::TextComponent::SetPosition(const float x, const float y)
 void fuel::TextComponent::SetSize(unsigned int fontSize)
 {
 	m_FontSize = static_cast<int>(fontSize);
-	m_Font = ResourceManager::LoadFont("Fonts/" + m_FontName, fontSize);
+	m_Font = ResourceManager::LoadFont(m_FontName, fontSize);
 	m_NeedsUpdate = true;
 }
 

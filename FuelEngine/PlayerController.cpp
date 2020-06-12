@@ -4,14 +4,20 @@
 #include "InputManager.h"
 #include "TextComponent.h"
 #include "VibrationComponent.h"
+#include "SpriteComponent.h"
 #include "Logger.h"
+#include "RigidBody2D.h"
 #include "Scene.h"
+#include "SoundManager.h"
 
 fuel::PlayerController::PlayerController()
 	: m_pGameObject{ nullptr }
+	, m_pRigidBody(nullptr)
+	, m_pSpriteRenderer(nullptr)
 	, m_PlayerID{ PlayerID::PlayerOne }
 	, m_ID{"" }
 	, m_IsInMenu{ true }
+	, m_IsGrounded{ false }
 {
 }
 
@@ -25,6 +31,9 @@ void fuel::PlayerController::Initialize()
 
 void fuel::PlayerController::OnStart()
 {
+	m_pRigidBody = m_pGameObject->GetComponent<RigidBody2D>();
+	m_pSpriteRenderer = m_pGameObject->GetComponent<SpriteComponent>();
+	
 	InputManager::AddControllerBinding(m_PlayerID, this, CommandID::Jump, ButtonState::pressed, XINPUT_GAMEPAD_A);
 	InputManager::AddControllerBinding(m_PlayerID, this, CommandID::Fire, ButtonState::released, XINPUT_GAMEPAD_Y);
 	InputManager::AddControllerBinding(m_PlayerID, this, CommandID::Fart, ButtonState::released, XINPUT_GAMEPAD_X);
@@ -59,6 +68,23 @@ void fuel::PlayerController::Update()
 
 void fuel::PlayerController::FixedUpdate()
 {
+	const float speed{ 2.f };
+	const Vector2 stickDir{ InputManager::GetControllerAxis(true, static_cast<PlayerID>(m_PlayerID)) };
+
+	m_pRigidBody->MovePosition(Vector3(stickDir.x * speed, 0.f, 0.f));
+
+	const bool previousGrounded{ m_IsGrounded };
+	m_IsGrounded = m_pRigidBody->IsGrounded();
+
+	if (!previousGrounded && m_IsGrounded)
+		SoundManager::GetInstance().StartSound("BubblePop");
+	
+	if (stickDir.MagnitudeSqr() > 0.f && stickDir.x > 0.f)
+	{
+		m_pSpriteRenderer->LookLeft(false);
+	}
+	else if (stickDir.MagnitudeSqr() > 0.f)
+		m_pSpriteRenderer->LookLeft(true);
 }
 
 void fuel::PlayerController::Render() const
@@ -90,12 +116,21 @@ fuel::PlayerID fuel::PlayerController::GetPlayerID() const
 	return m_PlayerID;
 }
 
+void fuel::PlayerController::SetIsInMenu(const bool inMenu)
+{
+	m_IsInMenu = inMenu;
+}
+
 void fuel::PlayerController::Jump()
 {
 	if (m_IsInMenu)
 		return;
-	
-	Logger::LogInfo("Jump");
+
+	if(m_IsGrounded)
+	{
+		Logger::LogInfo("Jump");
+		m_pGameObject->GetComponent<RigidBody2D>()->AddForce(Vector2(0.f, -6.f), true);
+	}
 }
 
 void fuel::PlayerController::Fire()
@@ -152,11 +187,13 @@ void fuel::PlayerController::ClickUI()
 void fuel::PlayerController::Safe(std::ofstream& binStream) const
 {
 	binStream.write((const char*)&m_PlayerID, sizeof(PlayerID));
+	binStream.write((const char*)&m_IsInMenu, sizeof(bool));
 }
 
 void fuel::PlayerController::Load(std::ifstream& binStream)
 {
 	binStream.read((char*)&m_PlayerID, sizeof(PlayerID));
+	binStream.read((char*)&m_IsInMenu, sizeof(bool));
 }
 
 fuel::ComponentType fuel::PlayerController::GetCompType() const
@@ -216,6 +253,13 @@ void fuel::PlayerController::DrawGUI()
 		
 		ImGui::EndCombo();
 	}
+
+	// IsGrounded ---------------------------------------------------
+	const std::string gravityLabel{ "##IsGroundedLabel" + m_ID };
+	ImGui::Text("Is Grounded:");
+	ImGui::SameLine(100);
+	ImGui::Checkbox(gravityLabel.c_str(), &m_IsGrounded);
+	// --------------------------------------------------------------
 }
 
 const std::string& fuel::PlayerController::GetID() const

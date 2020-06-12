@@ -51,7 +51,7 @@ void fuel::RigidBody2D::FixedUpdate()
 		
 		const Vector2 accelByForce{ m_Force.x / m_Mass, m_Force.y / m_Mass };
 
-		if(m_UseGravity)
+		if (m_UseGravity)
 			m_Acceleration = m_Gravity;
 		m_Acceleration += accelByForce;
 		
@@ -73,8 +73,9 @@ void fuel::RigidBody2D::FixedUpdate()
 			m_Velocity.x = std::abs(m_Velocity.x) < 0.04f ? 0.f : m_Velocity.x;
 		}
 
+		m_IsFacingLeft = m_Velocity.x > 0.f ? false : true;
 		
-		m_Position += m_Velocity;
+		m_Position += m_Velocity + m_InputVelocity;
 
 		CheckCollision();
 	}
@@ -101,7 +102,7 @@ size_t fuel::RigidBody2D::GetType()
 
 void fuel::RigidBody2D::MovePosition(const Vector3& pos)
 {
-	m_Position = pos;
+	m_InputVelocity.x = std::abs(m_Velocity.x) < 0.5f ? pos.x : 0.f;
 }
 
 fuel::Vector3 fuel::RigidBody2D::GetPosition() const
@@ -109,9 +110,16 @@ fuel::Vector3 fuel::RigidBody2D::GetPosition() const
 	return m_Position;
 }
 
-void fuel::RigidBody2D::AddForce(const Vector2& force)
+bool fuel::RigidBody2D::GetIsFacingLeft() const
+{
+	return m_IsFacingLeft;
+}
+
+void fuel::RigidBody2D::AddForce(const Vector2& force, const bool impulse)
 {
 	m_Force += force;
+	if (impulse)
+		m_Velocity += force;
 }
 
 void fuel::RigidBody2D::SetForce(const Vector2& force)
@@ -159,6 +167,11 @@ fuel::Vector2 fuel::RigidBody2D::GetGravity() const
 	return m_Gravity;
 }
 
+void fuel::RigidBody2D::SetBounciness(const float bounciness)
+{
+	m_Bounciness = bounciness;
+}
+
 void fuel::RigidBody2D::AddCollider(BaseCollider* collider)
 {
 	const std::vector<BaseCollider*>::iterator it{ std::find(m_pColliders.begin(), m_pColliders.end(), collider) };
@@ -169,6 +182,53 @@ void fuel::RigidBody2D::AddCollider(BaseCollider* collider)
 	}
 
 	Logger::LogWarning("Collider is already added to Rigidbody of: " + m_pGameObject->GetName());
+}
+
+bool fuel::RigidBody2D::IsGrounded()
+{
+	const std::vector<BaseCollider*> sceneColliders{ m_pGameObject->GetScene()->GetAllColliders() };
+	for (BaseCollider* ownCollider : m_pColliders)
+	{
+		Rectf rectDim;
+		Spheref sphereDim;
+		
+		Vector2 pos{};
+		float width{};
+		float height{};
+		
+		switch (ownCollider->GetShapeType())
+		{
+		case ShapeType::Sphere:
+			rectDim = reinterpret_cast<BoxCollider*>(ownCollider)->GetDimensions();
+			pos.x = rectDim.x;
+			pos.y = rectDim.y;
+			width = rectDim.width;
+			height = rectDim.height;
+			break;
+		case ShapeType::Rect:
+			sphereDim = reinterpret_cast<SphereCollider*>(ownCollider)->GetDimensions();
+			pos.x = sphereDim.x;
+			pos.y = sphereDim.y;
+			width = sphereDim.radius;
+			height = sphereDim.radius;
+			break;
+		}
+		
+		const Vector2 leftPoint{ pos.x + 1.f, pos.y + height + 2.f };
+		const Vector2 rightPoint{ pos.x + width - 1.f, pos.y + height + 2.f };
+		
+		for (BaseCollider* sceneCollider : sceneColliders)
+		{
+			// If current scene collider is part of this Rigidbody2D skip to next collider
+			const std::vector<BaseCollider*>::iterator it{ std::find(m_pColliders.begin(), m_pColliders.end(), sceneCollider) };
+			if (it != m_pColliders.end())
+				continue;
+
+			if (sceneCollider->IsColliding(leftPoint) || sceneCollider->IsColliding(rightPoint))
+				return true;
+		}	
+	}
+	return false;
 }
 
 void fuel::RigidBody2D::Safe(std::ofstream& binStream) const
@@ -213,6 +273,11 @@ fuel::ComponentType fuel::RigidBody2D::GetCompType() const
 void fuel::RigidBody2D::OnCollisionEnter(BaseCollider* other)
 {
 	UNREFERENCED_PARAMETER(other);
+	/*if (other->GetGameObject()->CompareTag("StaticScene"))
+	{
+		if (m_Force.y < 0.f && m_Velocity.y > 0.f)
+			m_Force.y = 0.f;
+	}*/
 }
 
 void fuel::RigidBody2D::OnCollisionStay(BaseCollider* other)
@@ -392,6 +457,29 @@ const std::string& fuel::RigidBody2D::GetID() const
 	return m_ID;
 }
 
+bool fuel::RigidBody2D::IsCollidingAfterMove()
+{
+	const std::vector<BaseCollider*> sceneColliders{ m_pGameObject->GetScene()->GetAllColliders() };
+	for (BaseCollider* sceneCollider : sceneColliders)
+	{
+		// If current scene collider is part of this Rigidbody2D skip to next collider
+		const std::vector<BaseCollider*>::iterator it{ std::find(m_pColliders.begin(), m_pColliders.end(), sceneCollider) };
+		if (it != m_pColliders.end())
+			continue;
+
+		switch (sceneCollider->GetShapeType())
+		{
+		case ShapeType::Sphere:
+			CheckSphereCollision(sceneCollider);
+			break;
+		case ShapeType::Rect:
+			CheckBoxCollision(sceneCollider);
+			break;
+		}
+	}
+	return true;
+}
+
 void fuel::RigidBody2D::CheckCollision()
 {
 	const std::vector<BaseCollider*> sceneColliders{ m_pGameObject->GetScene()->GetAllColliders() };
@@ -508,101 +596,109 @@ void fuel::RigidBody2D::CheckSphereCollision(BaseCollider* sceneCollider)
 
 void fuel::RigidBody2D::SetVelocityAfterCollision(BaseCollider* ownCollider, BaseCollider* sceneCollider)
 {
+	const float pMidX = ownCollider->GetMidPoint().x;
+	const float pMidY = ownCollider->GetMidPoint().y;
+	const float aMidX = sceneCollider->GetMidPoint().x;
+	const float aMidY = sceneCollider->GetMidPoint().y;
+
 	Rectf rectDim;
 	Spheref sphereDim;
-	
-	Vector2 posOwnCollider{};
-	Vector2 dimOwnCollider{};
+
+	Vector2 ownColPos{};
+	Vector2 ownColDim{};
 	switch (ownCollider->GetShapeType())
 	{
 	case ShapeType::Rect:
-		
+
 		rectDim = reinterpret_cast<BoxCollider*>(ownCollider)->GetDimensions();
-		posOwnCollider.x = rectDim.x;
-		posOwnCollider.y = rectDim.y;
-		dimOwnCollider.x = rectDim.width;
-		dimOwnCollider.y = rectDim.height;
+		ownColPos.x = rectDim.x;
+		ownColPos.y = rectDim.y;
+		ownColDim.x = rectDim.width;
+		ownColDim.y = rectDim.height;
 		break;
 	case ShapeType::Sphere:
 		sphereDim = reinterpret_cast<SphereCollider*>(ownCollider)->GetDimensions();
-		posOwnCollider.x = sphereDim.x;
-		posOwnCollider.y = sphereDim.y;
-		dimOwnCollider.x = sphereDim.radius;
-		dimOwnCollider.y = sphereDim.radius;
+		ownColPos.x = sphereDim.x;
+		ownColPos.y = sphereDim.y;
+		ownColDim.x = sphereDim.radius;
+		ownColDim.y = sphereDim.radius;
 		break;
 	}
-
-	Vector2 posSceneCollider{};
-	Vector2 dimSceneCollider{};
+	
+	Vector2 sceneColPos{};
+	Vector2 sceneColDim{};
 	switch (sceneCollider->GetShapeType())
 	{
 	case ShapeType::Rect:
 
 		rectDim = reinterpret_cast<BoxCollider*>(sceneCollider)->GetDimensions();
-		posSceneCollider.x = rectDim.x;
-		posSceneCollider.y = rectDim.y;
-		dimSceneCollider.x = rectDim.width;
-		dimSceneCollider.y = rectDim.height;
+		sceneColPos.x = rectDim.x;
+		sceneColPos.y = rectDim.y;
+		sceneColDim.x = rectDim.width;
+		sceneColDim.y = rectDim.height;
 		break;
 	case ShapeType::Sphere:
 		sphereDim = reinterpret_cast<SphereCollider*>(sceneCollider)->GetDimensions();
-		posSceneCollider.x = sphereDim.x;
-		posSceneCollider.y = sphereDim.y;
-		dimSceneCollider.x = sphereDim.radius;
-		dimSceneCollider.y = sphereDim.radius;
+		sceneColPos.x = sphereDim.x;
+		sceneColPos.y = sphereDim.y;
+		sceneColDim.x = sphereDim.radius;
+		sceneColDim.y = sphereDim.radius;
 		break;
 	}
 
-	const Vector2 previousPos{ posOwnCollider - m_Velocity };
+	// To find the side of entry calculate based on
+	// the normalized sides
+	float dx = (aMidX - pMidX) / (sceneColDim.x / 2.f);
+	float dy = (aMidY - pMidY) / (sceneColDim.y / 2.f);
 
-	if (previousPos.y <= posSceneCollider.y
-		&& previousPos.x > posSceneCollider.x - dimSceneCollider.x
-		&& previousPos.x <= posSceneCollider.x + dimSceneCollider.x)
-	{
-		//Logger::LogInfo("Colliding from above!");
-		if (m_Velocity.y > 0.f)
-		{
-			if(m_Force.y != 0.f)
-				m_Force.y *= -m_Bounciness;
-			m_Velocity.y *= -m_Bounciness;
-			m_Position.y = posSceneCollider.y - dimOwnCollider.y;
+	// Calculate the absolute change in x and y
+	float absDX = abs(dx);
+	float absDY = abs(dy);
+
+	if (absDX > absDY) {
+
+		// If the player is approaching from positive X
+		if (dx < 0 && m_Velocity.x + m_InputVelocity.x < 0.f) {
+			m_Position.x = sceneColPos.x + sceneColDim.x;
+
+			m_Velocity.x = -(m_Velocity.x + (m_InputVelocity.x * 2.f)) * m_Bounciness;
+			if (abs(m_Velocity.x) < 0.05) {
+				m_Velocity.x = 0;
+			}
+		}
+		else if(dx > 0 && m_Velocity.x + m_InputVelocity.x > 0.f) {
+			// If the player is approaching from negative X
+			m_Position.x = sceneColPos.x - ownColDim.x;
+
+			m_Velocity.x = -(m_Velocity.x + (m_InputVelocity.x * 2.f)) * m_Bounciness;
+			if (abs(m_Velocity.x) < 0.05) {
+				m_Velocity.x = 0;
+			}
 		}
 	}
-	else if (previousPos.y > posSceneCollider.y
-		&& previousPos.x >= posSceneCollider.x
-		&& previousPos.x <= posSceneCollider.x + dimSceneCollider.x)
-	{
-		//Logger::LogInfo("Colliding from beneath!");
-		if (m_Velocity.y < 0.f)
-		{
-			if (m_Force.y != 0.f)
-				m_Force.y *= -m_Bounciness;
-			m_Velocity.y *= -m_Bounciness;
-			m_Position.y = posSceneCollider.y + dimSceneCollider.y;
+	else {
+
+		// If the player is approaching from positive Y
+		if (dy > 0 && m_Velocity.y > 0.f) {
+			m_Position.y = sceneColPos.y - ownColDim.y;
+			m_Force.y = 0.f;
+			
+			// Velocity component
+			m_Velocity.y = -m_Velocity.y * m_Bounciness;
+			if (abs(m_Velocity.y) < 0.05)
+				m_Velocity.y = 0;
+		}
+		else if (dy < 0 && m_Velocity.y < 0.f){
+			// If the player is approaching from negative Y
+			m_Position.y = sceneColPos.y + sceneColDim.y;
+
+			// Velocity component
+			m_Velocity.y = -m_Velocity.y/* * m_Bounciness*/;
+			if (abs(m_Velocity.y) < 0.05)
+				m_Velocity.y = 0;
 		}
 	}
-	else if (previousPos.x < posSceneCollider.x)
-	{
-		//Logger::LogInfo("Colliding from left!");
-		if (m_Velocity.x > 0.f)
-		{
-			if (m_Force.x != 0.f)
-				m_Force.x *= -m_Bounciness;
-			m_Velocity.x *= -m_Bounciness;
-			m_Position.x = posSceneCollider.x - dimOwnCollider.x;
-		}
-	}
-	else if (previousPos.x > posSceneCollider.x + dimSceneCollider.x)
-	{
-		//Logger::LogInfo("Colliding from right!");
-		if (m_Velocity.x < 0.f)
-		{
-			if (m_Force.x != 0.f)
-				m_Force.x *= -m_Bounciness;
-			m_Velocity.x *= -m_Bounciness;
-			m_Position.x = posSceneCollider.x + dimSceneCollider.x;
-		}
-	}
+
 }
 
 void fuel::RigidBody2D::HandlePhysicsEvents(const bool prevTriggerState, const bool triggerState, const bool prevCollisionState, const bool collisionState, BaseCollider* pCollider)

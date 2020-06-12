@@ -44,6 +44,7 @@ void fuel::BoxCollider::FixedUpdate()
 
 void fuel::BoxCollider::Render() const
 {
+#ifdef _DEBUG
 	SDL_Rect rect;
 	rect.x = static_cast<int>(m_pTransform->GetPosition().x + m_Dimensions.x);
 	rect.y = static_cast<int>(m_pTransform->GetPosition().y + m_Dimensions.y);
@@ -53,18 +54,18 @@ void fuel::BoxCollider::Render() const
 	SDL_SetRenderDrawColor(Renderer::GetSDLRenderer(), 0, 255, 0, 255);
 	SDL_RenderDrawRect(Renderer::GetSDLRenderer(), &rect);
 	SDL_SetRenderDrawColor(Renderer::GetSDLRenderer(), 0, 0, 0, 255);
-
+#endif
 
 	// DEBUG
-	SDL_Rect testRect;
-	testRect.x = static_cast<int>(InputManager::GetMousePosition().x - 25.f);
-	testRect.y = static_cast<int>(InputManager::GetMousePosition().y - 25.f);
-	testRect.w = 50;
-	testRect.h = 50;
+	//SDL_Rect testRect;
+	//testRect.x = static_cast<int>(InputManager::GetMousePosition().x - 25.f);
+	//testRect.y = static_cast<int>(InputManager::GetMousePosition().y - 25.f);
+	//testRect.w = 50;
+	//testRect.h = 50;
 
-	SDL_SetRenderDrawColor(Renderer::GetSDLRenderer(), 0, 255, 0, 255);
-	SDL_RenderDrawRect(Renderer::GetSDLRenderer(), &testRect);
-	SDL_SetRenderDrawColor(Renderer::GetSDLRenderer(), 0, 0, 0, 255);
+	//SDL_SetRenderDrawColor(Renderer::GetSDLRenderer(), 0, 255, 0, 255);
+	//SDL_RenderDrawRect(Renderer::GetSDLRenderer(), &testRect);
+	//SDL_SetRenderDrawColor(Renderer::GetSDLRenderer(), 0, 0, 0, 255);
 	// ------
 }
 
@@ -232,6 +233,18 @@ void fuel::BoxCollider::OnTriggerExit(BaseCollider* other)
 bool fuel::BoxCollider::CanPassFromBellow() const
 {
 	return m_CanPassFromBellow;
+}
+
+void fuel::BoxCollider::SetCanPassFromBellow(const bool canPass)
+{
+	m_CanPassFromBellow = canPass;
+}
+
+fuel::Vector2 fuel::BoxCollider::GetMidPoint() const
+{
+	const float x{ m_pTransform->GetPosition().x + m_Dimensions.x + (m_Dimensions.width / 2.f) };
+	const float y{ m_pTransform->GetPosition().y + m_Dimensions.y + (m_Dimensions.height / 2.f) };
+	return Vector2(x, y);
 }
 
 void fuel::BoxCollider::DrawGUI()

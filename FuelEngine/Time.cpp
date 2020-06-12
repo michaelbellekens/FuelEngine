@@ -1,13 +1,14 @@
 #include "FuelEnginePCH.h"
 #include "Time.h"
+
 #include <thread>
 
 void Time::IUpdate()
 {
-	m_DeltaTime = duration_cast<duration<float>>(m_StartTimeFrame - m_EndTimeFrame).count();
+	m_DeltaTime = std::chrono::duration_cast<std::chrono::duration<float>>(m_StartTimeFrame - m_EndTimeFrame).count();
 
 	const int sleepTimeUs{ m_TargetFpsUs - int(SecondsToUs(m_DeltaTime)) };
-	std::this_thread::sleep_for(microseconds(sleepTimeUs));
+	std::this_thread::sleep_for(std::chrono::microseconds(sleepTimeUs));
 
 	m_DeltaTime += UsToSeconds(float(sleepTimeUs));
 

@@ -1,6 +1,7 @@
 #include "FuelEnginePCH.h"
 #include "VibrationComponent.h"
 #include "InputManager.h"
+#include "Time.h"
 
 void fuel::VibrationComponent::Initialize()
 {

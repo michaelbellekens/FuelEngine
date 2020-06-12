@@ -30,25 +30,16 @@ void fuel::SceneManager::IStart()
 
 void fuel::SceneManager::IUpdate()
 {
-	//for(auto& scene : m_Scenes)
-	//{
-	//	scene->Update();
-	//}
 	m_ActiveScene->Update();
 }
 
 void fuel::SceneManager::IFixedUpdate()
 {
-	//std::cout << "FixedUpdate" << std::endl;
 	m_ActiveScene->FixedUpdate();
 }
 
 void fuel::SceneManager::IRender() const
 {
-	//for (const auto& scene : m_Scenes)
-	//{
-	//	scene->Render();
-	//}
 	m_ActiveScene->Render();
 }
 
@@ -57,7 +48,9 @@ void fuel::SceneManager::ISetActiveScene(const std::string& sceneName)
 	std::vector<std::shared_ptr<Scene>>::iterator newActiveScene{ std::find_if(m_Scenes.begin(), m_Scenes.end(), [sceneName](std::shared_ptr<Scene> scene) { return scene->GetName() == sceneName; }) };
 	if (newActiveScene != m_Scenes.end())
 	{
+		m_ActiveScene->OnDisable();
 		m_ActiveScene = *newActiveScene;
+		m_ActiveScene->OnEnable();
 		Logger::LogInfo("Scene \"" + sceneName + "\" is new active scene.");
 	}
 	else
@@ -80,6 +73,7 @@ fuel::Scene& fuel::SceneManager::ICreateScene(const std::string& name)
 {
 	const auto scene = std::shared_ptr<Scene>(new Scene(name));
 	m_Scenes.push_back(scene);
+	m_ActiveScene = scene;
 	return *scene;
 }
 

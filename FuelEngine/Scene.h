@@ -1,10 +1,11 @@
 #pragma once
 #include "Button.h"
 #include "SceneManager.h"
-#include "RenderComponent.h"
 
 namespace fuel
 {
+	class Button;
+
 	struct SceneData
 	{
 		SceneData()
@@ -38,6 +39,11 @@ namespace fuel
 		void FixedUpdate();
 		void Render() const;
 
+		void OnEnable();
+		void OnDisable();
+
+		void Reset();
+
 		void AddCollider(BaseCollider* collider);
 		const std::vector<BaseCollider*>& GetAllColliders() const;
 
@@ -48,7 +54,8 @@ namespace fuel
 		void HandleButtonEvent(ButtonAction action);
 		
 		const std::string& GetName() const;
-
+		std::shared_ptr<SceneObject> FindObject(const std::string& objectName) const;
+		
 		// Saving and Loading
 		unsigned int GetNumGameObjects() const;
 		std::vector<std::shared_ptr<SceneObject>>& GetSceneObjects();
