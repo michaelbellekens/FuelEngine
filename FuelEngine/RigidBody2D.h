@@ -7,8 +7,25 @@
 
 #include "Logger.h"
 //https://developer.ibm.com/technologies/javascript/tutorials/wa-build2dphysicsengine/
+
 namespace fuel
 {
+	enum PhysicsEventType
+	{
+		ONCOLLISIONENTER,
+		ONCOLLISIONSTAY,
+		ONCOLLISIONEXIT,
+		ONTRIGGERENTER,
+		ONTRIGGERSTAY,
+		ONTRIIGEREXIT
+	};
+	
+	struct PhysicsEvent
+	{
+		PhysicsEventType event;
+		BaseCollider* other;
+	};
+	
 	class Transform;
 	class RigidBody2D final : public BaseComponent
 	{

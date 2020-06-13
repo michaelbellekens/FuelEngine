@@ -86,7 +86,7 @@ size_t fuel::BoxCollider::GetType()
 
 fuel::Vector2 fuel::BoxCollider::GetPosition()
 {
-	return {m_Dimensions.x, m_Dimensions.y};
+	return { m_pTransform->GetPosition().x + m_Dimensions.x, m_pTransform->GetPosition().y + m_Dimensions.y };
 }
 
 bool fuel::BoxCollider::IsTrigger() const

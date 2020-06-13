@@ -73,7 +73,7 @@ void fuel::PlayerController::FixedUpdate()
 {
 	if (m_pRigidBody)
 	{
-		const float speed{ 2.f };
+		const float speed{ 2.5f };
 		const Vector2 stickDir{ InputManager::GetControllerAxis(true, static_cast<PlayerID>(m_PlayerID)) };
 
 		m_pRigidBody->MovePosition(Vector3(stickDir.x * speed, 0.f, 0.f));

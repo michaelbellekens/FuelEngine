@@ -1,7 +1,9 @@
 #pragma once
+#include "RigidBody2D.h"
 
 namespace fuel
 {
+	class GameObject;
 	class AIState
 	{
 	public:
@@ -13,8 +15,10 @@ namespace fuel
 		AIState& operator=(const AIState& other) = delete;
 		AIState& operator=(AIState&& other) = delete;
 
-		virtual void Enter() = 0;
+		virtual void Enter(GameObject* actor) = 0;
 		virtual void Update() = 0;
 		virtual void FixedUpdate() = 0;
+		virtual void TriggerPhysicsEvent(const PhysicsEvent& physicsEvent) = 0;
+		virtual size_t GetID() const = 0;
 	};
 }
