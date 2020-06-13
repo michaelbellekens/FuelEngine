@@ -21,12 +21,21 @@
     <ClCompile Include="BubbleBobble.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="ZenChanStates.cpp">
+      <Filter>EnemyStates</Filter>
+    </ClCompile>
+    <ClCompile Include="ZenChan.cpp">
+      <Filter>EnemyStates</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BubbleBobble.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="ZenChanStates.h">
+      <Filter>EnemyStates</Filter>
+    </ClInclude>
+    <ClInclude Include="ZenChan.h">
       <Filter>EnemyStates</Filter>
     </ClInclude>
   </ItemGroup>

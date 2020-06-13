@@ -176,6 +176,8 @@
   <ItemGroup>
     <ClCompile Include="BubbleBobble.cpp" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="ZenChan.cpp" />
+    <ClCompile Include="ZenChanStates.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\FuelEngine\FuelEngine.vcxproj">
@@ -184,6 +186,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BubbleBobble.h" />
+    <ClInclude Include="ZenChan.h" />
     <ClInclude Include="ZenChanStates.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

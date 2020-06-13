@@ -60,18 +60,18 @@ namespace fuel
 		std::vector<BaseComponent*> GetComponents() const;
 		
 		// Physics
-		void OnCollisionEnter(BaseCollider* other);
-		void OnCollisionStay(BaseCollider* other);
-		void OnCollisionExit(BaseCollider* other);
+		virtual void OnCollisionEnter(BaseCollider* other);
+		virtual void OnCollisionStay(BaseCollider* other);
+		virtual void OnCollisionExit(BaseCollider* other);
 
-		void OnTriggerEnter(BaseCollider* other);
-		void OnTriggerStay(BaseCollider* other);
-		void OnTriggerExit(BaseCollider* other);
+		virtual void OnTriggerEnter(BaseCollider* other);
+		virtual void OnTriggerStay(BaseCollider* other);
+		virtual void OnTriggerExit(BaseCollider* other);
 
 		// Editor GUI
 		void DrawComponents() override;
 		
-	private:
+	protected:
 		std::string m_Name{};
 		std::string m_Tag{};
 		std::vector<BaseComponent*> m_pComponents{};

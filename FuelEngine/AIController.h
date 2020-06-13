@@ -4,11 +4,12 @@
 namespace fuel
 {
 	class Transform;
+	class AIState;
 	class AIController final : public BaseComponent
 	{
 	public:
 		AIController() = default;
-		virtual ~AIController() = default;
+		virtual ~AIController();
 		AIController(const AIController& other) = delete;
 		AIController(AIController&& other) = delete;
 		AIController& operator=(const AIController& other) = delete;
@@ -26,6 +27,8 @@ namespace fuel
 
 		size_t GetType() override;
 
+		void SetState(AIState* newState);
+		
 		// Loading and Saving
 		ComponentType GetCompType() const override;
 		void Safe(std::ofstream& binStream) const override;
@@ -49,6 +52,6 @@ namespace fuel
 		GameObject* m_pGameObject{ nullptr };
 		std::string m_ID{ };
 
-		
+		AIState* m_pCurrentState{ nullptr };
 	};
 }

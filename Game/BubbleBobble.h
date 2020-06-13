@@ -41,6 +41,8 @@ private:
 	void UpdateLevelOne();
 	void UpdateLevelTwo();
 	void UpdateLevelThree();
+
+	void UpdateEnemies(std::vector<std::shared_ptr<fuel::GameObject>> enemies);
 	
 	fuel::Scene& m_MainMenuScene;
 	fuel::Scene& m_LevelOneScene;

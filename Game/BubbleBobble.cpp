@@ -2,6 +2,8 @@
 #include "BubbleBobble.h"
 
 #include <SDL.h>
+
+#include "AIController.h"
 #include "BoxCollider.h"
 #include "FileManager.h"
 #include "Logger.h"
@@ -10,6 +12,8 @@
 #include "Time.h"
 #include "SpriteComponent.h"
 #include "Transform.h"
+#include "ZenChan.h"
+#include "ZenChanStates.h"
 
 BubbleBobble::BubbleBobble()
 	: m_MainMenuScene(fuel::SceneManager::CreateScene("MainMenu"))
@@ -116,33 +120,18 @@ void BubbleBobble::InitializeButtons()
 
 void BubbleBobble::InitializeLevelOne()
 {
+	m_pPlayer1 = reinterpret_cast<fuel::GameObject*>(m_LevelOneScene.FindObject("Player1").get());
+	m_pPlayer2 = reinterpret_cast<fuel::GameObject*>(m_LevelOneScene.FindObject("Player2").get());
 	for (int i{ 0 }; i < 4; ++i)
-	{
-		auto go = std::make_shared<fuel::GameObject>();
+	{	
+		auto go = std::make_shared<fuel::ZenChan>();
 		m_LevelOneScene.AddToScene(go);
 		go->SetName("Enemy_" + std::to_string(i));
 		go->SetTag("Enemy");
-		fuel::Transform* player2Transform = go->AddComponent<fuel::Transform>();
-		player2Transform->SetPosition(501.f, 50.f);
-		fuel::RigidBody2D* player2RigidBody = go->AddComponent<fuel::RigidBody2D>();
-		player2RigidBody->SetIsKinematic(false);
-		player2RigidBody->UseGravity(true);
-		player2RigidBody->SetBounciness(0.2f);
-		fuel::BoxCollider* player2Collider = go->AddComponent<fuel::BoxCollider>();
-		player2Collider->SetDimensions(fuel::Rectf(0.f, 0.f, 16.f, 16.f));
-		fuel::SpriteComponent* pSpriteCompPlayer2 = go->AddComponent<fuel::SpriteComponent>();
-		pSpriteCompPlayer2->SetTexture("CharacterSpriteSheet.png");
-		pSpriteCompPlayer2->SetColumns(8);
-		pSpriteCompPlayer2->SetRows(16);
-		pSpriteCompPlayer2->SetAnimTime(0.1f);
-		pSpriteCompPlayer2->AddAnimation(4, 8);
-		pSpriteCompPlayer2->AddAnimation(5, 8);
-		pSpriteCompPlayer2->SetScale(1.f, 1.f);
-		pSpriteCompPlayer2->SetAnimation(4);
-		pSpriteCompPlayer2->SetDirectionIDs(5, 4);
-		//fuel::AIController* pAIController{ go->AddComponent<fuel::AIController>() };
-		//UNREFERENCED_PARAMETER(pAIController);
 
+		go->SetPlayer1(m_pPlayer1);
+		go->SetPlayer2(m_pPlayer2);
+		
 		m_EnemiesLevelOne.push_back(go);
 	}
 
@@ -160,8 +149,7 @@ void BubbleBobble::InitializeLevelTwo()
 		m_LevelTwoScene.AddToScene(go);
 		go->SetName("Enemy_" + std::to_string(i));
 		go->SetTag("Enemy");
-		fuel::Transform* player2Transform = go->AddComponent<fuel::Transform>();
-		player2Transform->SetPosition(501.f, 50.f);
+		go->AddComponent<fuel::Transform>();
 		fuel::RigidBody2D* player2RigidBody = go->AddComponent<fuel::RigidBody2D>();
 		player2RigidBody->SetIsKinematic(false);
 		player2RigidBody->UseGravity(true);
@@ -178,8 +166,8 @@ void BubbleBobble::InitializeLevelTwo()
 		pSpriteCompPlayer2->SetScale(1.f, 1.f);
 		pSpriteCompPlayer2->SetAnimation(4);
 		pSpriteCompPlayer2->SetDirectionIDs(5, 4);
-		//fuel::AIController* pAIController{ go->AddComponent<fuel::AIController>() };
-		//UNREFERENCED_PARAMETER(pAIController);
+		fuel::AIController* pAIController{ go->AddComponent<fuel::AIController>() };
+		pAIController->SetState(new fuel::WanderState_ZN());
 
 		m_EnemiesLevelTwo.push_back(go);
 	}
@@ -217,8 +205,8 @@ void BubbleBobble::InitializeLevelThree()
 		pSpriteCompPlayer2->SetScale(1.f, 1.f);
 		pSpriteCompPlayer2->SetAnimation(4);
 		pSpriteCompPlayer2->SetDirectionIDs(5, 4);
-		//fuel::AIController* pAIController{ go->AddComponent<fuel::AIController>() };
-		//UNREFERENCED_PARAMETER(pAIController);
+		fuel::AIController* pAIController{ go->AddComponent<fuel::AIController>() };
+		pAIController->SetState(new fuel::WanderState_ZN());
 
 		m_EnemiesLevelThree.push_back(go);
 	}
@@ -274,9 +262,7 @@ void BubbleBobble::UpdateMainMenu()
 void BubbleBobble::UpdateLevelOne()
 {
 	//m_CurrentTimer += Time::GetDeltaTime();
-	const bool isOnEdge{ m_EnemiesLevelOne[2]->GetComponent<fuel::RigidBody2D>()->IsOnEdge() };
-	if (isOnEdge)
-		fuel::Logger::LogInfo("Enemy is on edge");
+
 	
 	if (m_CurrentTimer > 5.f)
 	{
@@ -303,4 +289,9 @@ void BubbleBobble::UpdateLevelThree()
 		m_CurrentTimer = 0.f;
 		SwitchToScene("MainMenu");
 	}
+}
+
+void BubbleBobble::UpdateEnemies(std::vector<std::shared_ptr<fuel::GameObject>> enemies)
+{
+	UNREFERENCED_PARAMETER(enemies);
 }

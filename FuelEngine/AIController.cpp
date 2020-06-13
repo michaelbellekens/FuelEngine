@@ -1,5 +1,11 @@
 #include "FuelEnginePCH.h"
 #include "AIController.h"
+#include "AIState.h"
+
+fuel::AIController::~AIController()
+{
+	SafeDelete(m_pCurrentState);
+}
 
 void fuel::AIController::Initialize()
 {
@@ -15,10 +21,18 @@ void fuel::AIController::OnStart()
 
 void fuel::AIController::Update()
 {
+	if (m_pCurrentState)
+	{
+		m_pCurrentState->Update();
+	}
 }
 
 void fuel::AIController::FixedUpdate()
 {
+	if (m_pCurrentState)
+	{
+		m_pCurrentState->FixedUpdate();
+	}
 }
 
 void fuel::AIController::Render() const
@@ -40,6 +54,25 @@ size_t fuel::AIController::GetType()
 	return typeid(this).hash_code();
 }
 
+void fuel::AIController::SetState(AIState* newState)
+{
+	if (m_pCurrentState)
+	{
+		const size_t id1{ m_pCurrentState->GetID() };
+		const size_t id2{ newState->GetID() };
+		if (id1 != id2)
+			SafeDelete(m_pCurrentState);
+		else
+		{
+			SafeDelete(newState);
+			return;
+		}
+	}
+	
+	m_pCurrentState = newState;
+	m_pCurrentState->Enter(m_pGameObject);
+}
+
 fuel::ComponentType fuel::AIController::GetCompType() const
 {
 	return ComponentType::AICONTROLLER;
@@ -57,32 +90,32 @@ void fuel::AIController::Load(std::ifstream& binStream)
 
 void fuel::AIController::OnCollisionEnter(BaseCollider* other)
 {
-	UNREFERENCED_PARAMETER(other);
+	m_pCurrentState->TriggerPhysicsEvent({ ONCOLLISIONENTER, other });
 }
 
 void fuel::AIController::OnCollisionStay(BaseCollider* other)
 {
-	UNREFERENCED_PARAMETER(other);
+	m_pCurrentState->TriggerPhysicsEvent({ ONCOLLISIONSTAY, other });
 }
 
 void fuel::AIController::OnCollisionExit(BaseCollider* other)
 {
-	UNREFERENCED_PARAMETER(other);
+	m_pCurrentState->TriggerPhysicsEvent({ ONCOLLISIONEXIT, other });
 }
 
 void fuel::AIController::OnTriggerEnter(BaseCollider* other)
 {
-	UNREFERENCED_PARAMETER(other);
+	m_pCurrentState->TriggerPhysicsEvent({ ONTRIGGERENTER, other });
 }
 
 void fuel::AIController::OnTriggerStay(BaseCollider* other)
 {
-	UNREFERENCED_PARAMETER(other);
+	m_pCurrentState->TriggerPhysicsEvent({ ONTRIGGERSTAY, other });
 }
 
 void fuel::AIController::OnTriggerExit(BaseCollider* other)
 {
-	UNREFERENCED_PARAMETER(other);
+	m_pCurrentState->TriggerPhysicsEvent({ ONTRIIGEREXIT, other });
 }
 
 void fuel::AIController::DrawGUI()

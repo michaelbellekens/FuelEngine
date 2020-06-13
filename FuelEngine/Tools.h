@@ -18,6 +18,7 @@ namespace fuel
 		const std::string ToString() const;
 		float MagnitudeSqr() const;
 		float Magnitude() const;
+		Vector2 Normalize();
 
 		// Operator overloading
 		friend std::ostream& operator<<(std::ostream& os, const Vector2& vec2);
@@ -43,6 +44,13 @@ namespace fuel
 	inline float Vector2::Magnitude() const
 	{
 		return sqrtf(x * x + y * y);
+	}
+	inline Vector2 Vector2::Normalize()
+	{
+		const float magnitude{ this->Magnitude() };
+		this->x /= magnitude;
+		this->y /= magnitude;
+		return *this;
 	}
 
 	
@@ -122,6 +130,7 @@ namespace fuel
 		const std::string ToString() const;
 		float MagnitudeSqr() const;
 		float Magnitude() const;
+		Vector3 Normalize();
 		
 		// Operator overloading
 		friend std::ostream& operator<<(std::ostream os, const Vector3& vec3);
@@ -148,7 +157,15 @@ namespace fuel
 	{
 		return sqrtf(x * x + y * y + z * z);
 	}
-
+	inline Vector3 Vector3::Normalize()
+	{
+		const float magnitude{ this->Magnitude() };
+		this->x /= magnitude;
+		this->y /= magnitude;
+		this->z /= magnitude;
+		return *this;
+	}
+	
 	// Operator overloading
 	inline std::ostream& operator<<(std::ostream os, const Vector3& vec3)
 	{
