@@ -23,6 +23,7 @@ namespace fuel
 		Fart,
 		Duck,
 		Fire,
+		Menu,
 		MoveUpUI,
 		MoveDownUI,
 		ClickUI

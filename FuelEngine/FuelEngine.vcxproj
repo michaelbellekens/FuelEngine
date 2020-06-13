@@ -186,6 +186,8 @@ xcopy "$(SolutionDir)3rdParty\SDL2_ttf\lib\x64\*.dll" "$(OutputPath)" /R /Y</Com
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="AIController.h" />
+    <ClInclude Include="AIState.h" />
     <ClInclude Include="BaseCollider.h" />
     <ClInclude Include="BaseComponent.h" />
     <ClInclude Include="BoxCollider.h" />
@@ -236,6 +238,7 @@ xcopy "$(SolutionDir)3rdParty\SDL2_ttf\lib\x64\*.dll" "$(OutputPath)" /R /Y</Com
     <ClInclude Include="VibrationComponent.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="AIController.cpp" />
     <ClCompile Include="BoxCollider.cpp" />
     <ClCompile Include="Button.cpp" />
     <ClCompile Include="Editor.cpp" />

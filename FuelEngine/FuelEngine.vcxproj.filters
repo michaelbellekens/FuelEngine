@@ -32,6 +32,9 @@
     <Filter Include="UI">
       <UniqueIdentifier>{543cab07-5498-4edd-bc72-d9ead5447bdb}</UniqueIdentifier>
     </Filter>
+    <Filter Include="States">
+      <UniqueIdentifier>{4f4a6e7a-de34-479c-b948-825d59ed8f83}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Font.h">
@@ -178,6 +181,12 @@
     <ClInclude Include="Game.h">
       <Filter>Core</Filter>
     </ClInclude>
+    <ClInclude Include="AIController.h">
+      <Filter>Components</Filter>
+    </ClInclude>
+    <ClInclude Include="AIState.h">
+      <Filter>States</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="imgui.cpp">
@@ -278,6 +287,9 @@
     </ClCompile>
     <ClCompile Include="FileManager.cpp">
       <Filter>Managers</Filter>
+    </ClCompile>
+    <ClCompile Include="AIController.cpp">
+      <Filter>Components</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -28,10 +28,15 @@ std::shared_ptr<SceneObject> fuel::Scene::FindObject(const std::string& objectNa
 	const auto it = std::find_if(m_Objects.begin(), m_Objects.end(), [objectName](std::shared_ptr<SceneObject> object) {return object->GetName() == objectName; });
 	if (it == m_Objects.end())
 	{
-		Logger::LogError("Object with the name \"" + objectName + "\" has not been found!");
+		Logger::LogWarning("Object with the name \"" + objectName + "\" has not been found!");
 		return nullptr;
 	}
 	return *it;
+}
+
+bool fuel::Scene::GetIsActive() const
+{
+	return m_IsActive;
 }
 
 unsigned int fuel::Scene::GetNumGameObjects() const
@@ -51,6 +56,11 @@ void fuel::Scene::DrawGameObjects()
 		if (ImGui::Selectable(m_Objects[idx]->GetName().c_str(), m_SelectedGameObject == idx))
 			m_SelectedGameObject = idx;
 	}
+
+	// Check that when scenes switch the index is still within bounds
+	if (m_SelectedGameObject > m_Objects.size())
+		m_SelectedGameObject = static_cast<int>(m_Objects.size()) - 1;
+
 }
 
 void fuel::Scene::DrawComponents()
@@ -106,12 +116,14 @@ void Scene::Render() const
 
 void fuel::Scene::OnEnable()
 {
-	Logger::LogInfo("Enabled scene \"" + m_Name + "\"");
+	//Logger::LogInfo("Enabled scene \"" + m_Name + "\"");
+	m_IsActive = true;
 }
 
 void fuel::Scene::OnDisable()
 {
-	Logger::LogInfo("Disable scene \"" + m_Name + "\"");
+	//Logger::LogInfo("Disable scene \"" + m_Name + "\"");
+	m_IsActive = false;
 }
 
 void fuel::Scene::AddCollider(BaseCollider* collider)
@@ -190,29 +202,5 @@ void fuel::Scene::ExecuteButtonAction()
 			pButton->ExecuteButtonAction();
 			return;
 		}
-	}
-}
-
-void fuel::Scene::HandleButtonEvent(ButtonAction action)
-{
-	switch (action)
-	{
-	case OnePlayer:
-		// ToDO: Load scene1 with Solo mode
-		Logger::LogInfo("ButtonAction 'Solo' is triggered!");
-		break;
-	case COOP:
-		// ToDO: Load scene1 with CO-OP mode
-		Logger::LogInfo("ButtonAction 'CO-OP' is triggered!");
-		break;
-	case VS:
-		// ToDo: Load scene1 with VS mode
-		Logger::LogInfo("ButtonAction 'VS' is triggered!");
-		break;
-	case QUIT:
-		SDL_Event event;
-		event.type = SDL_QUIT;
-		SDL_PushEvent(&event);
-		break;
 	}
 }

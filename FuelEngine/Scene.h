@@ -42,8 +42,6 @@ namespace fuel
 		void OnEnable();
 		void OnDisable();
 
-		void Reset();
-
 		void AddCollider(BaseCollider* collider);
 		const std::vector<BaseCollider*>& GetAllColliders() const;
 
@@ -51,10 +49,11 @@ namespace fuel
 		void NextButton();
 		void PreviousButton();
 		void ExecuteButtonAction();
-		void HandleButtonEvent(ButtonAction action);
 		
 		const std::string& GetName() const;
 		std::shared_ptr<SceneObject> FindObject(const std::string& objectName) const;
+
+		bool GetIsActive() const;
 		
 		// Saving and Loading
 		unsigned int GetNumGameObjects() const;
@@ -69,6 +68,7 @@ namespace fuel
 		std::vector < std::shared_ptr<SceneObject>> m_Objects{};
 		std::vector<BaseCollider*> m_AllColliders{};
 		std::vector<Button*> m_pButtons{};
+		bool m_IsActive{ false };
 		
 		static unsigned int m_IdCounter;
 		static size_t m_SelectedGameObject;

@@ -15,7 +15,8 @@ namespace fuel
 		static void FixedUpdate() { GetInstance().IFixedUpdate(); }
 		static void Render() { GetInstance().IRender(); }
 		static void SetActiveScene(const std::string& sceneName) { GetInstance().ISetActiveScene(sceneName); }
-
+		static Scene* GetActiveScene() { return GetInstance().IGetActiveScene(); }
+		
 		static void DrawGameObjects() { GetInstance().IDrawGameObjects(); }
 		static void DrawComponents() { GetInstance().IDrawComponents(); }
 	private:
@@ -28,7 +29,8 @@ namespace fuel
 		void IRender() const;
 
 		void ISetActiveScene(const std::string& sceneName);
-
+		Scene* IGetActiveScene();
+		
 		// Editor GUI
 		void IDrawGameObjects();
 		void IDrawComponents();

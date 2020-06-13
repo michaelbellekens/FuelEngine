@@ -2,20 +2,21 @@
 #include "FuelEngine.h"
 
 #include <mutex>
-
-
 #include "InputManager.h"
 #include "SceneManager.h"
 #include "Renderer.h"
 #include "ResourceManager.h"
 #include <SDL.h>
-
 #include "EngineSettings.h"
 #include "EngineComponents.h"
+#include "FileManager.h"
 #include "SoundManager.h"
-
 #include "Game.h"
 #include "Time.h"
+
+#include "Button.h"
+#include "Scene.h"
+
 using namespace std;
 
 fuel::FuelEngine::FuelEngine(Game* pGame)
@@ -68,9 +69,9 @@ void fuel::FuelEngine::Initialize()
  */
 void fuel::FuelEngine::LoadGame() const
 {
-	//auto& scene = SceneManager::CreateScene("MainMenu");
+	/*auto& scene = SceneManager::CreateScene("MainMenu");
 
-	/*std::shared_ptr<GameObject> go;
+	std::shared_ptr<GameObject> go;
 
 	std::string tileData;
 	FileManager::ReadLevelTiles(tileData, "../Data/LevelData/LevelTiles_Level3.txt");
@@ -102,7 +103,7 @@ void fuel::FuelEngine::LoadGame() const
 			BoxCollider* pBoxCollider = go->AddComponent<BoxCollider>();
 			pBoxCollider->SetDimensions(Rectf(0.f, 0.f, 20.f, 20.f));
 
-			if (j >= 2 && j <=29 && i > 1 && i < 23)
+			if (j >= 2 && j <= 29 && i > 1 && i < 23)
 			{
 				pBoxCollider->SetCanPassFromBellow(true);
 			}
@@ -137,7 +138,7 @@ void fuel::FuelEngine::LoadGame() const
 	PlayerController* pController1 = go->AddComponent<PlayerController>();
 	pController1->SetPlayerID(PlayerID::PlayerOne);
 	pController1->SetIsInMenu(false);
-	
+
 	go = std::make_shared<GameObject>();
 	scene.AddToScene(go);
 	go->SetName("Player2");
@@ -163,7 +164,7 @@ void fuel::FuelEngine::LoadGame() const
 	PlayerController* pController2 = go->AddComponent<PlayerController>();
 	pController2->SetPlayerID(PlayerID::PlayerTwo);
 	pController2->SetIsInMenu(false);
-	
+
 	go = std::make_shared<GameObject>();
 	scene.AddToScene(go);
 	go->SetName("Score Player 1");
@@ -186,10 +187,11 @@ void fuel::FuelEngine::LoadGame() const
 	pScorePlayer2->SetSize(12);
 	pScorePlayer2->SetText("000000");
 	*/
+	
 	SoundManager::GetInstance().AddSound("BubblePop", "../Data/SoundFX/Bubble_Pop.wav");
 	
 	//FileManager::SaveScene(&scene, "LevelThree");
-	//FileManager::LoadScene(&scene, "LevelThree");
+	//FileManager::LoadScene(&scene, "MainMenu");
 }
 
 void fuel::FuelEngine::Cleanup()
@@ -203,7 +205,6 @@ void fuel::FuelEngine::Cleanup()
 void fuel::FuelEngine::Run()
 {
 	Initialize();
-	m_pGame->Initialize();
 
 	// tell the resource manager where he can find the game data
 	ResourceManager::Init("../Data/");
@@ -211,15 +212,15 @@ void fuel::FuelEngine::Run()
 	Time::SetFixedFrameRate(EngineSettings::GetDefaultFrameRateMode());
 	Time::SetFixedFPS(EngineSettings::GetDefaultFrameRate());
 	
+	m_pGame->Initialize();
 	LoadGame();
 
 	// Start scenes
 	SceneManager::Initialize();
 	SceneManager::Start();
 
-	std::mutex m_Mutex;
-
 	// Threading test ------------------------------------------------------- //
+	std::mutex m_Mutex;
 	auto updateFunct = [this, &m_Mutex]()
 	{
 		Time::SetEndFrame(std::chrono::high_resolution_clock::now());

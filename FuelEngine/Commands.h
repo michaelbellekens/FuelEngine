@@ -1,5 +1,7 @@
 #pragma once
 #include "PlayerController.h"
+#include "GameObject.h"
+#include "Scene.h"
 
 namespace fuel
 {
@@ -18,7 +20,11 @@ namespace fuel
 		JumpCommand() = default;
 		virtual ~JumpCommand() = default;
 
-		void Execute(fuel::PlayerController* controller) override { controller->Jump(); }
+		void Execute(fuel::PlayerController* controller) override
+		{
+			if (controller->GetGameObject()->GetScene()->GetIsActive())
+				controller->Jump();
+		}
 	};
 
 	class FireCommand final : public Command
@@ -27,7 +33,11 @@ namespace fuel
 		FireCommand() = default;
 		virtual ~FireCommand() = default;
 
-		void Execute(fuel::PlayerController* controller) override { controller->Fire(); }
+		void Execute(fuel::PlayerController* controller) override
+		{
+			if (controller->GetGameObject()->GetScene()->GetIsActive())
+				controller->Fire();
+		}
 	};
 
 	class DuckCommand final : public Command
@@ -36,7 +46,11 @@ namespace fuel
 		DuckCommand() = default;
 		virtual ~DuckCommand() = default;
 
-		void Execute(fuel::PlayerController* controller) override { controller->Duck(); }
+		void Execute(fuel::PlayerController* controller) override
+		{
+			if (controller->GetGameObject()->GetScene()->GetIsActive())
+				controller->Duck();
+		}
 	};
 
 	class FartCommand final : public Command
@@ -45,7 +59,24 @@ namespace fuel
 		FartCommand() = default;
 		virtual ~FartCommand() = default;
 
-		void Execute(fuel::PlayerController* controller) override { controller->Fart(); }
+		void Execute(fuel::PlayerController* controller) override
+		{
+			if (controller->GetGameObject()->GetScene()->GetIsActive())
+				controller->Fart();
+		}
+	};
+
+	class MenuCommand final : public Command
+	{
+	public:
+		MenuCommand() = default;
+		virtual ~MenuCommand() = default;
+
+		void Execute(fuel::PlayerController* controller) override
+		{
+			if (controller->GetGameObject()->GetScene()->GetIsActive())
+				controller->OpenMenu();
+		}
 	};
 
 	class MoveUpUICommand final : public Command
@@ -54,7 +85,11 @@ namespace fuel
 		MoveUpUICommand() = default;
 		virtual ~MoveUpUICommand() = default;
 
-		void Execute(fuel::PlayerController* controller) override { controller->MoveUpUI(); }
+		void Execute(fuel::PlayerController* controller) override
+		{
+			if (controller->GetGameObject()->GetScene()->GetIsActive())
+				controller->MoveUpUI();
+		}
 	};
 
 	class MoveDownUICommand final : public Command
@@ -63,7 +98,11 @@ namespace fuel
 		MoveDownUICommand() = default;
 		virtual ~MoveDownUICommand() = default;
 
-		void Execute(fuel::PlayerController* controller) override { controller->MoveDownUI(); }
+		void Execute(fuel::PlayerController* controller) override
+		{
+			if (controller->GetGameObject()->GetScene()->GetIsActive())
+				controller->MoveDownUI();
+		}
 	};
 
 	class ClickUICommand final : public Command
@@ -72,6 +111,10 @@ namespace fuel
 		ClickUICommand() = default;
 		virtual ~ClickUICommand() = default;
 
-		void Execute(fuel::PlayerController* controller) override { controller->ClickUI(); }
+		void Execute(fuel::PlayerController* controller) override
+		{
+			if (controller->GetGameObject()->GetScene()->GetIsActive())
+				controller->ClickUI();
+		}
 	};
 }

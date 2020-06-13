@@ -8,16 +8,17 @@ void fuel::SceneManager::IInitialize()
 	for (size_t idx{ 0 }; idx < m_Scenes.size(); ++idx)
 	{
 		m_Scenes[idx]->Initialize();
+		Logger::LogInfo("Scene\"" + m_Scenes[idx]->GetName() + "\" is initialized");
 	}
 
-	if (m_Scenes.front() != nullptr)
+	/*if (m_Scenes.front() != nullptr)
 	{
 		SetActiveScene(m_Scenes.front()->GetName());
 	}
 	else
 	{
 		Logger::LogError("Game contains no scenes!");
-	}
+	}*/
 }
 
 void fuel::SceneManager::IStart()
@@ -57,6 +58,11 @@ void fuel::SceneManager::ISetActiveScene(const std::string& sceneName)
 	{
 		Logger::LogWarning("Scene \"" + sceneName + "\" has not been found!");
 	}
+}
+
+fuel::Scene* fuel::SceneManager::IGetActiveScene()
+{
+	return m_ActiveScene.get();
 }
 
 void fuel::SceneManager::IDrawGameObjects()

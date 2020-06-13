@@ -13,7 +13,8 @@ namespace fuel
 		RENDERER,
 		SPRITERENDERER,
 		CONTROLLER,
-		VIBRATION
+		VIBRATION,
+		AICONTROLLER
 	};
 	
 	class BaseCollider;
