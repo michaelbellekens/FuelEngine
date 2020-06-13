@@ -2,7 +2,6 @@
 #include "BubbleBobble.h"
 
 #include <SDL.h>
-
 #include "AIController.h"
 #include "BoxCollider.h"
 #include "FileManager.h"
@@ -122,6 +121,10 @@ void BubbleBobble::InitializeLevelOne()
 {
 	m_pPlayer1 = reinterpret_cast<fuel::GameObject*>(m_LevelOneScene.FindObject("Player1").get());
 	m_pPlayer2 = reinterpret_cast<fuel::GameObject*>(m_LevelOneScene.FindObject("Player2").get());
+
+	m_pPlayer2->GetComponent<fuel::SpriteComponent>()->AddAnimation(15, 8);
+	m_pPlayer2->GetComponent<fuel::SpriteComponent>()->SetDirectionIDs(15, 15);
+	
 	for (int i{ 0 }; i < 4; ++i)
 	{	
 		auto go = std::make_shared<fuel::ZenChan>();
@@ -143,31 +146,21 @@ void BubbleBobble::InitializeLevelOne()
 
 void BubbleBobble::InitializeLevelTwo()
 {
+	m_pPlayer1 = reinterpret_cast<fuel::GameObject*>(m_LevelTwoScene.FindObject("Player1").get());
+	m_pPlayer2 = reinterpret_cast<fuel::GameObject*>(m_LevelTwoScene.FindObject("Player2").get());
+
+	m_pPlayer2->GetComponent<fuel::SpriteComponent>()->AddAnimation(15, 8);
+	m_pPlayer2->GetComponent<fuel::SpriteComponent>()->SetDirectionIDs(15, 15);
+	
 	for (int i{ 0 }; i < 5; ++i)
 	{
-		auto go = std::make_shared<fuel::GameObject>();
+		auto go = std::make_shared<fuel::ZenChan>();
 		m_LevelTwoScene.AddToScene(go);
 		go->SetName("Enemy_" + std::to_string(i));
 		go->SetTag("Enemy");
-		go->AddComponent<fuel::Transform>();
-		fuel::RigidBody2D* player2RigidBody = go->AddComponent<fuel::RigidBody2D>();
-		player2RigidBody->SetIsKinematic(false);
-		player2RigidBody->UseGravity(true);
-		player2RigidBody->SetBounciness(0.2f);
-		fuel::BoxCollider* player2Collider = go->AddComponent<fuel::BoxCollider>();
-		player2Collider->SetDimensions(fuel::Rectf(0.f, 0.f, 16.f, 16.f));
-		fuel::SpriteComponent* pSpriteCompPlayer2 = go->AddComponent<fuel::SpriteComponent>();
-		pSpriteCompPlayer2->SetTexture("CharacterSpriteSheet.png");
-		pSpriteCompPlayer2->SetColumns(8);
-		pSpriteCompPlayer2->SetRows(16);
-		pSpriteCompPlayer2->SetAnimTime(0.1f);
-		pSpriteCompPlayer2->AddAnimation(4, 8);
-		pSpriteCompPlayer2->AddAnimation(5, 8);
-		pSpriteCompPlayer2->SetScale(1.f, 1.f);
-		pSpriteCompPlayer2->SetAnimation(4);
-		pSpriteCompPlayer2->SetDirectionIDs(5, 4);
-		fuel::AIController* pAIController{ go->AddComponent<fuel::AIController>() };
-		pAIController->SetState(new fuel::WanderState_ZN());
+
+		go->SetPlayer1(m_pPlayer1);
+		go->SetPlayer2(m_pPlayer2);
 
 		m_EnemiesLevelTwo.push_back(go);
 	}
@@ -181,32 +174,21 @@ void BubbleBobble::InitializeLevelTwo()
 
 void BubbleBobble::InitializeLevelThree()
 {
+	m_pPlayer1 = reinterpret_cast<fuel::GameObject*>(m_LevelThreeScene.FindObject("Player1").get());
+	m_pPlayer2 = reinterpret_cast<fuel::GameObject*>(m_LevelThreeScene.FindObject("Player2").get());
+
+	m_pPlayer2->GetComponent<fuel::SpriteComponent>()->AddAnimation(15, 8);
+	m_pPlayer2->GetComponent<fuel::SpriteComponent>()->SetDirectionIDs(15, 15);
+	
 	for (int i{ 0 }; i < 5; ++i)
 	{
-		auto go = std::make_shared<fuel::GameObject>();
+		auto go = std::make_shared<fuel::ZenChan>();
 		m_LevelThreeScene.AddToScene(go);
 		go->SetName("Enemy_" + std::to_string(i));
 		go->SetTag("Enemy");
-		fuel::Transform* player2Transform = go->AddComponent<fuel::Transform>();
-		player2Transform->SetPosition(501.f, 50.f);
-		fuel::RigidBody2D* player2RigidBody = go->AddComponent<fuel::RigidBody2D>();
-		player2RigidBody->SetIsKinematic(false);
-		player2RigidBody->UseGravity(true);
-		player2RigidBody->SetBounciness(0.2f);
-		fuel::BoxCollider* player2Collider = go->AddComponent<fuel::BoxCollider>();
-		player2Collider->SetDimensions(fuel::Rectf(0.f, 0.f, 16.f, 16.f));
-		fuel::SpriteComponent* pSpriteCompPlayer2 = go->AddComponent<fuel::SpriteComponent>();
-		pSpriteCompPlayer2->SetTexture("CharacterSpriteSheet.png");
-		pSpriteCompPlayer2->SetColumns(8);
-		pSpriteCompPlayer2->SetRows(16);
-		pSpriteCompPlayer2->SetAnimTime(0.1f);
-		pSpriteCompPlayer2->AddAnimation(4, 8);
-		pSpriteCompPlayer2->AddAnimation(5, 8);
-		pSpriteCompPlayer2->SetScale(1.f, 1.f);
-		pSpriteCompPlayer2->SetAnimation(4);
-		pSpriteCompPlayer2->SetDirectionIDs(5, 4);
-		fuel::AIController* pAIController{ go->AddComponent<fuel::AIController>() };
-		pAIController->SetState(new fuel::WanderState_ZN());
+
+		go->SetPlayer1(m_pPlayer1);
+		go->SetPlayer2(m_pPlayer2);
 
 		m_EnemiesLevelThree.push_back(go);
 	}
@@ -229,18 +211,36 @@ void BubbleBobble::SwitchToScene(const std::string& sceneName)
 	m_pPlayer1 = reinterpret_cast<fuel::GameObject*>(pCurrentScene->FindObject("Player1").get());
 	m_pPlayer2 = reinterpret_cast<fuel::GameObject*>(pCurrentScene->FindObject("Player2").get());
 
+	if (sceneName == "Level_One")
+	{
+		ResetEnemiesLevelOne();
+	}
+	else if (sceneName == "Level_Two")
+	{
+		ResetEnemiesLevelTwo();
+	}
+	else if (sceneName == "Level_Three")
+	{
+		ResetEnemiesLevelThree();
+	}
+
 	switch (m_GameMode)
 	{
 	case SOLO:
 		m_pPlayer1->GetComponent<fuel::RigidBody2D>()->SetPosition(fuel::Vector3( 50.f, 50.f, 0.f ));
+		m_pPlayer1->GetComponent<fuel::SpriteComponent>()->SetAnimation(0);
 		m_pPlayer1->SetActive(true);
 		m_pPlayer2->SetActive(false);
+		m_pPlayer2->SetTag("Player");
 		break;
 	case COOP:
 		m_pPlayer1->GetComponent<fuel::RigidBody2D>()->SetPosition(fuel::Vector3(50.f, 50.f, 0.f));
 		m_pPlayer2->GetComponent<fuel::RigidBody2D>()->SetPosition(fuel::Vector3(501.f, 50.f, 0.f));
+		m_pPlayer1->GetComponent<fuel::SpriteComponent>()->SetAnimation(0);
+		m_pPlayer2->GetComponent<fuel::SpriteComponent>()->SetAnimation(2);
 		m_pPlayer1->SetActive(true);
 		m_pPlayer2->SetActive(true);
+		m_pPlayer2->SetTag("Player");
 		break;
 	case VS:
 		m_pPlayer1->GetComponent<fuel::RigidBody2D>()->SetPosition(fuel::Vector3(50.f, 50.f, 0.f));
@@ -248,8 +248,6 @@ void BubbleBobble::SwitchToScene(const std::string& sceneName)
 		m_pPlayer1->SetActive(true);
 		m_pPlayer2->SetActive(true);
 		m_pPlayer2->SetTag("Enemy");
-		m_pPlayer2->GetComponent<fuel::SpriteComponent>()->AddAnimation(15, 8);
-		m_pPlayer2->GetComponent<fuel::SpriteComponent>()->SetDirectionIDs(15, 15);
 		m_pPlayer2->GetComponent<fuel::SpriteComponent>()->SetAnimation(15);
 		break;
 	}
@@ -294,4 +292,30 @@ void BubbleBobble::UpdateLevelThree()
 void BubbleBobble::UpdateEnemies(std::vector<std::shared_ptr<fuel::GameObject>> enemies)
 {
 	UNREFERENCED_PARAMETER(enemies);
+}
+
+void BubbleBobble::ResetEnemiesLevelOne()
+{
+	m_EnemiesLevelOne[0]->GetComponent<fuel::RigidBody2D>()->SetPosition(fuel::Vector3(100.f, 430.f, 0.f));
+	m_EnemiesLevelOne[1]->GetComponent<fuel::RigidBody2D>()->SetPosition(fuel::Vector3(510.f, 430.f, 0.f));
+	m_EnemiesLevelOne[2]->GetComponent<fuel::RigidBody2D>()->SetPosition(fuel::Vector3(200.f, 164.f, 0.f));
+	m_EnemiesLevelOne[3]->GetComponent<fuel::RigidBody2D>()->SetPosition(fuel::Vector3(400.f, 259.f, 0.f));
+}
+
+void BubbleBobble::ResetEnemiesLevelTwo()
+{
+	m_EnemiesLevelTwo[0]->GetComponent<fuel::RigidBody2D>()->SetPosition(fuel::Vector3(100.f, 430.f, 0.f));
+	m_EnemiesLevelTwo[1]->GetComponent<fuel::RigidBody2D>()->SetPosition(fuel::Vector3(510.f, 430.f, 0.f));
+	m_EnemiesLevelTwo[2]->GetComponent<fuel::RigidBody2D>()->SetPosition(fuel::Vector3(200.f, 164.f, 0.f));
+	m_EnemiesLevelTwo[3]->GetComponent<fuel::RigidBody2D>()->SetPosition(fuel::Vector3(400.f, 259.f, 0.f));
+	m_EnemiesLevelTwo[4]->GetComponent<fuel::RigidBody2D>()->SetPosition(fuel::Vector3(320.f, 50.f, 0.f));
+}
+
+void BubbleBobble::ResetEnemiesLevelThree()
+{
+	m_EnemiesLevelThree[0]->GetComponent<fuel::RigidBody2D>()->SetPosition(fuel::Vector3(100.f, 430.f, 0.f));
+	m_EnemiesLevelThree[1]->GetComponent<fuel::RigidBody2D>()->SetPosition(fuel::Vector3(510.f, 430.f, 0.f));
+	m_EnemiesLevelThree[2]->GetComponent<fuel::RigidBody2D>()->SetPosition(fuel::Vector3(200.f, 164.f, 0.f));
+	m_EnemiesLevelThree[3]->GetComponent<fuel::RigidBody2D>()->SetPosition(fuel::Vector3(400.f, 259.f, 0.f));
+	m_EnemiesLevelThree[4]->GetComponent<fuel::RigidBody2D>()->SetPosition(fuel::Vector3(320.f, 50.f, 0.f));
 }

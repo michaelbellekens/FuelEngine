@@ -2,6 +2,7 @@
 #include "Game.h"
 #include "GameObject.h"
 #include "Scene.h"
+#include "ZenChan.h"
 
 class BubbleBobble : public Game
 {
@@ -43,6 +44,10 @@ private:
 	void UpdateLevelThree();
 
 	void UpdateEnemies(std::vector<std::shared_ptr<fuel::GameObject>> enemies);
+
+	void ResetEnemiesLevelOne();
+	void ResetEnemiesLevelTwo();
+	void ResetEnemiesLevelThree();
 	
 	fuel::Scene& m_MainMenuScene;
 	fuel::Scene& m_LevelOneScene;
@@ -51,9 +56,9 @@ private:
 	fuel::GameObject* m_pPlayer1;
 	fuel::GameObject* m_pPlayer2;
 
-	std::vector<std::shared_ptr<fuel::GameObject>> m_EnemiesLevelOne;
-	std::vector<std::shared_ptr<fuel::GameObject>> m_EnemiesLevelTwo;
-	std::vector<std::shared_ptr<fuel::GameObject>> m_EnemiesLevelThree;
+	std::vector<std::shared_ptr<fuel::ZenChan>> m_EnemiesLevelOne;
+	std::vector<std::shared_ptr<fuel::ZenChan>> m_EnemiesLevelTwo;
+	std::vector<std::shared_ptr<fuel::ZenChan>> m_EnemiesLevelThree;
 	
 	GameMode m_GameMode;
 	float m_CurrentTimer{ 0.f };
