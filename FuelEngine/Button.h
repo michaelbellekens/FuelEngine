@@ -1,4 +1,6 @@
 #pragma once
+#include <functional>
+
 #include "Font.h"
 #include "SceneObject.h"
 
@@ -57,6 +59,7 @@ namespace fuel
 
 		// Button specific
 		void ExecuteButtonAction() const;
+		void AddFunctionData(std::function<void()> funtPointer);
 		
 		void SetText(const std::string& text);
 		void SetFont(const std::shared_ptr<Font>& font);
@@ -86,5 +89,6 @@ namespace fuel
 		int m_ButtonID;
 		bool m_IsSelected;
 		ButtonAction m_ButtonAction;
+		std::function<void()> m_ExecutionFunction{};
 	};
 }

@@ -16,7 +16,7 @@ fuel::PlayerController::PlayerController()
 	, m_pSpriteRenderer(nullptr)
 	, m_PlayerID{ PlayerID::PlayerOne }
 	, m_ID{"" }
-	, m_IsInMenu{ true }
+	, m_IsInMenu{ false }
 	, m_IsGrounded{ false }
 {
 }
@@ -33,11 +33,14 @@ void fuel::PlayerController::OnStart()
 {
 	m_pRigidBody = m_pGameObject->GetComponent<RigidBody2D>();
 	m_pSpriteRenderer = m_pGameObject->GetComponent<SpriteComponent>();
-	
+
+	// Game controls
 	InputManager::AddControllerBinding(m_PlayerID, this, CommandID::Jump, ButtonState::pressed, XINPUT_GAMEPAD_A);
 	InputManager::AddControllerBinding(m_PlayerID, this, CommandID::Fire, ButtonState::released, XINPUT_GAMEPAD_Y);
 	InputManager::AddControllerBinding(m_PlayerID, this, CommandID::Fart, ButtonState::released, XINPUT_GAMEPAD_X);
+	InputManager::AddControllerBinding(m_PlayerID, this, CommandID::Menu, ButtonState::released, XINPUT_GAMEPAD_START);
 
+	// UI Controls
 	InputManager::AddControllerBinding(m_PlayerID, this, CommandID::MoveUpUI, ButtonState::released, XINPUT_GAMEPAD_DPAD_UP);
 	InputManager::AddControllerBinding(m_PlayerID, this, CommandID::MoveDownUI, ButtonState::released, XINPUT_GAMEPAD_DPAD_DOWN);
 	InputManager::AddControllerBinding(m_PlayerID, this, CommandID::ClickUI, ButtonState::released, XINPUT_GAMEPAD_A);
@@ -68,23 +71,26 @@ void fuel::PlayerController::Update()
 
 void fuel::PlayerController::FixedUpdate()
 {
-	const float speed{ 2.f };
-	const Vector2 stickDir{ InputManager::GetControllerAxis(true, static_cast<PlayerID>(m_PlayerID)) };
-
-	m_pRigidBody->MovePosition(Vector3(stickDir.x * speed, 0.f, 0.f));
-
-	const bool previousGrounded{ m_IsGrounded };
-	m_IsGrounded = m_pRigidBody->IsGrounded();
-
-	if (!previousGrounded && m_IsGrounded)
-		SoundManager::GetInstance().StartSound("BubblePop");
-	
-	if (stickDir.MagnitudeSqr() > 0.f && stickDir.x > 0.f)
+	if (m_pRigidBody)
 	{
-		m_pSpriteRenderer->LookLeft(false);
+		const float speed{ 2.f };
+		const Vector2 stickDir{ InputManager::GetControllerAxis(true, static_cast<PlayerID>(m_PlayerID)) };
+
+		m_pRigidBody->MovePosition(Vector3(stickDir.x * speed, 0.f, 0.f));
+
+		const bool previousGrounded{ m_IsGrounded };
+		m_IsGrounded = m_pRigidBody->IsGrounded();
+
+		if (!previousGrounded && m_IsGrounded)
+			SoundManager::GetInstance().StartSound("BubblePop");
+		
+		if (stickDir.MagnitudeSqr() > 0.f && stickDir.x > 0.f)
+		{
+			m_pSpriteRenderer->LookLeft(false);
+		}
+		else if (stickDir.MagnitudeSqr() > 0.f)
+			m_pSpriteRenderer->LookLeft(true);
 	}
-	else if (stickDir.MagnitudeSqr() > 0.f)
-		m_pSpriteRenderer->LookLeft(true);
 }
 
 void fuel::PlayerController::Render() const
@@ -158,6 +164,14 @@ void fuel::PlayerController::Fart()
 		return;
 	
 	Logger::LogInfo("Fart");
+}
+
+void fuel::PlayerController::OpenMenu()
+{
+	if (m_IsInMenu)
+		return;
+
+	SceneManager::SetActiveScene("MainMenu");
 }
 
 void fuel::PlayerController::MoveUpUI()

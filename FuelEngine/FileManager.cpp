@@ -60,7 +60,7 @@ void fuel::FileManager::ISaveScene(Scene* scene, const std::string& fileName)
 					pComponent->Safe(binStream);
 				}
 			}
-			else if (sceneObjects[i]->GetObjectType() == BUTTON)
+			else if (objectType == BUTTON)
 			{
 				// Write Button name and tag to binary file
 				Button* pButton{ reinterpret_cast<Button*>(sceneObjects[i].get()) };

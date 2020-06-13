@@ -3,20 +3,16 @@
 
 namespace fuel
 {
-	class RigidBody2D;
-	class SpriteComponent;
-	
-	enum class PlayerID;
-	class PlayerController : public BaseComponent
+	class Transform;
+	class AIController final : public BaseComponent
 	{
 	public:
-		PlayerController();
-		~PlayerController() = default;
-
-		PlayerController(const PlayerController& other) = delete;
-		PlayerController(PlayerController&& other) = delete;
-		PlayerController& operator=(const PlayerController& other) = delete;
-		PlayerController& operator=(PlayerController&& other) = delete;
+		AIController() = default;
+		virtual ~AIController() = default;
+		AIController(const AIController& other) = delete;
+		AIController(AIController&& other) = delete;
+		AIController& operator=(const AIController& other) = delete;
+		AIController& operator=(AIController&& other) = delete;
 
 		void Initialize() override;
 		void OnStart() override;
@@ -29,23 +25,6 @@ namespace fuel
 		GameObject* GetGameObject() const override;
 
 		size_t GetType() override;
-
-		void SetPlayerID(const PlayerID id);
-		PlayerID GetPlayerID() const;
-
-		void SetIsInMenu(const bool inMenu);
-		
-		// Controls
-		void Jump();
-		void Fire();
-		void Duck();
-		void Fart();
-		void OpenMenu();
-
-		// UI Controls
-		void MoveUpUI();
-		void MoveDownUI();
-		void ClickUI();
 
 		// Loading and Saving
 		ComponentType GetCompType() const override;
@@ -64,15 +43,12 @@ namespace fuel
 		// Editor GUI
 		void DrawGUI() override;
 		const std::string& GetID() const override;
-		void ChangePlayerID(const std::string& playerID);
-		
+
 	private:
-		GameObject* m_pGameObject;
-		RigidBody2D* m_pRigidBody;
-		SpriteComponent* m_pSpriteRenderer;
-		PlayerID m_PlayerID;
-		std::string m_ID;
-		bool m_IsInMenu;
-		bool m_IsGrounded;
+		Transform* m_pTransform{ nullptr };
+		GameObject* m_pGameObject{ nullptr };
+		std::string m_ID{ };
+
+		
 	};
 }

@@ -53,6 +53,7 @@ void fuel::InputManager::CreateCommands()
 	AddCommand(new FireCommand(), CommandID::Fire);
 	AddCommand(new DuckCommand(), CommandID::Duck);
 	AddCommand(new FartCommand(), CommandID::Fart);
+	AddCommand(new MenuCommand(), CommandID::Menu);
 	AddCommand(new MoveUpUICommand(), CommandID::MoveUpUI);
 	AddCommand(new MoveDownUICommand(), CommandID::MoveDownUI);
 	AddCommand(new ClickUICommand(), CommandID::ClickUI);

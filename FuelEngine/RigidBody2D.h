@@ -6,7 +6,7 @@
 #include "GameObject.h"
 
 #include "Logger.h"
-
+//https://developer.ibm.com/technologies/javascript/tutorials/wa-build2dphysicsengine/
 namespace fuel
 {
 	class Transform;
@@ -35,6 +35,7 @@ namespace fuel
 		// RigidBody Specific functions
 		void MovePosition(const Vector3& pos);
 		Vector3 GetPosition() const;
+		void SetPosition(const Vector3& pos);
 
 		bool GetIsFacingLeft() const;
 		
@@ -58,6 +59,7 @@ namespace fuel
 		void AddCollider(BaseCollider* collider);
 
 		bool IsGrounded();
+		bool IsOnEdge();
 
 		// Loading and Saving
 		ComponentType GetCompType() const override;

@@ -153,7 +153,12 @@ void fuel::Button::Load(std::ifstream& binStream)
 
 void fuel::Button::ExecuteButtonAction() const
 {
-	m_pLinkedScene->HandleButtonEvent(m_ButtonAction);
+	m_ExecutionFunction();
+}
+
+void fuel::Button::AddFunctionData(std::function<void()> funtPointer)
+{
+	m_ExecutionFunction = funtPointer;
 }
 
 void fuel::Button::SetText(const std::string& text)

@@ -110,6 +110,11 @@ fuel::Vector3 fuel::RigidBody2D::GetPosition() const
 	return m_Position;
 }
 
+void fuel::RigidBody2D::SetPosition(const Vector3& pos)
+{
+	m_Position = pos;
+}
+
 bool fuel::RigidBody2D::GetIsFacingLeft() const
 {
 	return m_IsFacingLeft;
@@ -231,6 +236,63 @@ bool fuel::RigidBody2D::IsGrounded()
 	return false;
 }
 
+bool fuel::RigidBody2D::IsOnEdge()
+{
+	bool isLeftOnGround{ false };
+	bool isRightOnGround{ false };
+	
+	const std::vector<BaseCollider*> sceneColliders{ m_pGameObject->GetScene()->GetAllColliders() };
+	for (BaseCollider* ownCollider : m_pColliders)
+	{
+		Rectf rectDim;
+		Spheref sphereDim;
+
+		Vector2 pos{};
+		float width{};
+		float height{};
+
+		switch (ownCollider->GetShapeType())
+		{
+		case ShapeType::Sphere:
+			rectDim = reinterpret_cast<BoxCollider*>(ownCollider)->GetDimensions();
+			pos.x = rectDim.x;
+			pos.y = rectDim.y;
+			width = rectDim.width;
+			height = rectDim.height;
+			break;
+		case ShapeType::Rect:
+			sphereDim = reinterpret_cast<SphereCollider*>(ownCollider)->GetDimensions();
+			pos.x = sphereDim.x;
+			pos.y = sphereDim.y;
+			width = sphereDim.radius;
+			height = sphereDim.radius;
+			break;
+		}
+
+		const Vector2 leftPoint{ pos.x + 1.f, pos.y + height + 2.f };
+		const Vector2 rightPoint{ pos.x + width - 1.f, pos.y + height + 2.f };
+
+		for (BaseCollider* sceneCollider : sceneColliders)
+		{
+			// If current scene collider is part of this Rigidbody2D skip to next collider
+			const std::vector<BaseCollider*>::iterator it{ std::find(m_pColliders.begin(), m_pColliders.end(), sceneCollider) };
+			if (it != m_pColliders.end())
+				continue;
+
+			if (!isLeftOnGround)
+				isLeftOnGround = sceneCollider->IsColliding(leftPoint);
+			if (!isRightOnGround)
+				isRightOnGround = sceneCollider->IsColliding(rightPoint);
+		}
+	}
+
+	if (isLeftOnGround && !isRightOnGround)
+		return true;
+	if (!isLeftOnGround && isRightOnGround)
+		return true;
+	return false;
+}
+
 void fuel::RigidBody2D::Safe(std::ofstream& binStream) const
 {
 	binStream.write((const char*)&m_Position, sizeof(Vector3));
@@ -273,11 +335,6 @@ fuel::ComponentType fuel::RigidBody2D::GetCompType() const
 void fuel::RigidBody2D::OnCollisionEnter(BaseCollider* other)
 {
 	UNREFERENCED_PARAMETER(other);
-	/*if (other->GetGameObject()->CompareTag("StaticScene"))
-	{
-		if (m_Force.y < 0.f && m_Velocity.y > 0.f)
-			m_Force.y = 0.f;
-	}*/
 }
 
 void fuel::RigidBody2D::OnCollisionStay(BaseCollider* other)
