@@ -64,7 +64,7 @@ void fuel::ZenChan::Update()
 			m_pAIController->SetState(new WanderState_ZN());
 		}
 	}
-	else if (m_pPlayer2)
+	if (m_pPlayer2)
 	{
 		const Vector3 pos{ m_Transform->GetPosition() };
 		const Vector3 posPlayer{ m_pPlayer2->GetTransform()->GetPosition() };
