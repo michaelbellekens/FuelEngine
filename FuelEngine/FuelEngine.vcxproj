@@ -234,7 +234,6 @@ xcopy "$(SolutionDir)3rdParty\SDL2_ttf\lib\x64\*.dll" "$(OutputPath)" /R /Y</Com
     <ClInclude Include="Time.h" />
     <ClInclude Include="Tools.h" />
     <ClInclude Include="Transform.h" />
-    <ClInclude Include="UIManager.h" />
     <ClInclude Include="VibrationComponent.h" />
   </ItemGroup>
   <ItemGroup>
@@ -300,7 +299,6 @@ xcopy "$(SolutionDir)3rdParty\SDL2_ttf\lib\x64\*.dll" "$(OutputPath)" /R /Y</Com
     <ClCompile Include="Texture2DTests.cpp" />
     <ClCompile Include="Time.cpp" />
     <ClCompile Include="Transform.cpp" />
-    <ClCompile Include="UIManager.cpp" />
     <ClCompile Include="VibrationComponent.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
