@@ -43,8 +43,6 @@ private:
 	void UpdateLevelTwo();
 	void UpdateLevelThree();
 
-	void UpdateEnemies(std::vector<std::shared_ptr<fuel::GameObject>> enemies);
-
 	void ResetEnemiesLevelOne();
 	void ResetEnemiesLevelTwo();
 	void ResetEnemiesLevelThree();
@@ -55,6 +53,10 @@ private:
 	fuel::Scene& m_LevelThreeScene;
 	fuel::GameObject* m_pPlayer1;
 	fuel::GameObject* m_pPlayer2;
+	fuel::TextComponent* m_ScoreLabelPlayer1;
+	fuel::TextComponent* m_ScoreLabelPlayer2;
+	int m_ScorePlayer1;
+	int m_ScorePlayer2;
 
 	std::vector<std::shared_ptr<fuel::ZenChan>> m_EnemiesLevelOne;
 	std::vector<std::shared_ptr<fuel::ZenChan>> m_EnemiesLevelTwo;
@@ -62,4 +64,6 @@ private:
 	
 	GameMode m_GameMode;
 	float m_CurrentTimer{ 0.f };
+
+	static int m_BubbleCounter;
 };

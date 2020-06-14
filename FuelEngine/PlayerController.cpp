@@ -39,16 +39,22 @@ void fuel::PlayerController::OnStart()
 	InputManager::AddControllerBinding(m_PlayerID, this, CommandID::Fire, ButtonState::released, XINPUT_GAMEPAD_Y);
 	InputManager::AddControllerBinding(m_PlayerID, this, CommandID::Fart, ButtonState::released, XINPUT_GAMEPAD_X);
 	InputManager::AddControllerBinding(m_PlayerID, this, CommandID::Menu, ButtonState::released, XINPUT_GAMEPAD_START);
+	InputManager::AddKeyboardBinding(m_PlayerID, this, CommandID::Menu, ButtonState::released, SDLK_p);
 
 	// UI Controls
 	InputManager::AddControllerBinding(m_PlayerID, this, CommandID::MoveUpUI, ButtonState::released, XINPUT_GAMEPAD_DPAD_UP);
 	InputManager::AddControllerBinding(m_PlayerID, this, CommandID::MoveDownUI, ButtonState::released, XINPUT_GAMEPAD_DPAD_DOWN);
 	InputManager::AddControllerBinding(m_PlayerID, this, CommandID::ClickUI, ButtonState::released, XINPUT_GAMEPAD_A);
+	
+	InputManager::AddKeyboardBinding(m_PlayerID, this, CommandID::MoveUpUI, ButtonState::released, SDLK_UP);
+	InputManager::AddKeyboardBinding(m_PlayerID, this, CommandID::MoveDownUI, ButtonState::released, SDLK_DOWN);
+	InputManager::AddKeyboardBinding(m_PlayerID, this, CommandID::ClickUI, ButtonState::released, SDLK_RETURN);
+	InputManager::AddKeyboardBinding(m_PlayerID, this, CommandID::ClickUI, ButtonState::released, SDLK_KP_ENTER);
 }
 
 void fuel::PlayerController::Update()
 {
-	Vector2 axis = InputManager::GetControllerAxis(true, m_PlayerID);
+	/*Vector2 axis = InputManager::GetControllerAxis(true, m_PlayerID);
 	TextComponent* text = m_pGameObject->GetComponent<TextComponent>();
 	if (text)
 	{
@@ -66,7 +72,7 @@ void fuel::PlayerController::Update()
 	if (InputManager::IsRightMousePressed())
 	{
 		Logger::LogError("Right mouse button pressed!");
-	}
+	}*/
 }
 
 void fuel::PlayerController::FixedUpdate()
@@ -134,7 +140,6 @@ void fuel::PlayerController::Jump()
 
 	if(m_IsGrounded)
 	{
-		Logger::LogInfo("Jump");
 		m_pGameObject->GetComponent<RigidBody2D>()->AddForce(Vector2(0.f, -6.f), true);
 	}
 }
@@ -144,7 +149,6 @@ void fuel::PlayerController::Fire()
 	if (m_IsInMenu)
 		return;
 	
-	Logger::LogInfo("Fire");
 	VibrationComponent* pVibrationComp = m_pGameObject->GetComponent<VibrationComponent>();
 	if (pVibrationComp)
 		pVibrationComp->Play();
@@ -155,7 +159,6 @@ void fuel::PlayerController::Duck()
 	if (m_IsInMenu)
 		return;
 	
-	Logger::LogInfo("Duck");
 }
 
 void fuel::PlayerController::Fart()
@@ -163,7 +166,6 @@ void fuel::PlayerController::Fart()
 	if (m_IsInMenu)
 		return;
 	
-	Logger::LogInfo("Fart");
 }
 
 void fuel::PlayerController::OpenMenu()
@@ -172,6 +174,14 @@ void fuel::PlayerController::OpenMenu()
 		return;
 
 	SceneManager::SetActiveScene("MainMenu");
+}
+
+void fuel::PlayerController::MoveLeft()
+{
+}
+
+void fuel::PlayerController::MoveRight()
+{
 }
 
 void fuel::PlayerController::MoveUpUI()
@@ -252,6 +262,23 @@ void fuel::PlayerController::DrawGUI()
 	// Create dropdown menu
 	const std::string items[] = { "Player1", "Player2", "Player3", "Player4" };
 	static std::string current_item = "Player1";
+
+	switch (m_PlayerID)
+	{
+	case PlayerID::PlayerOne:
+		current_item = "Player1";
+		break;
+	case PlayerID::PlayerTwo:
+		current_item = "Player2";
+		break;
+	case PlayerID::PlayerThree:
+		current_item = "Player3";
+		break;
+	case PlayerID::PlayerFour:
+		current_item = "Player4";
+		break;
+	}
+	
 	const std::string& dropdownLabel{ "##PlayerID" + m_ID };
 	if (ImGui::BeginCombo(dropdownLabel.c_str(), current_item.c_str()))
 	{

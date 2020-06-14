@@ -228,8 +228,8 @@ void fuel::FileManager::IReadString(std::ifstream& binStream, std::string& strin
 
 void fuel::FileManager::IWriteString(std::ofstream& binStream, const std::string& stringData)
 {
-	unsigned int numChars{ stringData.size() };
-	binStream.write((const char*)&numChars, sizeof(unsigned int));
+	size_t numChars{ stringData.size() };
+	binStream.write((const char*)&numChars, sizeof(size_t));
 
 	for (unsigned int i{ 0 }; i < numChars; ++i)
 	{

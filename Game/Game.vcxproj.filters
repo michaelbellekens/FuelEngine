@@ -27,6 +27,12 @@
     <ClCompile Include="ZenChan.cpp">
       <Filter>EnemyStates</Filter>
     </ClCompile>
+    <ClCompile Include="BubbleComponent.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Bubble.cpp">
+      <Filter>EnemyStates</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BubbleBobble.h">
@@ -37,6 +43,12 @@
     </ClInclude>
     <ClInclude Include="ZenChan.h">
       <Filter>EnemyStates</Filter>
+    </ClInclude>
+    <ClInclude Include="Bubble.h">
+      <Filter>EnemyStates</Filter>
+    </ClInclude>
+    <ClInclude Include="BubbleComponent.h">
+      <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

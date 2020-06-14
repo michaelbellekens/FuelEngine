@@ -1,26 +1,25 @@
 #pragma once
 #include "BaseComponent.h"
+#include "InputManager.h"
 
 namespace fuel
 {
 	class RigidBody2D;
-	class SpriteComponent;
-	
-	enum class PlayerID;
-	class PlayerController : public BaseComponent
+	class RenderComponent;
+	class BubbleComponent : public BaseComponent
 	{
 	public:
-		PlayerController();
-		~PlayerController() = default;
+		BubbleComponent() ;
+		~BubbleComponent() = default;
 
-		PlayerController(const PlayerController& other) = delete;
-		PlayerController(PlayerController&& other) = delete;
-		PlayerController& operator=(const PlayerController& other) = delete;
-		PlayerController& operator=(PlayerController&& other) = delete;
+		BubbleComponent(const BubbleComponent& other) = delete;
+		BubbleComponent(BubbleComponent&& other) = delete;
+		BubbleComponent& operator=(const BubbleComponent& other) = delete;
+		BubbleComponent& operator=(BubbleComponent&& other) = delete;
 
 		void Initialize() override;
 		void OnStart() override;
-
+		
 		void Update() override;
 		void FixedUpdate() override;
 		void Render() const override;
@@ -30,24 +29,8 @@ namespace fuel
 
 		size_t GetType() override;
 
-		void SetPlayerID(const PlayerID id);
-		PlayerID GetPlayerID() const;
-
-		void SetIsInMenu(const bool inMenu);
-		
-		// Controls
-		void Jump();
-		void Fire();
-		void Duck();
-		void Fart();
-		void OpenMenu();
-		void MoveLeft();
-		void MoveRight();
-
-		// UI Controls
-		void MoveUpUI();
-		void MoveDownUI();
-		void ClickUI();
+		void SetOwner(PlayerID owner);
+		void SetScoreReferences(int* score1, int* score2);
 
 		// Loading and Saving
 		ComponentType GetCompType() const override;
@@ -66,15 +49,17 @@ namespace fuel
 		// Editor GUI
 		void DrawGUI() override;
 		const std::string& GetID() const override;
-		void ChangePlayerID(const std::string& playerID);
-		
+
 	private:
-		GameObject* m_pGameObject;
-		RigidBody2D* m_pRigidBody;
-		SpriteComponent* m_pSpriteRenderer;
-		PlayerID m_PlayerID;
-		std::string m_ID;
-		bool m_IsInMenu;
-		bool m_IsGrounded;
+		void AddScore(int score);
+		
+		GameObject* m_pGameObject{ nullptr };
+		std::string m_ID{};
+		RigidBody2D* m_pRigidBody{ nullptr };
+		RenderComponent* m_pRenderComp{ nullptr };
+		PlayerID m_Owner{ PlayerID::PlayerOne };
+		bool m_CapturedEnemy{ false };
+		int* m_ScorePlayer1;
+		int* m_ScorePlayer2;
 	};
 }

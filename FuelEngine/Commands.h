@@ -2,7 +2,7 @@
 #include "PlayerController.h"
 #include "GameObject.h"
 #include "Scene.h"
-
+#include "RigidBody2D.h"
 namespace fuel
 {
 	class Command
@@ -11,7 +11,12 @@ namespace fuel
 		Command() = default;
 		virtual ~Command() = default;
 
+		virtual void SetExecuteFunction(std::function<void(fuel::PlayerController* controller)> executeFunct) = 0;
 		virtual void Execute(fuel::PlayerController* controller) = 0;
+
+	protected:
+		std::function<void(fuel::PlayerController * controller)> m_ExecutionFunction;
+		bool m_IsFunctionSet{ false };
 	};
 
 	class JumpCommand final : public Command
@@ -20,10 +25,24 @@ namespace fuel
 		JumpCommand() = default;
 		virtual ~JumpCommand() = default;
 
+		void SetExecuteFunction(const std::function<void(fuel::PlayerController * controller)> executeFunct) override
+		{
+			m_ExecutionFunction = executeFunct;
+			m_IsFunctionSet = true;
+		}
+		
 		void Execute(fuel::PlayerController* controller) override
 		{
 			if (controller->GetGameObject()->GetScene()->GetIsActive())
+			{
+				if (m_IsFunctionSet)
+				{
+					m_ExecutionFunction(controller);
+					return;
+				}
+				
 				controller->Jump();
+			}
 		}
 	};
 
@@ -33,10 +52,24 @@ namespace fuel
 		FireCommand() = default;
 		virtual ~FireCommand() = default;
 
+		void SetExecuteFunction(const std::function<void(fuel::PlayerController * controller)> executeFunct) override
+		{
+			m_ExecutionFunction = executeFunct;
+			m_IsFunctionSet = true;
+		}
+		
 		void Execute(fuel::PlayerController* controller) override
 		{
 			if (controller->GetGameObject()->GetScene()->GetIsActive())
+			{
+				if (m_IsFunctionSet)
+				{
+					m_ExecutionFunction(controller);
+					return;
+				}
+				
 				controller->Fire();
+			}
 		}
 	};
 
@@ -46,10 +79,24 @@ namespace fuel
 		DuckCommand() = default;
 		virtual ~DuckCommand() = default;
 
+		void SetExecuteFunction(const std::function<void(fuel::PlayerController * controller)> executeFunct) override
+		{
+			m_ExecutionFunction = executeFunct;
+			m_IsFunctionSet = true;
+		}
+		
 		void Execute(fuel::PlayerController* controller) override
 		{
 			if (controller->GetGameObject()->GetScene()->GetIsActive())
+			{
+				if (m_IsFunctionSet)
+				{
+					m_ExecutionFunction(controller);
+					return;
+				}
+				
 				controller->Duck();
+			}
 		}
 	};
 
@@ -59,10 +106,24 @@ namespace fuel
 		FartCommand() = default;
 		virtual ~FartCommand() = default;
 
+		void SetExecuteFunction(const std::function<void(fuel::PlayerController * controller)> executeFunct) override
+		{
+			m_ExecutionFunction = executeFunct;
+			m_IsFunctionSet = true;
+		}
+		
 		void Execute(fuel::PlayerController* controller) override
 		{
 			if (controller->GetGameObject()->GetScene()->GetIsActive())
+			{
+				if (m_IsFunctionSet)
+				{
+					m_ExecutionFunction(controller);
+					return;
+				}
+				
 				controller->Fart();
+			}
 		}
 	};
 
@@ -72,10 +133,24 @@ namespace fuel
 		MenuCommand() = default;
 		virtual ~MenuCommand() = default;
 
+		void SetExecuteFunction(const std::function<void(fuel::PlayerController * controller)> executeFunct) override
+		{
+			m_ExecutionFunction = executeFunct;
+			m_IsFunctionSet = true;
+		}
+		
 		void Execute(fuel::PlayerController* controller) override
 		{
 			if (controller->GetGameObject()->GetScene()->GetIsActive())
+			{
+				if (m_IsFunctionSet)
+				{
+					m_ExecutionFunction(controller);
+					return;
+				}
+				
 				controller->OpenMenu();
+			}
 		}
 	};
 
@@ -85,10 +160,24 @@ namespace fuel
 		MoveUpUICommand() = default;
 		virtual ~MoveUpUICommand() = default;
 
+		void SetExecuteFunction(const std::function<void(fuel::PlayerController * controller)> executeFunct) override
+		{
+			m_ExecutionFunction = executeFunct;
+			m_IsFunctionSet = true;
+		}
+		
 		void Execute(fuel::PlayerController* controller) override
 		{
 			if (controller->GetGameObject()->GetScene()->GetIsActive())
+			{
+				if (m_IsFunctionSet)
+				{
+					m_ExecutionFunction(controller);
+					return;
+				}
+				
 				controller->MoveUpUI();
+			}
 		}
 	};
 
@@ -98,10 +187,24 @@ namespace fuel
 		MoveDownUICommand() = default;
 		virtual ~MoveDownUICommand() = default;
 
+		void SetExecuteFunction(const std::function<void(fuel::PlayerController * controller)> executeFunct) override
+		{
+			m_ExecutionFunction = executeFunct;
+			m_IsFunctionSet = true;
+		}
+		
 		void Execute(fuel::PlayerController* controller) override
 		{
 			if (controller->GetGameObject()->GetScene()->GetIsActive())
+			{
+				if (m_IsFunctionSet)
+				{
+					m_ExecutionFunction(controller);
+					return;
+				}
+				
 				controller->MoveDownUI();
+			}
 		}
 	};
 
@@ -111,10 +214,24 @@ namespace fuel
 		ClickUICommand() = default;
 		virtual ~ClickUICommand() = default;
 
+		void SetExecuteFunction(const std::function<void(fuel::PlayerController * controller)> executeFunct) override
+		{
+			m_ExecutionFunction = executeFunct;
+			m_IsFunctionSet = true;
+		}
+		
 		void Execute(fuel::PlayerController* controller) override
 		{
 			if (controller->GetGameObject()->GetScene()->GetIsActive())
+			{
+				if (m_IsFunctionSet)
+				{
+					m_ExecutionFunction(controller);
+					return;
+				}
+				
 				controller->ClickUI();
+			}
 		}
 	};
 }

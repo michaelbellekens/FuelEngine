@@ -1,9 +1,10 @@
 #include "FuelEnginePCH.h"
 #include "Scene.h"
 #include "GameObject.h"
-#include <SDL.h>
 #include "Button.h"
 #include "Logger.h"
+#include <algorithm>
+#include "BaseCollider.h"
 
 using namespace fuel;
 
@@ -41,7 +42,7 @@ bool fuel::Scene::GetIsActive() const
 
 unsigned int fuel::Scene::GetNumGameObjects() const
 {
-	return m_Objects.size();
+	return static_cast<unsigned int>(m_Objects.size());
 }
 
 std::vector<std::shared_ptr<SceneObject>>& fuel::Scene::GetSceneObjects()
@@ -72,6 +73,32 @@ void Scene::AddToScene(const std::shared_ptr<SceneObject>& object)
 {
 	m_Objects.push_back(object);
 	object->AttachScene(this);
+}
+
+void fuel::Scene::RemoveFromScene(const std::string& objectName)
+{
+	/*const auto colliderIt = std::find_if(m_AllColliders.begin(), m_AllColliders.end(), [objectName](BaseCollider* collider) {return collider->GetGameObject()->GetName() == objectName; });
+	if (colliderIt != m_AllColliders.end())
+	{
+		m_AllColliders.erase(colliderIt);
+		
+	}*/
+	for (int i{ 0 }; i < static_cast<int>(m_AllColliders.size()); ++i)
+	{
+		if (m_AllColliders[i]->GetGameObject()->GetName() == objectName)
+		{
+			m_AllColliders[i] = nullptr;
+			break;
+		}
+	}
+	m_AllColliders.erase(std::remove(m_AllColliders.begin(), m_AllColliders.end(), nullptr), m_AllColliders.end());
+
+	
+	const auto objecIt = std::find_if(m_Objects.begin(), m_Objects.end(), [objectName](std::shared_ptr<SceneObject> object) {return object->GetName() == objectName; });
+	if (objecIt != m_Objects.end())
+	{
+		m_Objects.erase(objecIt);
+	}
 }
 
 void fuel::Scene::Initialize()

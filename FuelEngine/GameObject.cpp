@@ -137,7 +137,7 @@ fuel::ObjectType fuel::GameObject::GetObjectType() const
 fuel::GameObjectData fuel::GameObject::GetGameObjectData() const
 {
 	GameObjectData data{};
-	data.numComponents = m_pComponents.size();
+	data.numComponents = static_cast<unsigned int>(m_pComponents.size());
 
 	for (unsigned int i{ 0 }; i < m_pComponents.size(); ++i)
 		data.componentTypes.push_back(m_pComponents[i]->GetCompType());
@@ -181,7 +181,7 @@ void fuel::GameObject::OnCollisionExit(BaseCollider* other)
 
 void fuel::GameObject::OnTriggerEnter(BaseCollider* other)
 {
-	Logger::LogInfo("TriggerEnter with:" + other->GetGameObject()->GetName());
+	//Logger::LogInfo("TriggerEnter with:" + other->GetGameObject()->GetName());
 	for (BaseComponent* pBaseComponent : m_pComponents)
 	{
 		pBaseComponent->OnTriggerEnter(other);
@@ -190,7 +190,7 @@ void fuel::GameObject::OnTriggerEnter(BaseCollider* other)
 
 void fuel::GameObject::OnTriggerStay(BaseCollider* other)
 {
-	Logger::LogInfo("TriggerStay with:" + other->GetGameObject()->GetName());
+	//Logger::LogInfo("TriggerStay with:" + other->GetGameObject()->GetName());
 	for (BaseComponent* pBaseComponent : m_pComponents)
 	{
 		pBaseComponent->OnTriggerStay(other);
@@ -199,7 +199,7 @@ void fuel::GameObject::OnTriggerStay(BaseCollider* other)
 
 void fuel::GameObject::OnTriggerExit(BaseCollider* other)
 {
-	Logger::LogInfo("TriggerExit with:" + other->GetGameObject()->GetName());
+	//Logger::LogInfo("TriggerExit with:" + other->GetGameObject()->GetName());
 	for (BaseComponent* pBaseComponent : m_pComponents)
 	{
 		pBaseComponent->OnTriggerExit(other);
