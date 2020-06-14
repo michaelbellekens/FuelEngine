@@ -13,6 +13,9 @@
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hh;hpp;hxx;hm;inl;inc;ipp;xsd</Extensions>
     </Filter>
+    <Filter Include="GameComponents">
+      <UniqueIdentifier>{2de4c04e-d34d-467e-96e6-b7dcbf5d03fb}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -27,11 +30,14 @@
     <ClCompile Include="ZenChan.cpp">
       <Filter>EnemyStates</Filter>
     </ClCompile>
-    <ClCompile Include="BubbleComponent.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Bubble.cpp">
-      <Filter>EnemyStates</Filter>
+      <Filter>GameComponents</Filter>
+    </ClCompile>
+    <ClCompile Include="BubbleComponent.cpp">
+      <Filter>GameComponents</Filter>
+    </ClCompile>
+    <ClCompile Include="HealthComponent.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -45,10 +51,13 @@
       <Filter>EnemyStates</Filter>
     </ClInclude>
     <ClInclude Include="Bubble.h">
-      <Filter>EnemyStates</Filter>
+      <Filter>GameComponents</Filter>
+    </ClInclude>
+    <ClInclude Include="HealthComponent.h">
+      <Filter>GameComponents</Filter>
     </ClInclude>
     <ClInclude Include="BubbleComponent.h">
-      <Filter>Source Files</Filter>
+      <Filter>GameComponents</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

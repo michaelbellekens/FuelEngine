@@ -15,7 +15,8 @@ namespace fuel
 		CONTROLLER,
 		VIBRATION,
 		AICONTROLLER,
-		BUBBLE
+		BUBBLE,
+		HEALTH
 	};
 	
 	class BaseCollider;
