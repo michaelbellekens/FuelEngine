@@ -177,6 +177,7 @@
     <ClCompile Include="Bubble.cpp" />
     <ClCompile Include="BubbleBobble.cpp" />
     <ClCompile Include="BubbleComponent.cpp" />
+    <ClCompile Include="HealthComponent.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="ZenChan.cpp" />
     <ClCompile Include="ZenChanStates.cpp" />
@@ -190,6 +191,7 @@
     <ClInclude Include="Bubble.h" />
     <ClInclude Include="BubbleBobble.h" />
     <ClInclude Include="BubbleComponent.h" />
+    <ClInclude Include="HealthComponent.h" />
     <ClInclude Include="ZenChan.h" />
     <ClInclude Include="ZenChanStates.h" />
   </ItemGroup>

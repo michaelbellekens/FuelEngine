@@ -17,6 +17,7 @@
 #include "ZenChanStates.h"
 #include "BubbleComponent.h"
 #include "RenderComponent.h"
+#include "ResourceManager.h"
 #include "TextComponent.h"
 
 int BubbleBobble::m_BubbleCounter = 0;
@@ -33,6 +34,12 @@ BubbleBobble::BubbleBobble()
 	, m_ScorePlayer1(0)
 	, m_ScorePlayer2(0)
 	, m_GameMode(SOLO)
+	, m_Player1Lives(4)
+	, m_Player2Lives(4)
+	, m_Player1LivesLabel(nullptr)
+	, m_Player2LivesLabel(nullptr)
+	, m_Player1Health(nullptr)
+	, m_Player2Health(nullptr)
 {}
 
 BubbleBobble::~BubbleBobble()
@@ -204,6 +211,9 @@ void BubbleBobble::InitializeLevelOne()
 	m_pPlayer1 = reinterpret_cast<fuel::GameObject*>(m_LevelOneScene.FindObject("Player1").get());
 	m_pPlayer2 = reinterpret_cast<fuel::GameObject*>(m_LevelOneScene.FindObject("Player2").get());
 
+	m_pPlayer1->AddComponent<fuel::HealthComponent>();
+	m_pPlayer2->AddComponent<fuel::HealthComponent>();
+
 	m_pPlayer2->GetComponent<fuel::SpriteComponent>()->AddAnimation(15, 8);
 	m_pPlayer2->GetComponent<fuel::SpriteComponent>()->SetDirectionIDs(15, 15);
 
@@ -227,12 +237,53 @@ void BubbleBobble::InitializeLevelOne()
 
 	m_ScoreLabelPlayer1 = reinterpret_cast<fuel::TextComponent*>(reinterpret_cast<fuel::GameObject*>(m_LevelOneScene.FindObject("Score Player 1").get())->GetComponent<fuel::TextComponent>());
 	m_ScoreLabelPlayer2 = reinterpret_cast<fuel::TextComponent*>(reinterpret_cast<fuel::GameObject*>(m_LevelOneScene.FindObject("Score Player 2").get())->GetComponent<fuel::TextComponent>());
+
+	auto pHealthDisplay = std::make_shared<fuel::GameObject>();
+	m_LevelOneScene.AddToScene(pHealthDisplay);
+	pHealthDisplay->SetName("HealthDisplay_1");
+	pHealthDisplay->SetTag("UI");
+	pHealthDisplay->AddComponent<fuel::Transform>();
+	pHealthDisplay->GetComponent<fuel::Transform>()->SetPosition(70.f, 50.f);
+	fuel::TextComponent* textComponent = pHealthDisplay->AddComponent<fuel::TextComponent>();
+	textComponent->SetFont(fuel::ResourceManager::LoadFont("Pixeled.ttf", 12));
+	textComponent->SetSize(12);
+	textComponent->SetText(std::to_string(m_Player1Lives));
+
+	pHealthDisplay = std::make_shared<fuel::GameObject>();
+	m_LevelOneScene.AddToScene(pHealthDisplay);
+	pHealthDisplay->SetName("HealthDisplay_2");
+	pHealthDisplay->SetTag("UI");
+	pHealthDisplay->AddComponent<fuel::Transform>();
+	pHealthDisplay->GetComponent<fuel::Transform>()->SetPosition(545.f, 50.f);
+	textComponent = pHealthDisplay->AddComponent<fuel::TextComponent>();
+	textComponent->SetFont(fuel::ResourceManager::LoadFont("Pixeled.ttf", 12));
+	textComponent->SetSize(12);
+	textComponent->SetText(std::to_string(m_Player2Lives));
+
+	auto heartIcon = std::make_shared<fuel::GameObject>();
+	heartIcon->SetName("Heart Icon 1");
+	m_LevelOneScene.AddToScene(heartIcon);
+	fuel::RenderComponent* renderComp = heartIcon->AddComponent<fuel::RenderComponent>();
+	renderComp->SetTexture("Heart.png");
+	heartIcon->AddComponent<fuel::Transform>();
+	heartIcon->GetTransform()->SetPosition(45.f, 60.f);
+	
+	heartIcon = std::make_shared<fuel::GameObject>();
+	heartIcon->SetName("Heart Icon 2");
+	m_LevelOneScene.AddToScene(heartIcon);
+	renderComp = heartIcon->AddComponent<fuel::RenderComponent>();
+	renderComp->SetTexture("Heart.png");
+	heartIcon->AddComponent<fuel::Transform>();
+	heartIcon->GetTransform()->SetPosition(520.f, 60.f);
 }
 
 void BubbleBobble::InitializeLevelTwo()
 {
 	m_pPlayer1 = reinterpret_cast<fuel::GameObject*>(m_LevelTwoScene.FindObject("Player1").get());
 	m_pPlayer2 = reinterpret_cast<fuel::GameObject*>(m_LevelTwoScene.FindObject("Player2").get());
+
+	m_pPlayer1->AddComponent<fuel::HealthComponent>();
+	m_pPlayer2->AddComponent<fuel::HealthComponent>();
 
 	m_pPlayer2->GetComponent<fuel::SpriteComponent>()->AddAnimation(15, 8);
 	m_pPlayer2->GetComponent<fuel::SpriteComponent>()->SetDirectionIDs(15, 15);
@@ -255,12 +306,53 @@ void BubbleBobble::InitializeLevelTwo()
 	m_EnemiesLevelTwo[2]->GetComponent<fuel::Transform>()->SetPosition(fuel::Vector3(200.f, 164.f, 0.f));
 	m_EnemiesLevelTwo[3]->GetComponent<fuel::Transform>()->SetPosition(fuel::Vector3(400.f, 259.f, 0.f));
 	m_EnemiesLevelTwo[4]->GetComponent<fuel::Transform>()->SetPosition(fuel::Vector3(320.f, 50.f, 0.f));
+
+	auto pHealthDisplay = std::make_shared<fuel::GameObject>();
+	m_LevelTwoScene.AddToScene(pHealthDisplay);
+	pHealthDisplay->SetName("HealthDisplay_1");
+	pHealthDisplay->SetTag("UI");
+	pHealthDisplay->AddComponent<fuel::Transform>();
+	pHealthDisplay->GetComponent<fuel::Transform>()->SetPosition(70.f, 50.f);
+	fuel::TextComponent* textComponent = pHealthDisplay->AddComponent<fuel::TextComponent>();
+	textComponent->SetFont(fuel::ResourceManager::LoadFont("Pixeled.ttf", 12));
+	textComponent->SetSize(12);
+	textComponent->SetText(std::to_string(m_Player1Lives));
+
+	pHealthDisplay = std::make_shared<fuel::GameObject>();
+	m_LevelTwoScene.AddToScene(pHealthDisplay);
+	pHealthDisplay->SetName("HealthDisplay_2");
+	pHealthDisplay->SetTag("UI");
+	pHealthDisplay->AddComponent<fuel::Transform>();
+	pHealthDisplay->GetComponent<fuel::Transform>()->SetPosition(545.f, 50.f);
+	textComponent = pHealthDisplay->AddComponent<fuel::TextComponent>();
+	textComponent->SetFont(fuel::ResourceManager::LoadFont("Pixeled.ttf", 12));
+	textComponent->SetSize(12);
+	textComponent->SetText(std::to_string(m_Player2Lives));
+
+	auto heartIcon = std::make_shared<fuel::GameObject>();
+	heartIcon->SetName("Heart Icon 1");
+	m_LevelTwoScene.AddToScene(heartIcon);
+	fuel::RenderComponent* renderComp = heartIcon->AddComponent<fuel::RenderComponent>();
+	renderComp->SetTexture("Heart.png");
+	heartIcon->AddComponent<fuel::Transform>();
+	heartIcon->GetTransform()->SetPosition(45.f, 60.f);
+
+	heartIcon = std::make_shared<fuel::GameObject>();
+	heartIcon->SetName("Heart Icon 2");
+	m_LevelTwoScene.AddToScene(heartIcon);
+	renderComp = heartIcon->AddComponent<fuel::RenderComponent>();
+	renderComp->SetTexture("Heart.png");
+	heartIcon->AddComponent<fuel::Transform>();
+	heartIcon->GetTransform()->SetPosition(520.f, 60.f);
 }
 
 void BubbleBobble::InitializeLevelThree()
 {
 	m_pPlayer1 = reinterpret_cast<fuel::GameObject*>(m_LevelThreeScene.FindObject("Player1").get());
 	m_pPlayer2 = reinterpret_cast<fuel::GameObject*>(m_LevelThreeScene.FindObject("Player2").get());
+
+	m_pPlayer1->AddComponent<fuel::HealthComponent>();
+	m_pPlayer2->AddComponent<fuel::HealthComponent>();
 
 	m_pPlayer2->GetComponent<fuel::SpriteComponent>()->AddAnimation(15, 8);
 	m_pPlayer2->GetComponent<fuel::SpriteComponent>()->SetDirectionIDs(15, 15);
@@ -283,6 +375,44 @@ void BubbleBobble::InitializeLevelThree()
 	m_EnemiesLevelThree[2]->GetComponent<fuel::Transform>()->SetPosition(fuel::Vector3(200.f, 164.f, 0.f));
 	m_EnemiesLevelThree[3]->GetComponent<fuel::Transform>()->SetPosition(fuel::Vector3(400.f, 259.f, 0.f));
 	m_EnemiesLevelThree[4]->GetComponent<fuel::Transform>()->SetPosition(fuel::Vector3(320.f, 50.f, 0.f));
+
+	auto pHealthDisplay = std::make_shared<fuel::GameObject>();
+	m_LevelThreeScene.AddToScene(pHealthDisplay);
+	pHealthDisplay->SetName("HealthDisplay_1");
+	pHealthDisplay->SetTag("UI");
+	pHealthDisplay->AddComponent<fuel::Transform>();
+	pHealthDisplay->GetComponent<fuel::Transform>()->SetPosition(70.f, 50.f);
+	fuel::TextComponent* textComponent = pHealthDisplay->AddComponent<fuel::TextComponent>();
+	textComponent->SetFont(fuel::ResourceManager::LoadFont("Pixeled.ttf", 12));
+	textComponent->SetSize(12);
+	textComponent->SetText(std::to_string(m_Player1Lives));
+
+	pHealthDisplay = std::make_shared<fuel::GameObject>();
+	m_LevelThreeScene.AddToScene(pHealthDisplay);
+	pHealthDisplay->SetName("HealthDisplay_2");
+	pHealthDisplay->SetTag("UI");
+	pHealthDisplay->AddComponent<fuel::Transform>();
+	pHealthDisplay->GetComponent<fuel::Transform>()->SetPosition(545.f, 50.f);
+	textComponent = pHealthDisplay->AddComponent<fuel::TextComponent>();
+	textComponent->SetFont(fuel::ResourceManager::LoadFont("Pixeled.ttf", 12));
+	textComponent->SetSize(12);
+	textComponent->SetText(std::to_string(m_Player2Lives));
+
+	auto heartIcon = std::make_shared<fuel::GameObject>();
+	heartIcon->SetName("Heart Icon 1");
+	m_LevelThreeScene.AddToScene(heartIcon);
+	fuel::RenderComponent* renderComp = heartIcon->AddComponent<fuel::RenderComponent>();
+	renderComp->SetTexture("Heart.png");
+	heartIcon->AddComponent<fuel::Transform>();
+	heartIcon->GetTransform()->SetPosition(45.f, 60.f);
+
+	heartIcon = std::make_shared<fuel::GameObject>();
+	heartIcon->SetName("Heart Icon 2");
+	m_LevelThreeScene.AddToScene(heartIcon);
+	renderComp = heartIcon->AddComponent<fuel::RenderComponent>();
+	renderComp->SetTexture("Heart.png");
+	heartIcon->AddComponent<fuel::Transform>();
+	heartIcon->GetTransform()->SetPosition(520.f, 60.f);
 }
 
 void BubbleBobble::SwitchToScene(const std::string& sceneName)
@@ -345,6 +475,12 @@ void BubbleBobble::SwitchToScene(const std::string& sceneName)
 
 	m_ScoreLabelPlayer1 = reinterpret_cast<fuel::TextComponent*>(reinterpret_cast<fuel::GameObject*>(pCurrentScene->FindObject("Score Player 1").get())->GetComponent<fuel::TextComponent>());
 	m_ScoreLabelPlayer2 = reinterpret_cast<fuel::TextComponent*>(reinterpret_cast<fuel::GameObject*>(pCurrentScene->FindObject("Score Player 2").get())->GetComponent<fuel::TextComponent>());
+
+	m_Player1LivesLabel = reinterpret_cast<fuel::TextComponent*>(reinterpret_cast<fuel::GameObject*>(pCurrentScene->FindObject("HealthDisplay_1").get())->GetComponent<fuel::TextComponent>());
+	m_Player2LivesLabel = reinterpret_cast<fuel::TextComponent*>(reinterpret_cast<fuel::GameObject*>(pCurrentScene->FindObject("HealthDisplay_2").get())->GetComponent<fuel::TextComponent>());
+	
+	m_Player1Health = m_pPlayer1->GetComponent<fuel::HealthComponent>();
+	m_Player2Health = m_pPlayer2->GetComponent<fuel::HealthComponent>();
 }
 
 void BubbleBobble::UpdateMainMenu()
@@ -353,6 +489,26 @@ void BubbleBobble::UpdateMainMenu()
 
 void BubbleBobble::UpdateLevelOne()
 {
+	bool respawnInProgress{ false };
+	if (m_Player1Health && m_Player2Health)
+	{
+		m_Player1LivesLabel->SetText(std::to_string(m_Player1Health->GetNumberOfLives()));
+		m_Player2LivesLabel->SetText(std::to_string(m_Player2Health->GetNumberOfLives()));
+
+		if (m_Player1Health->GetNumberOfLives() == 0 || m_Player2Health->GetNumberOfLives() == 0)
+		{
+			respawnInProgress = true;
+			m_CurrentTimer += Time::GetDeltaTime();
+			if (m_CurrentTimer > 2.f)
+			{
+				m_CurrentTimer = 0.f;
+				m_Player1Health->SetNUmberOfLives(4);
+				m_Player2Health->SetNUmberOfLives(4);
+				SwitchToScene("Level_One");
+			}
+		}
+	}
+	
 	bool allEnemiesDead{ true };
 	for (const std::shared_ptr<fuel::ZenChan> pEnemy : m_EnemiesLevelOne)
 	{
@@ -366,7 +522,7 @@ void BubbleBobble::UpdateLevelOne()
 	if (allEnemiesDead)
 		m_CurrentTimer += Time::GetDeltaTime();
 	
-	if (m_CurrentTimer > 5.f)
+	if (m_CurrentTimer > 5.f && !respawnInProgress)
 	{
 		m_CurrentTimer = 0.f;
 		SwitchToScene("Level_Two");
@@ -375,6 +531,26 @@ void BubbleBobble::UpdateLevelOne()
 
 void BubbleBobble::UpdateLevelTwo()
 {
+	bool respawnInProgress{ false };
+	if (m_Player1Health && m_Player2Health)
+	{
+		m_Player1LivesLabel->SetText(std::to_string(m_Player1Health->GetNumberOfLives()));
+		m_Player2LivesLabel->SetText(std::to_string(m_Player2Health->GetNumberOfLives()));
+
+		if (m_Player1Health->GetNumberOfLives() == 0 || m_Player2Health->GetNumberOfLives() == 0)
+		{
+			respawnInProgress = true;
+			m_CurrentTimer += Time::GetDeltaTime();
+			if (m_CurrentTimer > 2.f)
+			{
+				m_CurrentTimer = 0.f;
+				m_Player1Health->SetNUmberOfLives(4);
+				m_Player2Health->SetNUmberOfLives(4);
+				SwitchToScene("Level_Two");
+			}
+		}
+	}
+	
 	bool allEnemiesDead{ true };
 	for (const std::shared_ptr<fuel::ZenChan> pEnemy : m_EnemiesLevelTwo)
 	{
@@ -388,7 +564,7 @@ void BubbleBobble::UpdateLevelTwo()
 	if (allEnemiesDead)
 		m_CurrentTimer += Time::GetDeltaTime();
 	
-	if (m_CurrentTimer > 5.f)
+	if (m_CurrentTimer > 5.f && !respawnInProgress)
 	{
 		m_CurrentTimer = 0.f;
 		SwitchToScene("Level_Three");
@@ -397,6 +573,26 @@ void BubbleBobble::UpdateLevelTwo()
 
 void BubbleBobble::UpdateLevelThree()
 {
+	bool respawnInProgress{ false };
+	if (m_Player1Health && m_Player2Health)
+	{
+		m_Player1LivesLabel->SetText(std::to_string(m_Player1Health->GetNumberOfLives()));
+		m_Player2LivesLabel->SetText(std::to_string(m_Player2Health->GetNumberOfLives()));
+
+		if (m_Player1Health->GetNumberOfLives() == 0 || m_Player2Health->GetNumberOfLives() == 0)
+		{
+			respawnInProgress = true;
+			m_CurrentTimer += Time::GetDeltaTime();
+			if (m_CurrentTimer > 2.f)
+			{
+				m_CurrentTimer = 0.f;
+				m_Player1Health->SetNUmberOfLives(4);
+				m_Player2Health->SetNUmberOfLives(4);
+				SwitchToScene("Level_Three");
+			}
+		}
+	}
+	
 	bool allEnemiesDead{ true };
 	for (const std::shared_ptr<fuel::ZenChan> pEnemy : m_EnemiesLevelThree)
 	{
@@ -410,7 +606,7 @@ void BubbleBobble::UpdateLevelThree()
 	if (allEnemiesDead)
 		m_CurrentTimer += Time::GetDeltaTime();
 
-	if (m_CurrentTimer > 5.f)
+	if (m_CurrentTimer > 5.f && !respawnInProgress)
 	{
 		m_CurrentTimer = 0.f;
 		SwitchToScene("MainMenu");

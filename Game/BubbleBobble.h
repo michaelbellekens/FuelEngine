@@ -1,6 +1,7 @@
 #pragma once
 #include "Game.h"
 #include "GameObject.h"
+#include "HealthComponent.h"
 #include "Scene.h"
 #include "ZenChan.h"
 
@@ -55,6 +56,10 @@ private:
 	fuel::GameObject* m_pPlayer2;
 	fuel::TextComponent* m_ScoreLabelPlayer1;
 	fuel::TextComponent* m_ScoreLabelPlayer2;
+	fuel::TextComponent* m_Player1LivesLabel;
+	fuel::TextComponent* m_Player2LivesLabel;
+	fuel::HealthComponent* m_Player1Health;
+	fuel::HealthComponent* m_Player2Health;
 	int m_ScorePlayer1;
 	int m_ScorePlayer2;
 
@@ -64,6 +69,9 @@ private:
 	
 	GameMode m_GameMode;
 	float m_CurrentTimer{ 0.f };
+
+	int m_Player1Lives;
+	int m_Player2Lives;
 
 	static int m_BubbleCounter;
 };
