@@ -39,6 +39,22 @@ void fuel::PlayerController::OnStart()
 	InputManager::AddControllerBinding(m_PlayerID, this, CommandID::Fire, ButtonState::released, XINPUT_GAMEPAD_Y);
 	InputManager::AddControllerBinding(m_PlayerID, this, CommandID::Fart, ButtonState::released, XINPUT_GAMEPAD_X);
 	InputManager::AddControllerBinding(m_PlayerID, this, CommandID::Menu, ButtonState::released, XINPUT_GAMEPAD_START);
+	
+	if (m_PlayerID == PlayerID::PlayerOne)
+	{
+		InputManager::AddKeyboardBinding(m_PlayerID, this, CommandID::Jump, ButtonState::pressed, SDLK_SPACE);
+		InputManager::AddKeyboardBinding(m_PlayerID, this, CommandID::Fire, ButtonState::released, SDLK_f);
+		InputManager::AddKeyboardBinding(m_PlayerID, this, CommandID::MoveLeft, ButtonState::hold, SDLK_a);
+		InputManager::AddKeyboardBinding(m_PlayerID, this, CommandID::MoveRight, ButtonState::hold, SDLK_d);
+	}
+	else if (m_PlayerID == PlayerID::PlayerTwo)
+	{
+		InputManager::AddKeyboardBinding(m_PlayerID, this, CommandID::Jump, ButtonState::pressed, SDLK_UP);
+		InputManager::AddKeyboardBinding(m_PlayerID, this, CommandID::Fire, ButtonState::released, SDLK_RCTRL);
+		InputManager::AddKeyboardBinding(m_PlayerID, this, CommandID::MoveLeft, ButtonState::hold, SDLK_LEFT);
+		InputManager::AddKeyboardBinding(m_PlayerID, this, CommandID::MoveRight, ButtonState::hold, SDLK_RIGHT);
+	}
+	
 	InputManager::AddKeyboardBinding(m_PlayerID, this, CommandID::Menu, ButtonState::released, SDLK_p);
 
 	// UI Controls
@@ -141,6 +157,7 @@ void fuel::PlayerController::Jump()
 	if(m_IsGrounded)
 	{
 		m_pGameObject->GetComponent<RigidBody2D>()->AddForce(Vector2(0.f, -6.f), true);
+		SoundManager::GetInstance().StartSound("Jump");
 	}
 }
 
@@ -178,10 +195,42 @@ void fuel::PlayerController::OpenMenu()
 
 void fuel::PlayerController::MoveLeft()
 {
+	if (m_IsInMenu)
+		return;
+
+	if (m_pRigidBody)
+	{
+		const float speed{ 2.5f };
+		m_pRigidBody->MovePosition(Vector3(speed, 0.f, 0.f));
+
+		const bool previousGrounded{ m_IsGrounded };
+		m_IsGrounded = m_pRigidBody->IsGrounded();
+
+		if (!previousGrounded && m_IsGrounded)
+			SoundManager::GetInstance().StartSound("BubblePop");
+
+		m_pSpriteRenderer->LookLeft(true);
+	}
 }
 
 void fuel::PlayerController::MoveRight()
 {
+	if (m_IsInMenu)
+		return;
+
+	if (m_pRigidBody)
+	{
+		const float speed{ 2.5f };
+		m_pRigidBody->MovePosition(Vector3(-speed, 0.f, 0.f));
+
+		const bool previousGrounded{ m_IsGrounded };
+		m_IsGrounded = m_pRigidBody->IsGrounded();
+
+		if (!previousGrounded && m_IsGrounded)
+			SoundManager::GetInstance().StartSound("BubblePop");
+
+		m_pSpriteRenderer->LookLeft(false);
+	}
 }
 
 void fuel::PlayerController::MoveUpUI()
@@ -190,6 +239,7 @@ void fuel::PlayerController::MoveUpUI()
 		return;
 
 	m_pGameObject->GetScene()->PreviousButton();
+	SoundManager::GetInstance().StartSound("UISound");
 }
 
 void fuel::PlayerController::MoveDownUI()
@@ -198,6 +248,7 @@ void fuel::PlayerController::MoveDownUI()
 		return;
 
 	m_pGameObject->GetScene()->NextButton();
+	SoundManager::GetInstance().StartSound("UISound");
 }
 
 void fuel::PlayerController::ClickUI()
@@ -206,6 +257,7 @@ void fuel::PlayerController::ClickUI()
 		return;
 
 	m_pGameObject->GetScene()->ExecuteButtonAction();
+	SoundManager::GetInstance().StartSound("UISound");
 }
 
 void fuel::PlayerController::Safe(std::ofstream& binStream) const

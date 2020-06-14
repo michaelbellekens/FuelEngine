@@ -18,6 +18,7 @@
 #include "BubbleComponent.h"
 #include "RenderComponent.h"
 #include "ResourceManager.h"
+#include "SoundManager.h"
 #include "TextComponent.h"
 
 int BubbleBobble::m_BubbleCounter = 0;
@@ -93,6 +94,7 @@ void BubbleBobble::Initialize()
 			pRigidBody->SetPosition({ spawnPos.x, spawnPos.y - 5.f });
 			pRigidBody->AddForce({ 5.f, 0.f }, true);
 		}
+		SoundManager::GetInstance().StartSound("BubbleShoot");
 		++m_BubbleCounter;
 	};
 
@@ -501,6 +503,7 @@ void BubbleBobble::UpdateLevelOne()
 			m_CurrentTimer += Time::GetDeltaTime();
 			if (m_CurrentTimer > 2.f)
 			{
+				SoundManager::GetInstance().StartSound("GameOver");
 				m_CurrentTimer = 0.f;
 				m_Player1Health->SetNUmberOfLives(4);
 				m_Player2Health->SetNUmberOfLives(4);
@@ -524,6 +527,7 @@ void BubbleBobble::UpdateLevelOne()
 	
 	if (m_CurrentTimer > 5.f && !respawnInProgress)
 	{
+		SoundManager::GetInstance().StartSound("NextLevel");
 		m_CurrentTimer = 0.f;
 		SwitchToScene("Level_Two");
 	}
@@ -543,6 +547,7 @@ void BubbleBobble::UpdateLevelTwo()
 			m_CurrentTimer += Time::GetDeltaTime();
 			if (m_CurrentTimer > 2.f)
 			{
+				SoundManager::GetInstance().StartSound("GameOver");
 				m_CurrentTimer = 0.f;
 				m_Player1Health->SetNUmberOfLives(4);
 				m_Player2Health->SetNUmberOfLives(4);
@@ -566,6 +571,7 @@ void BubbleBobble::UpdateLevelTwo()
 	
 	if (m_CurrentTimer > 5.f && !respawnInProgress)
 	{
+		SoundManager::GetInstance().StartSound("NextLevel");
 		m_CurrentTimer = 0.f;
 		SwitchToScene("Level_Three");
 	}
@@ -585,6 +591,7 @@ void BubbleBobble::UpdateLevelThree()
 			m_CurrentTimer += Time::GetDeltaTime();
 			if (m_CurrentTimer > 2.f)
 			{
+				SoundManager::GetInstance().StartSound("GameOver");
 				m_CurrentTimer = 0.f;
 				m_Player1Health->SetNUmberOfLives(4);
 				m_Player2Health->SetNUmberOfLives(4);
@@ -608,6 +615,7 @@ void BubbleBobble::UpdateLevelThree()
 
 	if (m_CurrentTimer > 5.f && !respawnInProgress)
 	{
+		SoundManager::GetInstance().StartSound("NextLevel");
 		m_CurrentTimer = 0.f;
 		SwitchToScene("MainMenu");
 	}
