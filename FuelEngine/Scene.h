@@ -31,6 +31,7 @@ namespace fuel
 		Scene& operator=(Scene&& other) = delete;
 		
 		void AddToScene(const std::shared_ptr<SceneObject>& object);
+		void RemoveFromScene(const std::string& objectName);
 
 		void Initialize();
 		void Start();

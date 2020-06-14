@@ -1,7 +1,6 @@
 #include "FuelEnginePCH.h"
 #include "FuelEngine.h"
 
-#include <mutex>
 #include "InputManager.h"
 #include "SceneManager.h"
 #include "Renderer.h"
@@ -9,13 +8,10 @@
 #include <SDL.h>
 #include "EngineSettings.h"
 #include "EngineComponents.h"
-#include "FileManager.h"
 #include "SoundManager.h"
 #include "Game.h"
 #include "Time.h"
-
 #include "Button.h"
-#include "Scene.h"
 
 using namespace std;
 
@@ -101,7 +97,7 @@ void fuel::FuelEngine::Run()
 	SceneManager::Start();
 
 	// Threading test ------------------------------------------------------- //
-	std::mutex m_Mutex;
+	/*std::mutex m_Mutex;
 	auto updateFunct = [this, &m_Mutex]()
 	{
 		Time::SetEndFrame(std::chrono::high_resolution_clock::now());
@@ -133,9 +129,32 @@ void fuel::FuelEngine::Run()
 	{
 		//std::cout << "input" << std::endl;
 		m_IsGameRunning = InputManager::ProcessInput();
-	}
+	}*/
 	// ------------------------------------------------------------------- //
 
-	updateThread.join();
+	Time::SetEndFrame(std::chrono::high_resolution_clock::now());
+	float lag{ 0 };
+	while (m_IsGameRunning)
+	{
+		Time::SetStartFrame(std::chrono::high_resolution_clock::now());
+		Time::Update();
+		lag += Time::GetDeltaTime();
+
+		m_IsGameRunning = InputManager::ProcessInput();
+		
+		while (lag >= Time::GetFixedDeltaTime())
+		{
+			SceneManager::FixedUpdate();
+			m_pGame->FixedUpdate();
+			lag -= Time::GetFixedDeltaTime();
+		}
+
+		SceneManager::Update();
+		m_pGame->Update();
+		Renderer::Render();
+		m_pGame->Draw();
+	}
+	
+	//updateThread.join();
 	Cleanup();
 }

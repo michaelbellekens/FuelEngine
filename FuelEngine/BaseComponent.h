@@ -14,7 +14,8 @@ namespace fuel
 		SPRITERENDERER,
 		CONTROLLER,
 		VIBRATION,
-		AICONTROLLER
+		AICONTROLLER,
+		BUBBLE
 	};
 	
 	class BaseCollider;

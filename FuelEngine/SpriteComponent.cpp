@@ -161,8 +161,8 @@ void fuel::SpriteComponent::Safe(std::ofstream& binStream) const
 	binStream.write((const char*)&m_LookLeftID, sizeof(int));
 	binStream.write((const char*)&m_LookRightID, sizeof(int));
 
-	unsigned int numAnimations{ m_AnimationLoops.size() };
-	binStream.write((const char*)&numAnimations, sizeof(unsigned int));
+	size_t numAnimations{ m_AnimationLoops.size() };
+	binStream.write((const char*)&numAnimations, sizeof(size_t));
 
 	for (std::pair<int, int> animLoop : m_AnimationLoops)
 	{

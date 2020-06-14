@@ -73,7 +73,8 @@ void fuel::RigidBody2D::FixedUpdate()
 			m_Velocity.x = std::abs(m_Velocity.x) < 0.04f ? 0.f : m_Velocity.x;
 		}
 
-		m_IsFacingLeft = m_Velocity.x > 0.f ? false : true;
+		if (std::abs(m_InputVelocity.x) > 0.1f)
+			m_IsFacingLeft = m_InputVelocity.x > 0.f ? false : true;
 		
 		m_Position += m_Velocity + m_InputVelocity;
 
