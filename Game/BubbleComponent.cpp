@@ -6,6 +6,7 @@
 #include "RenderComponent.h"
 #include "Transform.h"
 #include "Scene.h"
+#include "SoundManager.h"
 
 fuel::BubbleComponent::BubbleComponent()
 	: m_ScorePlayer1()
@@ -102,6 +103,7 @@ void fuel::BubbleComponent::OnCollisionEnter(BaseCollider* other)
 		m_pGameObject->GetTransform()->SetPosition(-100.f, -100.f);
 		m_pRigidBody->SetIsKinematic(true);
 		m_pGameObject->SetActive(false);
+		SoundManager::GetInstance().StartSound("ScoreUp");
 	}
 	else if (other->GetGameObject()->CompareTag("Enemy") && !m_CapturedEnemy)
 	{
@@ -112,7 +114,7 @@ void fuel::BubbleComponent::OnCollisionEnter(BaseCollider* other)
 		other->GetGameObject()->GetTransform()->SetPosition(-200.f, -200.f);
 		other->GetGameObject()->SetActive(false);
 		AddScore(50);
-		
+		SoundManager::GetInstance().StartSound("EnemyCaptured");
 	}
 	else if (other->GetGameObject()->CompareTag("StaticScene"))
 	{
@@ -121,6 +123,7 @@ void fuel::BubbleComponent::OnCollisionEnter(BaseCollider* other)
 		m_pGameObject->GetTransform()->SetPosition(-100.f, -100.f);
 		m_pRigidBody->SetIsKinematic(true);
 		m_pGameObject->SetActive(false);
+		SoundManager::GetInstance().StartSound("BubblePop");
 	}
 }
 

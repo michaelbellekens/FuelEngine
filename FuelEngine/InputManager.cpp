@@ -57,6 +57,8 @@ void fuel::InputManager::CreateCommands()
 	AddCommand(new MoveUpUICommand(), CommandID::MoveUpUI);
 	AddCommand(new MoveDownUICommand(), CommandID::MoveDownUI);
 	AddCommand(new ClickUICommand(), CommandID::ClickUI);
+	AddCommand(new MoveLeftCommand(), CommandID::MoveLeft);
+	AddCommand(new MoveRightCommand(), CommandID::MoveRight);
 }
 
 bool fuel::InputManager::IProcessInput()

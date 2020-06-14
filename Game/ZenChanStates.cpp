@@ -3,6 +3,7 @@
 
 #include "BoxCollider.h"
 #include "HealthComponent.h"
+#include "SoundManager.h"
 #include "SpriteComponent.h"
 #include "Time.h"
 #include "Transform.h"
@@ -51,7 +52,7 @@ void fuel::WanderState_ZN::TriggerPhysicsEvent(const PhysicsEvent& physicsEvent)
 		const Vector3 pos{ m_pRigidBody2D->GetPosition() };
 		const Vector3 posWall{ physicsEvent.other->GetPosition() };
 		const float height{ m_pActor->GetComponent<BoxCollider>()->GetDimensions().height };
-
+		
 		if (posWall.y < pos.y + height)
 			m_WanderLeft = !m_WanderLeft;
 	}
@@ -141,6 +142,7 @@ void fuel::AttackState_ZN::TriggerPhysicsEvent(const PhysicsEvent& physicsEvent)
 
 			physicsEvent.other->GetGameObject()->GetComponent<RigidBody2D>()->AddForce(dir.Normalize() * 2.5f, true);
 			physicsEvent.other->GetGameObject()->GetComponent<HealthComponent>()->Damage();
+			SoundManager::GetInstance().StartSound("LoseLife");
 		}
 	}
 }

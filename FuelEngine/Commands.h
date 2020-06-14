@@ -234,4 +234,58 @@ namespace fuel
 			}
 		}
 	};
+
+	class MoveLeftCommand final : public Command
+	{
+	public:
+		MoveLeftCommand() = default;
+		virtual ~MoveLeftCommand() = default;
+
+		void SetExecuteFunction(const std::function<void(fuel::PlayerController * controller)> executeFunct) override
+		{
+			m_ExecutionFunction = executeFunct;
+			m_IsFunctionSet = true;
+		}
+
+		void Execute(fuel::PlayerController* controller) override
+		{
+			if (controller->GetGameObject()->GetScene()->GetIsActive())
+			{
+				if (m_IsFunctionSet)
+				{
+					m_ExecutionFunction(controller);
+					return;
+				}
+
+				controller->MoveLeft();
+			}
+		}
+	};
+
+	class MoveRightCommand final : public Command
+	{
+	public:
+		MoveRightCommand() = default;
+		virtual ~MoveRightCommand() = default;
+
+		void SetExecuteFunction(const std::function<void(fuel::PlayerController * controller)> executeFunct) override
+		{
+			m_ExecutionFunction = executeFunct;
+			m_IsFunctionSet = true;
+		}
+
+		void Execute(fuel::PlayerController* controller) override
+		{
+			if (controller->GetGameObject()->GetScene()->GetIsActive())
+			{
+				if (m_IsFunctionSet)
+				{
+					m_ExecutionFunction(controller);
+					return;
+				}
+
+				controller->MoveRight();
+			}
+		}
+	};
 }

@@ -65,7 +65,16 @@ void fuel::FuelEngine::Initialize()
  */
 void fuel::FuelEngine::LoadGame() const
 {
+	SoundManager::GetInstance().AddSound("Landing", "../Data/SoundFX/Landing.wav");
 	SoundManager::GetInstance().AddSound("BubblePop", "../Data/SoundFX/Bubble_Pop.wav");
+	SoundManager::GetInstance().AddSound("BubbleShoot", "../Data/SoundFX/bubble_shoot.wav");
+	SoundManager::GetInstance().AddSound("EnemyCaptured", "../Data/SoundFX/enemies_rolling_away.wav");
+	SoundManager::GetInstance().AddSound("GameOver", "../Data/SoundFX/game_over.wav");
+	SoundManager::GetInstance().AddSound("Jump", "../Data/SoundFX/jump.wav");
+	SoundManager::GetInstance().AddSound("LoseLife", "../Data/SoundFX/lose_life.wav");
+	SoundManager::GetInstance().AddSound("UISound", "../Data/SoundFX/menu_navigate.wav");
+	SoundManager::GetInstance().AddSound("NextLevel", "../Data/SoundFX/next_level.wav");
+	SoundManager::GetInstance().AddSound("ScoreUp", "../Data/SoundFX/score.wav");
 	
 	//FileManager::SaveScene(&scene, "LevelThree");
 	//FileManager::LoadScene(&scene, "MainMenu");

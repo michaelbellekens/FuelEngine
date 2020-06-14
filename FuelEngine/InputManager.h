@@ -26,7 +26,9 @@ namespace fuel
 		Menu,
 		MoveUpUI,
 		MoveDownUI,
-		ClickUI
+		ClickUI,
+		MoveLeft,
+		MoveRight
 	};
 
 	class Command;
